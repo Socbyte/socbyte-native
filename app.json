@@ -1,0 +1,12 @@
+{
+  "name": "Socbyte",
+  "displayName": "Socbyte",
+  "expo": {
+    "name": "Socbyte",
+    "slug": "Socbyte",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
