@@ -36,7 +36,7 @@ class MainNavigation extends Component {
 				firebase
 					.database()
 					.ref('Users')
-					.child(this.state.currentUser.displayName)
+					.child(firebase.auth().currentUser.displayName)
 					.once('value')
 					.then(snapshot => {
 						if (snapshot.val()) {
@@ -59,29 +59,35 @@ class MainNavigation extends Component {
 						this.setState({ user: null });
 
 						this.setState({ showLoading: false });
-						alert('error occurred while loading user data please refresh the page.');
+						alert('error occurred while loading user data. servers are busy currently. sorry for the trouble.');
 					});
 			} else {
-				this.setState({ user: null });
 				// not registered
+				this.setState({ user: null });
 				this.setState({ showLoading: false });
-				// if (isLogout === "logout") {
-				// 	window.location.reload();
-				// }
 			}
 		});
 	};
 
 	loadSettings = () => {
+		this.setState({ showLoading: true });
 		fetchDatabase()
 			.then(result => {
 				const settings = JSON.parse(JSON.stringify(result.rows._array));
-				console.log('MAIN SETTINGS', this.props.settings);
-				this.props.loadSettings(settings);
+				// console.log('MAIN SETTINGS', this.props.settings);
+				this.props
+					.loadSettings(settings)
+					.then(() => {
+						this.setState({ showLoading: false });
+					})
+					.catch(err => {
+						this.setState({ showLoading: false });
+					});
 			})
 			.catch(err => {
 				console.log('ERROR WHILE FETCHING DATABASE FROM MAIN SECTION');
 				console.log(err.data);
+				this.setState({ showLoading: false });
 			});
 	};
 

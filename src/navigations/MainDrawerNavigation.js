@@ -17,39 +17,51 @@ import firebase from '../firebase/Firebase';
 import COLORS from '../val/colors/Colors';
 import Home from '../scenes/main/Home';
 import Profile from '../scenes/main/Profile';
+import TestMain from '../scenes/main/Test';
+import Header from '../components/customs/Header/Header';
+import ProfileNavigator from './content/ProfileNavigator';
 
 const DrawerNavigator = createDrawerNavigator();
 const DrawerNavigation = props => {
 	const settings = useSelector(state => state.settings.settings);
-
-	const setProfileImg = props.setProfileImg;
 
 	return (
 		<NavigationContainer theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}>
 			<DrawerNavigator.Navigator
 				screenOptions={props => {
 					return {
-						headerShown: true,
+						headerShown: false,
 						headerLeft: () => {
 							return (
 								<TouchableRipple onPress={() => props.navigation.toggleDrawer()}>
-									<Ionicons
-										name='menu'
-										color={settings.theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY}
-										size={25}
-										style={{ margin: 10 }}
-									/>
+									<Ionicons name='menu' color={settings.theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY} size={25} style={{ margin: 10 }} />
 								</TouchableRipple>
+							);
+						},
+						header: () => {
+							return (
+								<Header
+									leftButton={() => {
+										props.navigation.toggleDrawer();
+									}}
+									includeRight={true}
+									rightButton='ellipsis-vertical'
+									// headerTitle={username}
+								/>
 							);
 						},
 					};
 				}}
-				drawerContent={props => <MainDrawerNavigation setProfileImg={setProfileImg} {...props} />}>
+				drawerContent={props => <MainDrawerNavigation setProfileImg={props.setProfileImg} {...props} />}>
+				<DrawerNavigator.Screen name='Profile' component={ProfileNavigator} />
+
 				<DrawerNavigator.Screen name='Home' component={Home} />
-				<DrawerNavigator.Screen name='Profile' component={Profile} />
+
+				<DrawerNavigator.Screen name='Test' component={Profile} />
+
 				<DrawerNavigator.Screen name='Chats' component={Home} />
+
 				<DrawerNavigator.Screen name='Settings' component={Home} />
-				<DrawerNavigator.Screen name='Add' component={Home} />
 			</DrawerNavigator.Navigator>
 		</NavigationContainer>
 	);
@@ -75,12 +87,12 @@ const MainDrawerNavigation = props => {
 	useEffect(() => {
 		if (userData.email) {
 			const emailHash = md5(userData.email);
-			fetch(`https://www.gravatar.com/${emailHash}a.json`)
+			fetch(`https://www.gravatar.com/${emailHash}.json`)
 				.then(res => res.json())
 				.then(res => {
 					if (JSON.stringify(res).includes('User not found')) {
 						setUserProfileImageFound(false);
-						props.setProfileImg('');
+						props.setProfileImg(false);
 					} else {
 						setUserProfileImageFound(true);
 						props.setProfileImg(`https://www.gravatar.com/avatar/${emailHash}.jpg?s=200`);
@@ -104,11 +116,7 @@ const MainDrawerNavigation = props => {
 							}}>
 							<View style={theme === 'd' ? styles.usersectionDark : styles.usersectionLight}>
 								{userProfileImageFound ? (
-									<Avatar.Image
-										style={theme === 'd' ? styles.avatarDark : styles.avatarLight}
-										size={55}
-										source={{ uri: userData.profileImg }}
-									/>
+									<Avatar.Image style={theme === 'd' ? styles.avatarDark : styles.avatarLight} size={57} source={{ uri: userData.profileImg }} />
 								) : (
 									<Avatar.Text
 										style={theme === 'd' ? styles.avatarDark : styles.avatarLight}
@@ -126,161 +134,67 @@ const MainDrawerNavigation = props => {
 						</TouchableRipple>
 					</View>
 					<Drawer.Section theme={paperTheme.dark} style={theme === 'd' ? styles.mainDrawerDark : styles.mainDrawerLight}>
-						<DrawerItem
-							icon={({ color, size }) => (
-								<MaterialCommunityIcons
-									name='home'
-									size={size}
-									color={selectedTab === 'home' ? (theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY) : COLORS.DARKFORLIGHT}
-								/>
-							)}
-							label='Home'
-							labelStyle={
-								selectedTab === 'home'
-									? theme === 'd'
-										? styles.labelDark
-										: styles.labelLight
-									: theme === 'd'
-									? styles.labelDisabledDark
-									: styles.labelDisabledLight
-							}
-							focused={selectedTab === 'home'}
-							activeTintColor={theme === 'd' ? COLORS.WHITE : COLORS.DARKGLOW}
-							activeBackgroundColor={theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT}
-							style={[
-								theme === 'd' ? styles.drawerOptionsDark : styles.drawerOptionsLight,
-								theme === 'd' ? styles.firstDrawerOptionsDark : styles.firstDrawerOptionsLight,
-							]}
+						<PureDrawerItem
 							onPress={() => {
 								setSelectedTabText('home');
-								// props.navigation.navigate('Home');
+								props.navigation.navigate('Home');
 							}}
+							theme={theme}
+							extraStyles={theme === 'd' ? styles.firstDrawerOptionsDark : styles.firstDrawerOptionsLight}
+							identity={['home', 'Home']}
+							selected={selectedTab}
+							iconName='home'
 						/>
-						<DrawerItem
-							icon={({ color, size }) => (
-								<MaterialCommunityIcons
-									name='account'
-									size={size}
-									color={selectedTab === 'profile' ? (theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY) : COLORS.DARKFORLIGHT}
-								/>
-							)}
-							label='Profile'
-							labelStyle={
-								selectedTab === 'profile'
-									? theme === 'd'
-										? styles.labelDark
-										: styles.labelLight
-									: theme === 'd'
-									? styles.labelDisabledDark
-									: styles.labelDisabledLight
-							}
-							focused={selectedTab === 'profile'}
-							activeTintColor={theme === 'd' ? COLORS.WHITE : COLORS.DARKGLOW}
-							activeBackgroundColor={theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT}
-							style={[
-								theme === 'd' ? styles.drawerOptionsDark : styles.drawerOptionsLight,
-								theme === 'd' ? styles.firstDrawerOptionsDark : styles.firstDrawerOptionsLight,
-							]}
+						<PureDrawerItem
 							onPress={() => {
 								setSelectedTabText('profile');
-								// props.navigation.navigate('Profile');
+								props.navigation.navigate('Profile');
 							}}
+							theme={theme}
+							extraStyles={theme === 'd' ? styles.lastDrawerOptionsDark : styles.lastDrawerOptionsLight}
+							identity={['profile', 'Profile']}
+							selected={selectedTab}
+							iconName='account-box'
 						/>
-						<DrawerItem
-							icon={({ color, size }) => (
-								<MaterialCommunityIcons
-									name='chat'
-									size={size}
-									color={selectedTab === 'chats' ? (theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY) : COLORS.DARKFORLIGHT}
-								/>
-							)}
-							label='Chats'
-							labelStyle={
-								selectedTab === 'chats'
-									? theme === 'd'
-										? styles.labelDark
-										: styles.labelLight
-									: theme === 'd'
-									? styles.labelDisabledDark
-									: styles.labelDisabledLight
-							}
-							focused={selectedTab === 'chats'}
-							activeTintColor={theme === 'd' ? COLORS.WHITE : COLORS.DARKGLOW}
-							activeBackgroundColor={theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT}
-							style={[
-								theme === 'd' ? styles.drawerOptionsDark : styles.drawerOptionsLight,
-								theme === 'd' ? styles.firstDrawerOptionsDark : styles.firstDrawerOptionsLight,
-							]}
+						<PureDrawerItem
 							onPress={() => {
 								setSelectedTabText('chats');
+								props.navigation.navigate('Profile');
 							}}
+							theme={theme}
+							extraStyles={theme === 'd' ? styles.lastDrawerOptionsDark : styles.lastDrawerOptionsLight}
+							identity={['chats', 'Chats']}
+							selected={selectedTab}
+							iconName='message'
 						/>
-						<DrawerItem
-							icon={({ color, size }) => (
-								<MaterialCommunityIcons
-									name='plus'
-									size={size}
-									color={selectedTab === 'add' ? (theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY) : COLORS.DARKFORLIGHT}
-								/>
-							)}
-							label='Add Something'
-							labelStyle={
-								selectedTab === 'add'
-									? theme === 'd'
-										? styles.labelDark
-										: styles.labelLight
-									: theme === 'd'
-									? styles.labelDisabledDark
-									: styles.labelDisabledLight
-							}
-							focused={selectedTab === 'add'}
-							activeTintColor={theme === 'd' ? COLORS.WHITE : COLORS.DARKGLOW}
-							activeBackgroundColor={theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT}
-							style={[
-								theme === 'd' ? styles.drawerOptionsDark : styles.drawerOptionsLight,
-								theme === 'd' ? styles.firstDrawerOptionsDark : styles.firstDrawerOptionsLight,
-							]}
+						<PureDrawerItem
 							onPress={() => {
-								setSelectedTabText('add');
+								setSelectedTabText('info');
+								props.navigation.navigate('Home');
 							}}
+							theme={theme}
+							extraStyles={theme === 'd' ? styles.lastDrawerOptionsDark : styles.lastDrawerOptionsLight}
+							identity={['info', 'Info']}
+							selected={selectedTab}
+							iconName='information'
 						/>
-						<DrawerItem
-							icon={({ color, size }) => (
-								<MaterialCommunityIcons
-									name='account-edit'
-									size={size}
-									color={selectedTab === 'setting' ? (theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY) : COLORS.DARKFORLIGHT}
-								/>
-							)}
-							label='Add Something'
-							labelStyle={
-								selectedTab === 'setting'
-									? theme === 'd'
-										? styles.labelDark
-										: styles.labelLight
-									: theme === 'd'
-									? styles.labelDisabledDark
-									: styles.labelDisabledLight
-							}
-							focused={selectedTab === 'setting'}
-							activeTintColor={theme === 'd' ? COLORS.WHITE : COLORS.DARKGLOW}
-							activeBackgroundColor={theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT}
-							style={[
-								theme === 'd' ? styles.drawerOptionsDark : styles.drawerOptionsLight,
-								theme === 'd' ? styles.lastDrawerOptionsDark : styles.lastDrawerOptionsLight,
-							]}
+						<PureDrawerItem
 							onPress={() => {
-								setSelectedTabText('setting');
+								setSelectedTabText('test');
+								props.navigation.navigate('Test');
 							}}
+							theme={theme}
+							extraStyles={theme === 'd' ? styles.lastDrawerOptionsDark : styles.lastDrawerOptionsLight}
+							identity={['test', 'Test']}
+							selected={selectedTab}
+							iconName='settings-helper'
 						/>
 					</Drawer.Section>
 				</View>
 			</DrawerContentScrollView>
 			<Drawer.Section style={styles.drawerBottomSection}>
 				<DrawerItem
-					icon={({ color, size }) => (
-						<MaterialCommunityIcons name='exit-to-app' color={theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY} size={size} />
-					)}
+					icon={({ color, size }) => <MaterialCommunityIcons name='exit-to-app' color={theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY} size={size} />}
 					label='Sign Out'
 					labelStyle={theme === 'd' ? styles.labelDark : styles.labelLight}
 					onPress={logOutUser}
@@ -289,6 +203,23 @@ const MainDrawerNavigation = props => {
 		</View>
 	);
 };
+
+function PureDrawerItem(props) {
+	const { onPress, theme, extraStyles, identity, selected, iconName } = props;
+
+	return (
+		<DrawerItem
+			icon={({ color, size }) => <MaterialCommunityIcons name={iconName} size={size} color={selected === identity[0] ? (theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY) : COLORS.DARKFORLIGHT} />}
+			label={identity[1]}
+			labelStyle={selected === identity[0] ? (theme === 'd' ? styles.labelDark : styles.labelLight) : theme === 'd' ? styles.labelDisabledDark : styles.labelDisabledLight}
+			focused={selected === identity[0]}
+			activeTintColor={theme === 'd' ? COLORS.WHITE : COLORS.DARKGLOW}
+			activeBackgroundColor={theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT}
+			style={[theme === 'd' ? styles.drawerOptionsDark : styles.drawerOptionsLight, extraStyles ? extraStyles : styles.NONE]}
+			onPress={onPress}
+		/>
+	);
+}
 
 const styles = StyleSheet.create({
 	drawerBottomSection: {
@@ -391,34 +322,34 @@ const styles = StyleSheet.create({
 	},
 
 	drawerOptionsDark: {
-		// borderTopColor: COLORS.DARKSECONDARY,
-		// borderTopWidth: 1,
+		borderTopColor: COLORS.DARKSECONDARY,
+		borderTopWidth: 1,
 		marginTop: 0,
 		marginBottom: 0,
 	},
 	drawerOptionsLight: {
-		// borderTopColor: COLORS.BEFORELIGHT,
-		// borderTopWidth: 1,
+		borderTopColor: COLORS.BEFORELIGHT,
+		borderTopWidth: 1,
 		marginTop: 0,
 		marginBottom: 0,
 	},
 
 	firstDrawerOptionsDark: {
-		// borderTopColor: COLORS.SECONDARY,
-		// borderTopWidth: 0,
+		borderTopColor: COLORS.SECONDARY,
+		borderTopWidth: 0,
 	},
 	firstDrawerOptionsLight: {
-		// borderTopColor: COLORS.BEFORELIGHT,
-		// borderTopWidth: 0,
+		borderTopColor: COLORS.BEFORELIGHT,
+		borderTopWidth: 0,
 	},
 
 	lastDrawerOptionsDark: {
-		// borderBottomColor: COLORS.DARKSECONDARY,
-		// borderBottomWidth: 1,
+		borderBottomColor: COLORS.DARKSECONDARY,
+		borderBottomWidth: 0,
 	},
 	lastDrawerOptionsLight: {
-		// borderBottomColor: COLORS.BEFORELIGHT,
-		// borderBottomWidth: 1,
+		borderBottomColor: COLORS.BEFORELIGHT,
+		borderBottomWidth: 0,
 	},
 
 	labelDark: {
@@ -439,6 +370,9 @@ const styles = StyleSheet.create({
 	},
 	padding10: {
 		paddingLeft: 10,
+	},
+	NONE: {
+		// this style provides nothing
 	},
 });
 
