@@ -55,7 +55,6 @@ const MainApp = props => {
 			inter: require('./assets/fonts/Inter.ttf'),
 		}).then(res => {
 			AppLoading.hideAsync();
-			console.log('fonts loaded');
 		});
 	}, []);
 

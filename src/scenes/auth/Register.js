@@ -7,15 +7,19 @@ import ModalAlert from '../../components/customs/ModalAlert';
 import Firebase from '../../firebase/Firebase';
 import FullScreenLoading from '../../components/customs/FullScreenLoading';
 import fakeemails from './FakeMail';
-import { databaseInit, insertDatabase } from '../../sql/SQLStarter';
+import { databaseInit, fetchDatabase, insertDatabase, updateDatabase } from '../../sql/SQLStarter';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateSettings } from '../../store/Settings';
 
 const Register = props => {
 	const emailValidator = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 	const usernameValidator = /^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$/;
+	const { theme } = useSelector(state => state.settings.settings);
+	const dispatch = useDispatch();
 
-	const [username, setUsername] = useState('sobhanbera');
-	const [email, setEmail] = useState('sobhanbera258@gmail.com');
-	const [password, setPassword] = useState('SOBHANbera1');
+	const [username, setUsername] = useState('asdfasdf');
+	const [email, setEmail] = useState('asdfsadf');
+	const [password, setPassword] = useState('asdfasdf');
 	const [showPassword, setShowPassword] = useState(true);
 	const [disabled, setDisabled] = useState(false);
 	const [error, setError] = useState({});
@@ -224,8 +228,7 @@ const Register = props => {
 
 												setError({
 													header: 'Error!',
-													desc:
-														'some error occurred while creating your account please try again, or contact the developer so this could be fixed',
+													desc: 'some error occurred while creating your account please try again, or contact the developer so this could be fixed',
 													primary: 'Okay!',
 													primaryFunction: () => setError(false),
 												});
@@ -233,6 +236,7 @@ const Register = props => {
 											}
 										});
 								}
+								setDisabled;
 							})
 							.catch(err => {
 								setDisabled(false);
@@ -252,8 +256,7 @@ const Register = props => {
 
 						setError({
 							header: 'Registration Closed!',
-							desc:
-								'New Users Registration is not allowed currently, Since the server load has increased too much. But you can login if you have an other account. For more details please contact the developer.',
+							desc: 'New Users Registration is not allowed currently, Since the server load has increased too much. But you can login if you have an other account. For more details please contact the developer.',
 							primary: 'Okay!',
 							primaryFunction: () => setError(false),
 						});
@@ -280,19 +283,35 @@ const Register = props => {
 		props.navigation.replace('Login');
 	};
 
+	const loadInformation = () => {
+		props.navigation.navigate('Information');
+	};
+
+	const whatIsTheme = (firstVal, secondVal) => {
+		return !theme || theme === 'd' ? firstVal : secondVal;
+	};
+
+	const toggleTheme = () => {
+		// console.log('TOGGLE THE CURRENT THEME...');
+		const toggledTheme = whatIsTheme('l', 'd');
+		updateDatabase('theme', toggledTheme)
+			.then(result => {
+				// console.log('DATABASE UPDATED');
+				// console.log(result);
+				dispatch(updateSettings('theme', toggledTheme));
+			})
+			.catch(err => {
+				console.log('ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION');
+				console.log(err);
+			});
+	};
+
 	return (
 		<View style={styles.screen}>
 			{loading ? <FullScreenLoading loadingType={true} /> : null}
 
 			{error ? (
-				<ModalAlert
-					header={error.header}
-					description={error.desc}
-					disableFunction={setError}
-					visible={error.header ? true : false}
-					primary={error.primary}
-					primaryFunction={error.primaryFunction ? error.primaryFunction : setError(false)}
-				/>
+				<ModalAlert header={error.header} description={error.desc} disableFunction={setError} visible={error.header ? true : false} primary={error.primary} primaryFunction={error.primaryFunction ? error.primaryFunction : setError(false)} />
 			) : null}
 
 			<TouchableWithoutFeedback
@@ -301,27 +320,26 @@ const Register = props => {
 				}}>
 				<View style={styles.compo}>
 					<View style={styles.textSection}>
+						<TouchableWithoutFeedback onPress={toggleTheme}>
+							<View>
+								<Text style={[styles.authText, whatIsTheme(null, styles.textLight)]}>Create</Text>
+								<Text style={[styles.authText, whatIsTheme(null, styles.textLight)]}>Account</Text>
+							</View>
+						</TouchableWithoutFeedback>
 						<View>
-							<Text style={styles.authText}>Create</Text>
-							<Text style={styles.authText}>Account</Text>
-						</View>
-						<View>
-							<TouchableOpacity
-								onPress={() => {
-									props.navigation.navigate('Information');
-								}}>
-								<Ionicons name='information' color={COLORS.WHITE} size={24} />
+							<TouchableOpacity onPress={loadInformation}>
+								<Ionicons name='information' color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)} size={24} />
 							</TouchableOpacity>
 						</View>
 					</View>
+
 					<View style={{ ...styles.input }}>
 						<TextInput
-							style={disabled ? styles.disabledInput : styles.inputItself}
+							style={disabled ? whatIsTheme(styles.disabledInput, styles.disabledInputLight) : whatIsTheme(styles.inputItself, styles.inputItselfLight)}
 							editable={!disabled}
 							autoCompleteType='username'
-							style={styles.inputItself}
 							placeholder='Username'
-							placeholderTextColor={COLORS.PLACEHOLDER}
+							placeholderTextColor={whatIsTheme(COLORS.PLACEHOLDER, COLORS.DARKPLACEHOLDER)}
 							value={username}
 							onChangeText={setUsername}
 							keyboardType='default'
@@ -331,12 +349,11 @@ const Register = props => {
 
 					<View style={{ ...styles.input }}>
 						<TextInput
-							style={disabled ? styles.disabledInput : styles.inputItself}
+							style={disabled ? whatIsTheme(styles.disabledInput, styles.disabledInputLight) : whatIsTheme(styles.inputItself, styles.inputItselfLight)}
 							editable={!disabled}
 							autoCompleteType='email'
-							style={styles.inputItself}
 							placeholder='Email'
-							placeholderTextColor={COLORS.PLACEHOLDER}
+							placeholderTextColor={whatIsTheme(COLORS.PLACEHOLDER, COLORS.DARKPLACEHOLDER)}
 							value={email}
 							onChangeText={setEmail}
 							keyboardType='email-address'
@@ -347,11 +364,10 @@ const Register = props => {
 					<View style={{ ...styles.passwordInput, ...styles.input }}>
 						<View style={styles.passwordInputs}>
 							<TextInput
-								style={disabled ? styles.disabledInput : styles.inputItself}
+								style={disabled ? whatIsTheme(styles.disabledInput, styles.disabledInputLight) : whatIsTheme(styles.inputItself, styles.inputItselfLight)}
 								editable={!disabled}
-								style={styles.inputItself}
 								placeholder='Password'
-								placeholderTextColor={COLORS.PLACEHOLDER}
+								placeholderTextColor={whatIsTheme(COLORS.PLACEHOLDER, COLORS.DARKPLACEHOLDER)}
 								value={password}
 								onChangeText={setPassword}
 								secureTextEntry={showPassword}
@@ -361,23 +377,25 @@ const Register = props => {
 							onPress={() => {
 								setShowPassword(!showPassword);
 							}}>
-							<Ionicons style={{ marginLeft: 8 }} name={showPassword ? 'eye-off' : 'eye'} size={20} color={COLORS.WHITE} />
+							<Ionicons style={{ marginLeft: 8 }} name={showPassword ? 'eye-off' : 'eye'} size={20} color={whatIsTheme(COLORS.WHITE, COLORS.DARKPRIMARY)} />
 						</TouchableOpacity>
 					</View>
-					<View style={styles.registerTextContainer}>
+
+					<View style={whatIsTheme(styles.registerTextContainer, styles.registerTextContainerLight)}>
 						<TouchableOpacity onPress={registerNewUser}>
-							<Text style={styles.registerText}>Sign Up</Text>
+							<Text style={whatIsTheme(styles.registerText, styles.registerTextLight)}>Sign Up</Text>
 						</TouchableOpacity>
 
 						<TouchableOpacity onPress={registerNewUser}>
-							<View style={styles.registerIconContainer}>
-								<Ionicons name='arrow-forward' color={COLORS.WHITE} size={28} />
+							<View style={whatIsTheme(styles.registerIconContainer, styles.registerIconContainerLight)}>
+								<Ionicons name='arrow-forward' color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)} size={28} />
 							</View>
 						</TouchableOpacity>
 					</View>
+
 					<TouchableOpacity onPress={loadLoginForm}>
-						<View style={styles.loginTextContainer}>
-							<Text style={styles.loginText}>Already A User? Login!</Text>
+						<View style={whatIsTheme(styles.loginTextContainer, styles.loginTextContainerLight)}>
+							<Text style={whatIsTheme(styles.loginText, styles.loginTextLight)}>Already A User? Login!</Text>
 						</View>
 					</TouchableOpacity>
 				</View>
@@ -404,11 +422,16 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 	},
+
 	authText: {
 		fontFamily: 'karla',
 		color: COLORS.WHITE,
 		fontSize: 30,
 	},
+	textLight: {
+		color: COLORS.DARKPRIMARY,
+	},
+
 	input: {
 		margin: 10,
 		fontFamily: 'karla',
@@ -416,12 +439,31 @@ const styles = StyleSheet.create({
 		borderColor: '#909090',
 		borderWidth: 1,
 		borderRadius: 5,
+		elevation: 2,
 	},
+
 	inputItself: {
 		color: COLORS.TEXT,
 		fontSize: 15,
 		padding: 8,
 	},
+	inputItselfLight: {
+		color: COLORS.DARKTEXT,
+		fontSize: 15,
+		padding: 8,
+	},
+
+	disabledInput: {
+		color: COLORS.MID,
+		fontSize: 15,
+		padding: 8,
+	},
+	disabledInputLight: {
+		color: COLORS.MID,
+		fontSize: 15,
+		padding: 8,
+	},
+
 	passwordInputs: {
 		flex: 1,
 	},
@@ -430,6 +472,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 	},
+
 	registerTextContainer: {
 		backgroundColor: COLORS.DARKPRIMARY,
 		borderRadius: 50,
@@ -441,7 +484,30 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-around',
 		alignItems: 'center',
 	},
+	registerTextContainerLight: {
+		backgroundColor: COLORS.BEFORELIGHT,
+		borderRadius: 50,
+		marginHorizontal: 15,
+		padding: 10,
+		marginTop: 10,
+		marginBottom: 15,
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		alignItems: 'center',
+	},
+
 	registerIconContainer: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: 55,
+		height: 55,
+		padding: 5,
+		backgroundColor: COLORS.GREEN,
+		borderRadius: 50,
+		elevation: 10,
+	},
+	registerIconContainerLight: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -454,22 +520,49 @@ const styles = StyleSheet.create({
 	},
 	registerText: {
 		fontFamily: 'roboto',
-		color: COLORS.WHITE,
+		color: COLORS.GREEN,
 		fontSize: 23,
 		borderTopLeftRadius: 10,
 		borderBottomLeftRadius: 10,
 		// height: 50,
 	},
+	registerTextLight: {
+		fontFamily: 'roboto',
+		color: COLORS.PRIMARY,
+		fontSize: 23,
+		borderTopLeftRadius: 10,
+		borderBottomLeftRadius: 10,
+		// height: 50,
+	},
+
 	loginTextContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginTop: 20,
 		paddingVertical: 10,
 		paddingHorizontal: 5,
+		marginTop: 20,
 	},
+	loginTextContainerLight: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 20,
+		paddingVertical: 10,
+		paddingHorizontal: 5,
+		marginTop: 20,
+	},
+
 	loginText: {
 		fontFamily: 'inter',
 		color: COLORS.WHITE,
+		fontSize: 14,
+		textAlign: 'center',
+		textDecorationLine: 'underline',
+		// backgroundColor: COLORS.PRIMARY,
+	},
+	loginTextLight: {
+		fontFamily: 'inter',
+		color: COLORS.DARKPRIMARY,
 		fontSize: 14,
 		textAlign: 'center',
 		textDecorationLine: 'underline',

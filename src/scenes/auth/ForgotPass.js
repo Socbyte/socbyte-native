@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
-import {
-	StyleSheet,
-	View,
-	Text,
-	TouchableWithoutFeedback,
-	TouchableOpacity,
-	TextInput,
-	Keyboard,
-	Alert,
-} from 'react-native';
+import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, TextInput, Keyboard, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import COLORS from '../../val/colors/Colors';
 import Firebase from '../../firebase/Firebase';
 import ModalAlert from '../../components/customs/ModalAlert';
+import { deleteTable, updateDatabase } from '../../sql/SQLStarter';
+import { updateSettings } from '../../store/Settings';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 const ForgotPassword = props => {
 	const emailValidator = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+	const { theme } = useSelector(state => state.settings.settings);
+	const dispatch = useDispatch();
 
 	const [email, setEmail] = useState('');
 	const [error, setError] = useState({});
@@ -23,14 +20,7 @@ const ForgotPassword = props => {
 	let ErrorModal;
 	if (error) {
 		ErrorModal = (
-			<ModalAlert
-				header={error.header}
-				description={error.desc}
-				disableFunction={setError}
-				visible={error.header ? true : false}
-				primary={error.primary}
-				primaryFunction={error.primaryFunction ? error.primaryFunction : setError(false)}
-			/>
+			<ModalAlert header={error.header} description={error.desc} disableFunction={setError} visible={error.header ? true : false} primary={error.primary} primaryFunction={error.primaryFunction ? error.primaryFunction : setError(false)} />
 		);
 	}
 
@@ -70,8 +60,7 @@ const ForgotPassword = props => {
 				if (err.code.includes('auth/user-not-found')) {
 					setError({
 						header: 'User Not Found.',
-						desc:
-							"There is no user record corresponding to this email. The user may have been deleted or banned or this account doesn't exists.",
+						desc: "There is no user record corresponding to this email. The user may have been deleted or banned or this account doesn't exists.",
 						primary: 'Okay!',
 						primaryFunction: () => setError(false),
 					});
@@ -84,6 +73,28 @@ const ForgotPassword = props => {
 					});
 				}
 			});
+	};
+
+	const whatIsTheme = (firstVal, secondVal) => {
+		return !theme || theme === 'd' ? firstVal : secondVal;
+	};
+
+	const toggleTheme = () => {
+		// console.log('TOGGLE THE CURRENT THEME...');
+		const toggledTheme = whatIsTheme('l', 'd');
+		// updateDatabase('theme', toggledTheme)
+		// 	.then(result => {
+		// 		// console.log('DATABASE UPDATED');
+		// 		// console.log(result);
+		// 		dispatch(updateSettings('theme', toggledTheme));
+		// 	})
+		// 	.catch(err => {
+		// 		console.log('ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION');
+		// 		console.log(err);
+		// 	});
+
+		console.log('HELLOss');
+		// deleteTable().then(() => console.log('DELETED'));
 	};
 
 	const loadLoginForm = () => {
@@ -99,48 +110,50 @@ const ForgotPassword = props => {
 				}}>
 				<View style={styles.compo}>
 					<View style={styles.textSection}>
-						<View>
-							<Text style={styles.authText}>Forgot</Text>
-							<Text style={styles.authText}>Password</Text>
-						</View>
+						<TouchableWithoutFeedback onPress={toggleTheme}>
+							<View>
+								<Text style={[styles.authText, whatIsTheme(null, styles.textLight)]}>Forgot</Text>
+								<Text style={[styles.authText, whatIsTheme(null, styles.textLight)]}>Password</Text>
+							</View>
+						</TouchableWithoutFeedback>
 						<View>
 							<TouchableOpacity
 								onPress={() => {
 									props.navigation.navigate('Information');
 								}}>
-								<Ionicons name='information' color={COLORS.WHITE} size={24} />
+								<Ionicons name='information' color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)} size={24} />
 							</TouchableOpacity>
 						</View>
 					</View>
 
 					<View style={{ ...styles.input }}>
 						<TextInput
+							style={whatIsTheme(styles.inputItself, styles.inputItselfLight)}
 							autoCompleteType='email'
-							style={styles.inputItself}
 							placeholder='Email'
-							placeholderTextColor={COLORS.PLACEHOLDER}
+							placeholderTextColor={whatIsTheme(COLORS.PLACEHOLDER, COLORS.DARKPLACEHOLDER)}
 							value={email}
 							onChangeText={setEmail}
 							keyboardType='email-address'
 						/>
 					</View>
 
-					<View style={styles.loginTextContainer}>
+					<View style={whatIsTheme(styles.registerTextContainer, styles.registerTextContainerLight)}>
 						<TouchableOpacity onPress={sendPasswordResetEmail}>
-							<Text style={styles.loginText}>Send Email</Text>
+							<Text style={whatIsTheme(styles.registerText, styles.registerTextLight)}>Send Mail</Text>
 						</TouchableOpacity>
 
 						<TouchableOpacity onPress={sendPasswordResetEmail}>
-							<View style={styles.loginIconContainer}>
-								<Ionicons name='arrow-forward' color={COLORS.WHITE} size={28} />
+							<View style={whatIsTheme(styles.registerIconContainer, styles.registerIconContainerLight)}>
+								<Ionicons name='arrow-forward' color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)} size={28} />
 							</View>
 						</TouchableOpacity>
 					</View>
 
 					<View style={styles.contain}>
 						<TouchableOpacity onPress={loadLoginForm}>
-							<View style={styles.registerTextContainer}>
-								<Text style={styles.registerText}>Login</Text>
+							<View style={whatIsTheme(styles.otherContainer, styles.otherContainerLight)}>
+								<Text style={whatIsTheme(styles.other, styles.otherLight)}>Login</Text>
 							</View>
 						</TouchableOpacity>
 					</View>
@@ -168,10 +181,14 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 	},
+
 	authText: {
 		fontFamily: 'karla',
 		color: COLORS.WHITE,
 		fontSize: 30,
+	},
+	textLight: {
+		color: COLORS.DARKPRIMARY,
 	},
 
 	input: {
@@ -182,13 +199,19 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderRadius: 5,
 	},
+
 	inputItself: {
 		color: COLORS.TEXT,
 		fontSize: 15,
 		padding: 8,
 	},
+	inputItselfLight: {
+		color: COLORS.DARKTEXT,
+		fontSize: 15,
+		padding: 8,
+	},
 
-	loginTextContainer: {
+	registerTextContainer: {
 		backgroundColor: COLORS.DARKPRIMARY,
 		borderRadius: 50,
 		marginHorizontal: 15,
@@ -199,7 +222,30 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-around',
 		alignItems: 'center',
 	},
-	loginIconContainer: {
+	registerTextContainerLight: {
+		backgroundColor: COLORS.BEFORELIGHT,
+		borderRadius: 50,
+		marginHorizontal: 15,
+		padding: 10,
+		marginTop: 10,
+		marginBottom: 15,
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		alignItems: 'center',
+	},
+
+	registerIconContainer: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: 55,
+		height: 55,
+		padding: 5,
+		backgroundColor: COLORS.GREEN,
+		borderRadius: 50,
+		elevation: 10,
+	},
+	registerIconContainerLight: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -208,30 +254,59 @@ const styles = StyleSheet.create({
 		padding: 5,
 		backgroundColor: COLORS.PRIMARY,
 		borderRadius: 50,
+		elevation: 10,
 	},
-	loginText: {
+	registerText: {
 		fontFamily: 'roboto',
-		color: COLORS.WHITE,
+		color: COLORS.GREEN,
 		fontSize: 23,
 		borderTopLeftRadius: 10,
 		borderBottomLeftRadius: 10,
 		// height: 50,
-		// backgroundColor: COLORS.PRIMARY,
 	},
-	registerTextContainer: {
+	registerTextLight: {
+		fontFamily: 'roboto',
+		color: COLORS.PRIMARY,
+		fontSize: 23,
+		borderTopLeftRadius: 10,
+		borderBottomLeftRadius: 10,
+		// height: 50,
+	},
+
+	otherContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginTop: 20,
 		paddingVertical: 10,
 		paddingHorizontal: 5,
+		marginTop: 20,
 	},
-	registerText: {
+	otherContainerLight: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 20,
+		paddingVertical: 10,
+		paddingHorizontal: 5,
+		marginTop: 20,
+	},
+
+	other: {
 		fontFamily: 'inter',
 		color: COLORS.WHITE,
 		fontSize: 14,
 		textAlign: 'center',
 		textDecorationLine: 'underline',
+		// backgroundColor: COLORS.PRIMARY,
 	},
+	otherLight: {
+		fontFamily: 'inter',
+		color: COLORS.DARKPRIMARY,
+		fontSize: 14,
+		textAlign: 'center',
+		textDecorationLine: 'underline',
+		// backgroundColor: COLORS.PRIMARY,
+	},
+
 	contain: {
 		alignItems: 'center',
 	},
