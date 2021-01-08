@@ -6,10 +6,14 @@ import COLORS from '../../val/colors/Colors';
 import Firebase from '../../firebase/Firebase';
 import ModalAlert from '../../components/customs/ModalAlert';
 import FullScreenLoading from '../../components/customs/FullScreenLoading';
-import { databaseInit, insertDatabase } from '../../sql/SQLStarter';
+import { databaseInit, insertDatabase, updateDatabase } from '../../sql/SQLStarter';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateSettings } from '../../store/Settings';
 
 const Login = props => {
 	const emailValidator = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+	const { theme } = useSelector(state => state.settings.settings);
+	const dispatch = useDispatch();
 
 	const [email, setEmail] = useState('sobhanbera258@gmail.com');
 	const [password, setPassword] = useState('SOBHANbera1');
@@ -75,8 +79,7 @@ const Login = props => {
 				if (err.code.includes('auth/user-not-found')) {
 					setError({
 						header: 'User Not Found!',
-						desc:
-							'There is no user record corresponding to this details. The user may have been deleted, banned or disabled. If you think the details are correct then contact the developer.',
+						desc: 'There is no user record corresponding to this details. The user may have been deleted, banned or disabled. If you think the details are correct then contact the developer.',
 						primary: 'Okay!',
 						primaryFunction: () => setError(false),
 					});
@@ -105,19 +108,31 @@ const Login = props => {
 		props.navigation.replace('ForgotPassword');
 	};
 
+	const whatIsTheme = (firstVal, secondVal) => {
+		return !theme || theme === 'd' ? firstVal : secondVal;
+	};
+
+	const toggleTheme = () => {
+		// console.log('TOGGLE THE CURRENT THEME...');
+		const toggledTheme = whatIsTheme('l', 'd');
+		updateDatabase('theme', toggledTheme)
+			.then(result => {
+				// console.log('DATABASE UPDATED');
+				// console.log(result);
+				dispatch(updateSettings('theme', toggledTheme));
+			})
+			.catch(err => {
+				console.log('ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION');
+				console.log(err);
+			});
+	};
+
 	return (
 		<View style={styles.screen}>
 			{loading ? <FullScreenLoading loadingType={true} /> : null}
 
 			{error ? (
-				<ModalAlert
-					header={error.header}
-					description={error.desc}
-					disableFunction={setError}
-					visible={error.header ? true : false}
-					primary={error.primary}
-					primaryFunction={error.primaryFunction ? error.primaryFunction : setError(false)}
-				/>
+				<ModalAlert header={error.header} description={error.desc} disableFunction={setError} visible={error.header ? true : false} primary={error.primary} primaryFunction={error.primaryFunction ? error.primaryFunction : setError(false)} />
 			) : null}
 
 			<TouchableWithoutFeedback
@@ -126,16 +141,18 @@ const Login = props => {
 				}}>
 				<View style={styles.compo}>
 					<View style={styles.textSection}>
-						<View>
-							<Text style={styles.authText}>Welcome</Text>
-							<Text style={styles.authText}>Back</Text>
-						</View>
+						<TouchableWithoutFeedback onPress={toggleTheme}>
+							<View>
+								<Text style={[styles.authText, whatIsTheme(null, styles.textLight)]}>Welcome</Text>
+								<Text style={[styles.authText, whatIsTheme(null, styles.textLight)]}>Back</Text>
+							</View>
+						</TouchableWithoutFeedback>
 						<View>
 							<TouchableOpacity
 								onPress={() => {
 									props.navigation.navigate('Information');
 								}}>
-								<Ionicons name='information' color={COLORS.WHITE} size={24} />
+								<Ionicons name='information' color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)} size={24} />
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -143,7 +160,7 @@ const Login = props => {
 					<View style={{ ...styles.input }}>
 						<TextInput
 							autoCompleteType='email'
-							style={disabled ? styles.disabledInput : styles.inputItself}
+							style={disabled ? whatIsTheme(styles.disabledInput, styles.disabledInputLight) : whatIsTheme(styles.inputItself, styles.inputItselfLight)}
 							editable={!disabled}
 							placeholder='Email'
 							placeholderTextColor={COLORS.PLACEHOLDER}
@@ -157,7 +174,7 @@ const Login = props => {
 					<View style={{ ...styles.passwordInput, ...styles.input }}>
 						<View style={styles.passwordInputs}>
 							<TextInput
-								style={disabled ? styles.disabledInput : styles.inputItself}
+								style={disabled ? whatIsTheme(styles.disabledInput, styles.disabledInputLight) : whatIsTheme(styles.inputItself, styles.inputItselfLight)}
 								editable={!disabled}
 								placeholder='Password'
 								placeholderTextColor={COLORS.PLACEHOLDER}
@@ -171,27 +188,27 @@ const Login = props => {
 						</TouchableOpacity>
 					</View>
 
-					<View style={styles.loginTextContainer}>
+					<View style={whatIsTheme(styles.registerTextContainer, styles.registerTextContainerLight)}>
 						<TouchableOpacity onPress={loginExistingUser}>
-							<Text style={styles.loginText}>Login</Text>
+							<Text style={whatIsTheme(styles.registerText, styles.registerTextLight)}>Sign In</Text>
 						</TouchableOpacity>
 
 						<TouchableOpacity onPress={loginExistingUser}>
-							<View style={styles.loginIconContainer}>
-								<Ionicons name='arrow-forward' color={COLORS.WHITE} size={28} />
+							<View style={whatIsTheme(styles.registerIconContainer, styles.registerIconContainerLight)}>
+								<Ionicons name='arrow-forward' color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)} size={28} />
 							</View>
 						</TouchableOpacity>
 					</View>
 
 					<View style={styles.registerContainer}>
 						<TouchableOpacity onPress={loadRegisterForm}>
-							<View style={styles.registerTextContainer}>
-								<Text style={styles.registerText}>Sign Up!</Text>
+							<View style={whatIsTheme(styles.otherContainer, styles.otherContainerLight)}>
+								<Text style={whatIsTheme(styles.other, styles.otherLight)}>Sign Up!</Text>
 							</View>
 						</TouchableOpacity>
 						<TouchableOpacity onPress={loadForgotPasswordForm}>
-							<View style={styles.registerTextContainer}>
-								<Text style={styles.registerText}>Forgot Password</Text>
+							<View style={whatIsTheme(styles.otherContainer, styles.otherContainerLight)}>
+								<Text style={whatIsTheme(styles.other, styles.otherLight)}>Forgot Password</Text>
 							</View>
 						</TouchableOpacity>
 					</View>
@@ -219,10 +236,14 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 	},
+
 	authText: {
 		fontFamily: 'karla',
 		color: COLORS.WHITE,
 		fontSize: 30,
+	},
+	textLight: {
+		color: COLORS.DARKPRIMARY,
 	},
 
 	input: {
@@ -233,15 +254,29 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderRadius: 5,
 	},
+
 	inputItself: {
 		color: COLORS.TEXT,
 		fontSize: 15,
 		padding: 8,
 	},
-	disabledInput: {
-		color: COLORS.GREY,
+	inputItselfLight: {
+		color: COLORS.DARKTEXT,
 		fontSize: 15,
+		padding: 8,
 	},
+
+	disabledInput: {
+		color: COLORS.MID,
+		fontSize: 15,
+		padding: 8,
+	},
+	disabledInputLight: {
+		color: COLORS.MID,
+		fontSize: 15,
+		padding: 8,
+	},
+
 	passwordInputs: {
 		flex: 1,
 	},
@@ -251,8 +286,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 
-	loginTextContainer: {
-		backgroundColor: COLORS.NEXTTODARK,
+	registerTextContainer: {
+		backgroundColor: COLORS.DARKPRIMARY,
 		borderRadius: 50,
 		marginHorizontal: 15,
 		padding: 10,
@@ -262,7 +297,46 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-around',
 		alignItems: 'center',
 	},
-	loginIconContainer: {
+	registerTextContainerLight: {
+		backgroundColor: COLORS.BEFORELIGHT,
+		borderRadius: 50,
+		marginHorizontal: 15,
+		padding: 10,
+		marginTop: 10,
+		marginBottom: 15,
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		alignItems: 'center',
+	},
+	registerText: {
+		fontFamily: 'roboto',
+		color: COLORS.GREEN,
+		fontSize: 23,
+		borderTopLeftRadius: 10,
+		borderBottomLeftRadius: 10,
+		// height: 50,
+	},
+	registerTextLight: {
+		fontFamily: 'roboto',
+		color: COLORS.PRIMARY,
+		fontSize: 23,
+		borderTopLeftRadius: 10,
+		borderBottomLeftRadius: 10,
+		// height: 50,
+	},
+
+	registerIconContainer: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: 55,
+		height: 55,
+		padding: 5,
+		backgroundColor: COLORS.GREEN,
+		borderRadius: 50,
+		elevation: 10,
+	},
+	registerIconContainerLight: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -271,34 +345,45 @@ const styles = StyleSheet.create({
 		padding: 5,
 		backgroundColor: COLORS.PRIMARY,
 		borderRadius: 50,
+		elevation: 10,
 	},
-	loginText: {
-		fontFamily: 'roboto',
-		color: COLORS.WHITE,
-		fontSize: 23,
-		borderTopLeftRadius: 10,
-		borderBottomLeftRadius: 10,
-		// height: 50,
-	},
-	registerTextContainer: {
+
+	otherContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginTop: 20,
 		paddingVertical: 10,
 		paddingHorizontal: 5,
+		marginTop: 20,
+		flexDirection: 'row',
 	},
-	registerText: {
+	otherContainerLight: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 20,
+		paddingVertical: 10,
+		paddingHorizontal: 5,
+		marginTop: 20,
+	},
+
+	other: {
+		flexDirection: 'row',
 		fontFamily: 'inter',
 		color: COLORS.WHITE,
 		fontSize: 14,
 		textAlign: 'center',
 		textDecorationLine: 'underline',
+		// backgroundColor: COLORS.PRIMARY,
 	},
-	registerContainer: {
+	otherLight: {
 		flexDirection: 'row',
-		justifyContent: 'space-between',
-		marginTop: 10,
-		paddingHorizontal: 15,
+		fontFamily: 'inter',
+		color: COLORS.DARKPRIMARY,
+		fontSize: 14,
+		textAlign: 'center',
+		textDecorationLine: 'underline',
+		// backgroundColor: COLORS.PRIMARY,
 	},
 });
 
