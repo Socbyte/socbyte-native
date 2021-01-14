@@ -1,11 +1,13 @@
 const COLORS = {
 	PRIMARY: '#0F60B6',
 	SECONDARY: '#3D5A80',
+	GREEN: '#06D6A0',
 	ACCENT: '#EE6C4D',
 
 	BEFORELIGHT: '#eaeaea',
-	DARKFORLIGHT: '#909090',
+	DARKFORLIGHT: '#bfbfbf',
 	BEFOREDARKFORLIGHT: '#5e5e5e',
+	NEXTLIGHT: 'rgba(90, 90, 90, 0.13)',
 
 	DARKPRIMARY: '#151515',
 	DARKSECONDARY: '#262626',
@@ -17,11 +19,11 @@ const COLORS = {
 	DARKPLACEHOLDER: '#757575',
 	TEXT: '#efefff',
 	DARKTEXT: '#252525',
-	MID: '#808080',
+	MID: '#7F7F7F',
+	LIGHTBACKGROUND: '#f2f2f2',
 
 	PINK: '#EF476F',
 	YELLOW: '#FFD166',
-	GREEN: '#06D6A0',
 	BLUE: '#118AB2',
 	RED: '#ef4040',
 	ORANGE: '#EE6C4D',
@@ -35,6 +37,10 @@ const COLORS = {
 	CADET_BLUE: '#293241',
 
 	TRANSPARENT: 'transparent' || '#0000',
+
+	PUREGREEN1: '#00e690',
+	// PUREGREEN1: '#06D6A0',
+	PUREGREEN: '#06D6A0',
 };
 
 class DarkLight {
@@ -65,7 +71,7 @@ class DarkLight {
 			hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
 			//return true if the givne colro in the argument is light...
 			// console.log(hsp, hsp > 127.5);
-			return hsp < 127.5;
+			return hsp > 127.5;
 		};
 		this.loadColorArray();
 	}
