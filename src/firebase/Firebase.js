@@ -1,6 +1,6 @@
-import * as firebase from 'firebase'
+import * as Firebase from 'firebase';
 
-const firebaseConfig = {
+const FirebaseConfig = {
 	apiKey: 'AIzaSyDHvn6M0Q2m0qGmfnJXIdZKA4CCH9XzPB8',
 	authDomain: 'telebyte-new.firebaseapp.com',
 	databaseURL: 'https://telebyte-new-default-rtdb.firebaseio.com',
@@ -9,8 +9,8 @@ const firebaseConfig = {
 	messagingSenderId: '994660272696',
 	appId: '1:994660272696:web:dfc9e8ad3b17686b3ab4cd',
 	measurementId: 'G-G6VM6116PM',
-}
+};
 
-firebase.initializeApp(firebaseConfig)
+Firebase.initializeApp(FirebaseConfig);
 
-export default firebase
+export default Firebase;
