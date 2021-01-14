@@ -82,18 +82,16 @@ const ForgotPassword = props => {
 	const toggleTheme = () => {
 		// console.log('TOGGLE THE CURRENT THEME...');
 		const toggledTheme = whatIsTheme('l', 'd');
-		// updateDatabase('theme', toggledTheme)
-		// 	.then(result => {
-		// 		// console.log('DATABASE UPDATED');
-		// 		// console.log(result);
-		// 		dispatch(updateSettings('theme', toggledTheme));
-		// 	})
-		// 	.catch(err => {
-		// 		console.log('ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION');
-		// 		console.log(err);
-		// 	});
-
-		console.log('HELLOss');
+		updateDatabase('theme', toggledTheme)
+			.then(result => {
+				// console.log('DATABASE UPDATED');
+				// console.log(result);
+				dispatch(updateSettings('theme', toggledTheme));
+			})
+			.catch(err => {
+				console.log('ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION');
+				console.log(err);
+			});
 		// deleteTable().then(() => console.log('DELETED'));
 	};
 

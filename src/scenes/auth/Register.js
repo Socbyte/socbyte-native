@@ -1,5 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import {
+	StyleSheet,
+	View,
+	Text,
+	TextInput,
+	Keyboard,
+	TouchableWithoutFeedback,
+	TouchableOpacity,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import COLORS from '../../val/colors/Colors';
@@ -98,7 +106,8 @@ const Register = props => {
 
 				setError({
 					header: 'Spam Email!',
-					desc: 'spam emails are not allowed in our system. please try using any verified email service.',
+					desc:
+						'spam emails are not allowed in our system. please try using any verified email service.',
 					primary: 'Okay!',
 					primaryFunction: () => setError(false),
 				});
@@ -164,6 +173,7 @@ const Register = props => {
 														sec: time.getSeconds(),
 														millisec: time.getMilliseconds(),
 													},
+													verified: '',
 													profileImg: '',
 													education: {},
 													ratings: 1,
@@ -179,10 +189,16 @@ const Register = props => {
 													status: '',
 													email: email,
 													username: username,
+												})
+												.then(res => {})
+												.catch(err => {});
+
+											Firebase.database()
+												.ref('Accounts')
+												.child(username)
+												.set({
+													username: username,
 												});
-											Firebase.database().ref('Accounts').child(username).set({
-												username: username,
-											});
 
 											Firebase.auth().currentUser.updateProfile({
 												displayName: username,
@@ -198,9 +214,43 @@ const Register = props => {
 													insertDatabase('email', email);
 													insertDatabase('username', username);
 													insertDatabase('primaryColor', COLORS.GREEN);
-													insertDatabase('invertPrimaryColor', COLORS.BLACK);
+													insertDatabase(
+														'invertPrimaryColor',
+														COLORS.BLACK
+													);
+
+													updateDatabase('theme', 'd');
+													updateDatabase('fontSize', 'm');
+													updateDatabase('email', email);
+													updateDatabase('username', '');
+													updateDatabase('primaryColor', COLORS.GREEN);
+													updateDatabase(
+														'invertPrimaryColor',
+														COLORS.BLACK
+													);
 												})
-												.catch(err => {});
+												.catch(err => {
+													console.log('DATABASE CREATED');
+													insertDatabase('theme', 'd');
+													insertDatabase('fontSize', 'm');
+													insertDatabase('email', email);
+													insertDatabase('username', '');
+													insertDatabase('primaryColor', COLORS.GREEN);
+													insertDatabase(
+														'invertPrimaryColor',
+														COLORS.BLACK
+													);
+
+													updateDatabase('theme', 'd');
+													updateDatabase('fontSize', 'm');
+													updateDatabase('email', email);
+													updateDatabase('username', '');
+													updateDatabase('primaryColor', COLORS.GREEN);
+													updateDatabase(
+														'invertPrimaryColor',
+														COLORS.BLACK
+													);
+												});
 
 											setUsername('');
 											setEmail('');
@@ -217,7 +267,8 @@ const Register = props => {
 
 												setError({
 													header: 'Account Exists!',
-													desc: 'email is already registered. try using other email address.',
+													desc:
+														'email is already registered. try using other email address.',
 													primary: 'Okay!',
 													primaryFunction: () => setError(false),
 												});
@@ -228,7 +279,8 @@ const Register = props => {
 
 												setError({
 													header: 'Error!',
-													desc: 'some error occurred while creating your account please try again, or contact the developer so this could be fixed',
+													desc:
+														'some error occurred while creating your account please try again, or contact the developer so this could be fixed',
 													primary: 'Okay!',
 													primaryFunction: () => setError(false),
 												});
@@ -244,7 +296,8 @@ const Register = props => {
 
 								setError({
 									header: 'Error!',
-									desc: '1. Cannot contact with the server currently. Servers are busy. Please try again.',
+									desc:
+										'1. Cannot contact with the server currently. Servers are busy. Please try again.',
 									primary: 'Okay!',
 									primaryFunction: () => setError(false),
 								});
@@ -256,7 +309,8 @@ const Register = props => {
 
 						setError({
 							header: 'Registration Closed!',
-							desc: 'New Users Registration is not allowed currently, Since the server load has increased too much. But you can login if you have an other account. For more details please contact the developer.',
+							desc:
+								'New Users Registration is not allowed currently, Since the server load has increased too much. But you can login if you have an other account. For more details please contact the developer.',
 							primary: 'Okay!',
 							primaryFunction: () => setError(false),
 						});
@@ -271,7 +325,8 @@ const Register = props => {
 
 				setError({
 					header: 'Error!',
-					desc: '2. Cannot contact with the server currently. Servers are busy. Please try again.',
+					desc:
+						'2. Cannot contact with the server currently. Servers are busy. Please try again.',
 					primary: 'Okay!',
 					primaryFunction: () => setError(false),
 				});
@@ -311,7 +366,16 @@ const Register = props => {
 			{loading ? <FullScreenLoading loadingType={true} /> : null}
 
 			{error ? (
-				<ModalAlert header={error.header} description={error.desc} disableFunction={setError} visible={error.header ? true : false} primary={error.primary} primaryFunction={error.primaryFunction ? error.primaryFunction : setError(false)} />
+				<ModalAlert
+					header={error.header}
+					description={error.desc}
+					disableFunction={setError}
+					visible={error.header ? true : false}
+					primary={error.primary}
+					primaryFunction={
+						error.primaryFunction ? error.primaryFunction : setError(false)
+					}
+				/>
 			) : null}
 
 			<TouchableWithoutFeedback
@@ -322,24 +386,41 @@ const Register = props => {
 					<View style={styles.textSection}>
 						<TouchableWithoutFeedback onPress={toggleTheme}>
 							<View>
-								<Text style={[styles.authText, whatIsTheme(null, styles.textLight)]}>Create</Text>
-								<Text style={[styles.authText, whatIsTheme(null, styles.textLight)]}>Account</Text>
+								<Text
+									style={[styles.authText, whatIsTheme(null, styles.textLight)]}>
+									Create
+								</Text>
+								<Text
+									style={[styles.authText, whatIsTheme(null, styles.textLight)]}>
+									Account
+								</Text>
 							</View>
 						</TouchableWithoutFeedback>
 						<View>
 							<TouchableOpacity onPress={loadInformation}>
-								<Ionicons name='information' color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)} size={24} />
+								<Ionicons
+									name='information'
+									color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+									size={24}
+								/>
 							</TouchableOpacity>
 						</View>
 					</View>
 
 					<View style={{ ...styles.input }}>
 						<TextInput
-							style={disabled ? whatIsTheme(styles.disabledInput, styles.disabledInputLight) : whatIsTheme(styles.inputItself, styles.inputItselfLight)}
+							style={
+								disabled
+									? whatIsTheme(styles.disabledInput, styles.disabledInputLight)
+									: whatIsTheme(styles.inputItself, styles.inputItselfLight)
+							}
 							editable={!disabled}
 							autoCompleteType='username'
 							placeholder='Username'
-							placeholderTextColor={whatIsTheme(COLORS.PLACEHOLDER, COLORS.DARKPLACEHOLDER)}
+							placeholderTextColor={whatIsTheme(
+								COLORS.PLACEHOLDER,
+								COLORS.DARKPLACEHOLDER
+							)}
 							value={username}
 							onChangeText={setUsername}
 							keyboardType='default'
@@ -349,11 +430,18 @@ const Register = props => {
 
 					<View style={{ ...styles.input }}>
 						<TextInput
-							style={disabled ? whatIsTheme(styles.disabledInput, styles.disabledInputLight) : whatIsTheme(styles.inputItself, styles.inputItselfLight)}
+							style={
+								disabled
+									? whatIsTheme(styles.disabledInput, styles.disabledInputLight)
+									: whatIsTheme(styles.inputItself, styles.inputItselfLight)
+							}
 							editable={!disabled}
 							autoCompleteType='email'
 							placeholder='Email'
-							placeholderTextColor={whatIsTheme(COLORS.PLACEHOLDER, COLORS.DARKPLACEHOLDER)}
+							placeholderTextColor={whatIsTheme(
+								COLORS.PLACEHOLDER,
+								COLORS.DARKPLACEHOLDER
+							)}
 							value={email}
 							onChangeText={setEmail}
 							keyboardType='email-address'
@@ -364,10 +452,20 @@ const Register = props => {
 					<View style={{ ...styles.passwordInput, ...styles.input }}>
 						<View style={styles.passwordInputs}>
 							<TextInput
-								style={disabled ? whatIsTheme(styles.disabledInput, styles.disabledInputLight) : whatIsTheme(styles.inputItself, styles.inputItselfLight)}
+								style={
+									disabled
+										? whatIsTheme(
+												styles.disabledInput,
+												styles.disabledInputLight
+										  )
+										: whatIsTheme(styles.inputItself, styles.inputItselfLight)
+								}
 								editable={!disabled}
 								placeholder='Password'
-								placeholderTextColor={whatIsTheme(COLORS.PLACEHOLDER, COLORS.DARKPLACEHOLDER)}
+								placeholderTextColor={whatIsTheme(
+									COLORS.PLACEHOLDER,
+									COLORS.DARKPLACEHOLDER
+								)}
 								value={password}
 								onChangeText={setPassword}
 								secureTextEntry={showPassword}
@@ -377,25 +475,51 @@ const Register = props => {
 							onPress={() => {
 								setShowPassword(!showPassword);
 							}}>
-							<Ionicons style={{ marginLeft: 8 }} name={showPassword ? 'eye-off' : 'eye'} size={20} color={whatIsTheme(COLORS.WHITE, COLORS.DARKPRIMARY)} />
+							<Ionicons
+								style={{ marginLeft: 8 }}
+								name={showPassword ? 'eye-off' : 'eye'}
+								size={20}
+								color={whatIsTheme(COLORS.WHITE, COLORS.DARKPRIMARY)}
+							/>
 						</TouchableOpacity>
 					</View>
 
-					<View style={whatIsTheme(styles.registerTextContainer, styles.registerTextContainerLight)}>
+					<View
+						style={whatIsTheme(
+							styles.registerTextContainer,
+							styles.registerTextContainerLight
+						)}>
 						<TouchableOpacity onPress={registerNewUser}>
-							<Text style={whatIsTheme(styles.registerText, styles.registerTextLight)}>Sign Up</Text>
+							<Text
+								style={whatIsTheme(styles.registerText, styles.registerTextLight)}>
+								Sign Up
+							</Text>
 						</TouchableOpacity>
 
 						<TouchableOpacity onPress={registerNewUser}>
-							<View style={whatIsTheme(styles.registerIconContainer, styles.registerIconContainerLight)}>
-								<Ionicons name='arrow-forward' color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)} size={28} />
+							<View
+								style={whatIsTheme(
+									styles.registerIconContainer,
+									styles.registerIconContainerLight
+								)}>
+								<Ionicons
+									name='arrow-forward'
+									color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}
+									size={28}
+								/>
 							</View>
 						</TouchableOpacity>
 					</View>
 
 					<TouchableOpacity onPress={loadLoginForm}>
-						<View style={whatIsTheme(styles.loginTextContainer, styles.loginTextContainerLight)}>
-							<Text style={whatIsTheme(styles.loginText, styles.loginTextLight)}>Already A User? Login!</Text>
+						<View
+							style={whatIsTheme(
+								styles.loginTextContainer,
+								styles.loginTextContainerLight
+							)}>
+							<Text style={whatIsTheme(styles.loginText, styles.loginTextLight)}>
+								Already A User? Login!
+							</Text>
 						</View>
 					</TouchableOpacity>
 				</View>
