@@ -1,13 +1,30 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { connect, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 
 import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native';
-import { Avatar, Text as PaperText, Title, Caption, Drawer, Switch, TouchableRipple, Paragraph, useTheme } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+import {
+	Avatar,
+	Text as PaperText,
+	Title,
+	Caption,
+	Drawer,
+	Card,
+	Switch,
+	ToggleButton,
+	TouchableRipple,
+	Paragraph,
+	useTheme,
+	IconButton,
+} from 'react-native-paper';
 
-import { Ionicons } from '@expo/vector-icons';
+import {
+	createDrawerNavigator,
+	DrawerContentScrollView,
+	DrawerItem,
+} from '@react-navigation/drawer';
+
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import md5 from 'md5';
 
@@ -15,15 +32,22 @@ import { setProfileImageURL } from '../store/MainStore';
 import firebase from '../firebase/Firebase';
 
 import COLORS from '../val/colors/Colors';
+import { updateDatabase } from '../sql/SQLStarter';
+import { updateSettings } from '../store/Settings';
+
 import Home from '../scenes/main/Home';
 import Profile from '../scenes/main/Profile';
 import TestMain from '../scenes/main/Test';
 import Header from '../components/customs/Header/Header';
+
 import ProfileNavigator from './content/ProfileNavigator';
+import SettingStack from './content/SettingsNavigator';
 
 const DrawerNavigator = createDrawerNavigator();
 const DrawerNavigation = props => {
 	const settings = useSelector(state => state.settings.settings);
+
+	const setProfileImg = props.setProfileImg;
 
 	return (
 		<NavigationContainer theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}>
@@ -34,7 +58,14 @@ const DrawerNavigation = props => {
 						headerLeft: () => {
 							return (
 								<TouchableRipple onPress={() => props.navigation.toggleDrawer()}>
-									<Ionicons name='menu' color={settings.theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY} size={25} style={{ margin: 10 }} />
+									<Ionicons
+										name='menu'
+										color={
+											settings.theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY
+										}
+										size={25}
+										style={{ margin: 10 }}
+									/>
 								</TouchableRipple>
 							);
 						},
@@ -44,7 +75,6 @@ const DrawerNavigation = props => {
 									leftButton={() => {
 										props.navigation.toggleDrawer();
 									}}
-									includeRight={true}
 									rightButton='ellipsis-vertical'
 									// headerTitle={username}
 								/>
@@ -52,16 +82,16 @@ const DrawerNavigation = props => {
 						},
 					};
 				}}
-				drawerContent={props => <MainDrawerNavigation setProfileImg={props.setProfileImg} {...props} />}>
-				<DrawerNavigator.Screen name='Profile' component={ProfileNavigator} />
-
+				drawerContent={props => (
+					<MainDrawerNavigation setProfileImg={setProfileImg} {...props} />
+				)}>
 				<DrawerNavigator.Screen name='Home' component={Home} />
 
-				<DrawerNavigator.Screen name='Test' component={Profile} />
+				<DrawerNavigator.Screen name='Profile' component={ProfileNavigator} />
 
 				<DrawerNavigator.Screen name='Chats' component={Home} />
 
-				<DrawerNavigator.Screen name='Settings' component={Home} />
+				<DrawerNavigator.Screen name='Settings' component={SettingStack} />
 			</DrawerNavigator.Navigator>
 		</NavigationContainer>
 	);
@@ -69,12 +99,28 @@ const DrawerNavigation = props => {
 
 const MainDrawerNavigation = props => {
 	const { theme } = useSelector(state => state.settings.settings);
-
 	const userData = useSelector(state => state.main.user);
+
 	const paperTheme = useTheme();
+	const dispatch = useDispatch();
 
 	const [selectedTab, setSelectedTab] = useState('home');
 	const [userProfileImageFound, setUserProfileImageFound] = useState(false);
+
+	const toggleTheme = () => {
+		// console.log('TOGGLE THE CURRENT THEME...');
+		const toggledTheme = theme === 'd' ? 'l' : 'd';
+		updateDatabase('theme', toggledTheme)
+			.then(result => {
+				// console.log('DATABASE UPDATED');
+				// console.log(result);
+				dispatch(updateSettings('theme', toggledTheme));
+			})
+			.catch(err => {
+				console.log('ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION');
+				console.log(err);
+			});
+	};
 
 	const logOutUser = () => {
 		firebase.auth().signOut().then().catch();
@@ -95,7 +141,9 @@ const MainDrawerNavigation = props => {
 						props.setProfileImg(false);
 					} else {
 						setUserProfileImageFound(true);
-						props.setProfileImg(`https://www.gravatar.com/avatar/${emailHash}.jpg?s=200`);
+						props.setProfileImg(
+							`https://www.gravatar.com/avatar/${emailHash}.jpg?s=200`
+						);
 					}
 				})
 				.catch(err => {
@@ -114,33 +162,73 @@ const MainDrawerNavigation = props => {
 								setSelectedTabText('profile');
 								props.navigation.navigate('Profile');
 							}}>
-							<View style={theme === 'd' ? styles.usersectionDark : styles.usersectionLight}>
+							<View
+								style={
+									theme === 'd' ? styles.usersectionDark : styles.usersectionLight
+								}>
 								{userProfileImageFound ? (
-									<Avatar.Image style={theme === 'd' ? styles.avatarDark : styles.avatarLight} size={57} source={{ uri: userData.profileImg }} />
+									<Avatar.Image
+										style={
+											theme === 'd' ? styles.avatarDark : styles.avatarLight
+										}
+										size={57}
+										source={{ uri: userData.profileImg }}
+									/>
 								) : (
 									<Avatar.Text
-										style={theme === 'd' ? styles.avatarDark : styles.avatarLight}
-										labelStyle={theme === 'd' ? styles.avatarLabelDark : styles.avatarLabelLight}
-										label={userData.username ? userData.username[0].toUpperCase() : ''}
+										style={
+											theme === 'd' ? styles.avatarDark : styles.avatarLight
+										}
+										labelStyle={
+											theme === 'd'
+												? styles.avatarLabelDark
+												: styles.avatarLabelLight
+										}
+										label={
+											userData.username
+												? userData.username[0].toUpperCase()
+												: ''
+										}
 									/>
 								)}
-								<View style={theme === 'd' ? styles.usersectiontextDark : styles.usersectiontextLight}>
-									<PaperText style={theme === 'd' ? styles.textDark : styles.textLight}>{userData.fullname}</PaperText>
-									<Caption style={theme === 'd' ? styles.mainTextDark : styles.mainTextLight} numberOfLines={1}>
+								<View
+									style={
+										theme === 'd'
+											? styles.usersectiontextDark
+											: styles.usersectiontextLight
+									}>
+									<PaperText
+										style={theme === 'd' ? styles.textDark : styles.textLight}>
+										{userData.fullname}
+									</PaperText>
+									<Caption
+										style={
+											theme === 'd'
+												? styles.mainTextDark
+												: styles.mainTextLight
+										}
+										numberOfLines={1}>
 										@{userData.username}
 									</Caption>
 								</View>
 							</View>
 						</TouchableRipple>
 					</View>
-					<Drawer.Section theme={paperTheme.dark} style={theme === 'd' ? styles.mainDrawerDark : styles.mainDrawerLight}>
+
+					<Drawer.Section
+						theme={paperTheme.dark}
+						style={theme === 'd' ? styles.mainDrawerDark : styles.mainDrawerLight}>
 						<PureDrawerItem
 							onPress={() => {
 								setSelectedTabText('home');
 								props.navigation.navigate('Home');
 							}}
 							theme={theme}
-							extraStyles={theme === 'd' ? styles.firstDrawerOptionsDark : styles.firstDrawerOptionsLight}
+							extraStyles={
+								theme === 'd'
+									? styles.firstDrawerOptionsDark
+									: styles.firstDrawerOptionsLight
+							}
 							identity={['home', 'Home']}
 							selected={selectedTab}
 							iconName='home'
@@ -151,7 +239,6 @@ const MainDrawerNavigation = props => {
 								props.navigation.navigate('Profile');
 							}}
 							theme={theme}
-							extraStyles={theme === 'd' ? styles.lastDrawerOptionsDark : styles.lastDrawerOptionsLight}
 							identity={['profile', 'Profile']}
 							selected={selectedTab}
 							iconName='account-box'
@@ -162,39 +249,91 @@ const MainDrawerNavigation = props => {
 								props.navigation.navigate('Profile');
 							}}
 							theme={theme}
-							extraStyles={theme === 'd' ? styles.lastDrawerOptionsDark : styles.lastDrawerOptionsLight}
 							identity={['chats', 'Chats']}
 							selected={selectedTab}
 							iconName='message'
 						/>
 						<PureDrawerItem
 							onPress={() => {
-								setSelectedTabText('info');
-								props.navigation.navigate('Home');
+								setSelectedTabText('settings');
+								props.navigation.navigate('Settings');
 							}}
 							theme={theme}
-							extraStyles={theme === 'd' ? styles.lastDrawerOptionsDark : styles.lastDrawerOptionsLight}
-							identity={['info', 'Info']}
+							extraStyles={
+								theme === 'd'
+									? styles.lastDrawerOptionsDark
+									: styles.lastDrawerOptionsLight
+							}
+							identity={['settings', 'Settings']}
 							selected={selectedTab}
-							iconName='information'
-						/>
-						<PureDrawerItem
-							onPress={() => {
-								setSelectedTabText('test');
-								props.navigation.navigate('Test');
-							}}
-							theme={theme}
-							extraStyles={theme === 'd' ? styles.lastDrawerOptionsDark : styles.lastDrawerOptionsLight}
-							identity={['test', 'Test']}
-							selected={selectedTab}
-							iconName='settings-helper'
+							customIcon={
+								<Ionicons
+									name='settings'
+									size={24}
+									color={
+										selectedTab === 'settings'
+											? theme === 'd'
+												? COLORS.GREEN
+												: COLORS.PRIMARY
+											: COLORS.DARKFORLIGHT
+									}
+								/>
+							}
 						/>
 					</Drawer.Section>
 				</View>
 			</DrawerContentScrollView>
+
+			<Drawer.Section style={styles.row}>
+				<View style={styles.leftToToggleButton}>
+					<Text
+						style={[
+							styles.fontLarge,
+							theme === 'd' ? styles.textDark : styles.textLight,
+						]}>
+						Toggle Theme
+					</Text>
+					<Caption
+						style={[
+							styles.fontSmall,
+							theme === 'd' ? styles.textDark : styles.textLight,
+						]}>
+						{theme === 'd' ? 'Dark Theme' : 'Light Theme'}
+					</Caption>
+				</View>
+				<View style={styles.rightToToggleButton}>
+					<ToggleButton
+						icon={() =>
+							theme === 'd' ? (
+								<Ionicons
+									name='md-sunny-outline'
+									size={25}
+									color={theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY}
+								/>
+							) : (
+								<Ionicons
+									name='moon-sharp'
+									size={25}
+									color={theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY}
+								/>
+							)
+						}
+						value='B'
+						status='checked'
+						onPress={toggleTheme}
+					/>
+				</View>
+			</Drawer.Section>
+
 			<Drawer.Section style={styles.drawerBottomSection}>
 				<DrawerItem
-					icon={({ color, size }) => <MaterialCommunityIcons name='exit-to-app' color={theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY} size={size} />}
+					icon={({ color, size }) => (
+						<MaterialCommunityIcons
+							name='exit-to-app'
+							color={theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY}
+							size={size}
+						/>
+					)}
 					label='Sign Out'
 					labelStyle={theme === 'd' ? styles.labelDark : styles.labelLight}
 					onPress={logOutUser}
@@ -204,18 +343,47 @@ const MainDrawerNavigation = props => {
 	);
 };
 
-function PureDrawerItem(props) {
-	const { onPress, theme, extraStyles, identity, selected, iconName } = props;
-
+function PureDrawerItem({ onPress, theme, extraStyles, identity, selected, iconName, customIcon }) {
 	return (
 		<DrawerItem
-			icon={({ color, size }) => <MaterialCommunityIcons name={iconName} size={size} color={selected === identity[0] ? (theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY) : COLORS.DARKFORLIGHT} />}
+			icon={({ color, size }) => {
+				return (
+					<View>
+						{customIcon ? (
+							customIcon
+						) : (
+							<MaterialCommunityIcons
+								name={iconName}
+								size={size}
+								color={
+									selected === identity[0]
+										? theme === 'd'
+											? COLORS.GREEN
+											: COLORS.PRIMARY
+										: COLORS.DARKFORLIGHT
+								}
+							/>
+						)}
+					</View>
+				);
+			}}
 			label={identity[1]}
-			labelStyle={selected === identity[0] ? (theme === 'd' ? styles.labelDark : styles.labelLight) : theme === 'd' ? styles.labelDisabledDark : styles.labelDisabledLight}
+			labelStyle={
+				selected === identity[0]
+					? theme === 'd'
+						? styles.labelDark
+						: styles.labelLight
+					: theme === 'd'
+					? styles.labelDisabledDark
+					: styles.labelDisabledLight
+			}
 			focused={selected === identity[0]}
 			activeTintColor={theme === 'd' ? COLORS.WHITE : COLORS.DARKGLOW}
 			activeBackgroundColor={theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT}
-			style={[theme === 'd' ? styles.drawerOptionsDark : styles.drawerOptionsLight, extraStyles ? extraStyles : styles.NONE]}
+			style={[
+				theme === 'd' ? styles.drawerOptionsDark : styles.drawerOptionsLight,
+				extraStyles ? extraStyles : styles.NONE,
+			]}
 			onPress={onPress}
 		/>
 	);
@@ -244,12 +412,14 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'flex-start',
 		paddingLeft: 10,
+		flex: 1,
 	},
 	usersectiontextLight: {
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'flex-start',
 		paddingLeft: 10,
+		flex: 1,
 	},
 
 	textDark: {
@@ -363,6 +533,43 @@ const styles = StyleSheet.create({
 	},
 	labelDisabledLight: {
 		color: COLORS.BEFOREDARKFORLIGHT,
+	},
+
+	row: {
+		width: '100%',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		padding: 10,
+		borderTopColor: COLORS.MID,
+		borderTopWidth: 1,
+		borderBottomColor: COLORS.MID,
+		borderBottomWidth: 1,
+	},
+
+	leftToToggleButton: {
+		flex: 1,
+	},
+	rightToToggleButton: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 60,
+	},
+
+	textDark: {
+		color: COLORS.BEFORELIGHT,
+	},
+	textLight: {
+		color: COLORS.DARKSECONDARY,
+	},
+
+	fontLarge: {
+		fontSize: 17,
+		paddingVertical: 1,
+	},
+	fontSmall: {
+		paddingVertical: 1,
+		fontSize: 14,
 	},
 
 	flex: {
