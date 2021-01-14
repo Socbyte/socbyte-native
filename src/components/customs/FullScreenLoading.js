@@ -14,9 +14,15 @@ const FullScreenLoading = props => {
 
 	return (
 		<Modal>
-			<View style={theme === 'd' ? styles.containerDark : styles.containerLight}>
+			<View style={!theme || theme === 'd' ? styles.containerDark : styles.containerLight}>
 				<LottieView
-					source={props.loadingType ? (theme === 'l' ? LoadingAnimationLight : LoadingAnimationDark) : CorrectAnimation}
+					source={
+						props.loadingType
+							? theme === 'l'
+								? LoadingAnimationLight
+								: LoadingAnimationDark
+							: CorrectAnimation
+					}
 					autoPlay
 					loop
 				/>

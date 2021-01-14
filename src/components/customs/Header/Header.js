@@ -1,49 +1,96 @@
 import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
-import {
-	TouchableRipple,
-	Avatar,
-	Caption,
-	Title,
-	Text,
-	ProgressBar,
-	Paragraph,
-	Banner,
-	Menu,
-	Button,
-	IconButton,
-	Card,
-	Switch,
-	Searchbar,
-} from 'react-native-paper';
+import { IconButton, Card } from 'react-native-paper';
+import { ListItem, Avatar, Icon } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector, useDispatch } from 'react-redux';
-import COLORS from '../../../val/colors/Colors';
 
-const Header = fprops => {
+import COLORS, { ISDARKCOLOR } from '../../../val/colors/Colors';
+
+const Header = ({
+	headerTitle,
+	back,
+	navigation,
+	renderRightActions,
+	absolute,
+	backgroundColor,
+}) => {
 	const { theme } = useSelector(state => state.settings.settings);
 
+	const whatIsTheme = (f, s) => {
+		return !theme || theme === 'd' ? f : s;
+	};
+
 	return (
-		<Card style={[styles.card, { backgroundColor: theme === 'd' ? COLORS.NEXTTODARK : COLORS.WHITE }]}>
+		<Card
+			style={[
+				styles.card,
+				absolute ? styles.absolute : null,
+				{
+					backgroundColor: backgroundColor
+						? backgroundColor
+						: theme === 'd'
+						? COLORS.TRANSPARENT
+						: COLORS.TRANSPARENT,
+				},
+				whatIsTheme(styles.borderBottomDark, styles.borderBottomLight),
+			]}>
 			<View style={styles.content}>
 				<Card.Title
-					title={fprops.headerTitle}
+					title={headerTitle}
 					titleStyle={{
-						color: theme === 'd' ? COLORS.BEFORELIGHT : COLORS.DARKSECONDARY,
+						color: backgroundColor
+							? ISDARKCOLOR.colorIsLight(backgroundColor)
+								? COLORS.BLACK
+								: COLORS.WHITE
+							: theme === 'd'
+							? COLORS.BEFORELIGHT
+							: COLORS.DARKSECONDARY,
 					}}
 					left={props =>
-						fprops.back ? (
-							<IconButton
-								style={{
-									margin: 0,
-								}}
+						back ? (
+							// <IconButton
+							// 	style={{
+							// 		margin: 0,
+							// 	}}
+							// 	onPress={() => {
+							// 		navigation.goBack();
+							// 	}}
+							// 	icon={() => (
+							// 		<Ionicons
+							// 			name='arrow-back-sharp'
+							// 			color={
+							// 				backgroundColor
+							// 					? ISDARKCOLOR.colorIsLight(backgroundColor)
+							// 						? COLORS.BLACK
+							// 						: COLORS.WHITE
+							// 					: theme === 'd'
+							// 					? COLORS.BEFORELIGHT
+							// 					: COLORS.DARKSECONDARY
+							// 			}
+							// 			size={26}
+							// 		/>
+							// 	)}
+							// />
+
+							<Icon
 								onPress={() => {
-									fprops.navigation.goBack();
+									navigation.goBack();
 								}}
-								// onPress={() => fprops.leftButton()}
-								icon={() => (
-									<Ionicons name='arrow-back-sharp' color={theme === 'd' ? COLORS.BEFORELIGHT : COLORS.DARKSECONDARY} size={26} />
-								)}
+								iconStyle={styles.listIcon}
+								// name='return-up-back-outline'
+								name='keyboard-backspace'
+								type='material-community-icons'
+								size={26}
+								color={
+									backgroundColor
+										? ISDARKCOLOR.colorIsLight(backgroundColor)
+											? COLORS.BLACK
+											: COLORS.WHITE
+										: theme === 'd'
+										? COLORS.BEFORELIGHT
+										: COLORS.DARKSECONDARY
+								}
 							/>
 						) : (
 							<IconButton
@@ -51,23 +98,27 @@ const Header = fprops => {
 									margin: 0,
 								}}
 								onPress={() => {
-									fprops.navigation.toggleDrawer();
+									navigation.toggleDrawer();
 								}}
-								// onPress={() => fprops.leftButton()}
-								icon={() => <Ionicons name='menu' color={theme === 'd' ? COLORS.BEFORELIGHT : COLORS.DARKSECONDARY} size={26} />}
+								icon={() => (
+									<Ionicons
+										name='menu'
+										color={
+											backgroundColor
+												? ISDARKCOLOR.colorIsLight(backgroundColor)
+													? COLORS.BLACK
+													: COLORS.WHITE
+												: theme === 'd'
+												? COLORS.BEFORELIGHT
+												: COLORS.DARKSECONDARY
+										}
+										size={26}
+									/>
+								)}
 							/>
 						)
 					}
-					right={props =>
-						fprops.includeRight ? (
-							<IconButton
-								onPress={fprops.leftButton}
-								icon={() => (
-									<Ionicons name={fprops.rightButton} color={theme === 'd' ? COLORS.BEFORELIGHT : COLORS.DARKSECONDARY} size={20} />
-								)}
-							/>
-						) : null
-					}
+					right={renderRightActions ? renderRightActions : null}
 				/>
 			</View>
 		</Card>
@@ -82,6 +133,17 @@ const styles = StyleSheet.create({
 		// alignItems: 'center',
 		borderRadius: 0,
 		elevation: 1,
+		borderBottomColor: COLORS.MID,
+		borderBottomWidth: 0,
+		borderColor: COLORS.TRANSPARENT,
+	},
+	borderBottomDark: {
+		borderBottomColor: COLORS.DARKPRIMARY,
+		borderBottomWidth: 1,
+	},
+	borderBottomLight: {
+		borderBottomColor: COLORS.TRANSPARENT,
+		borderBottomWidth: 1,
 	},
 	content: {
 		height: '100%',
@@ -89,6 +151,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		flexDirection: 'row',
+	},
+	listIcon: {
+		// marginLeft: 0,
+		// padding: 0,
+		// margin: 0,
 	},
 	headerTitle: {},
 	firstSection: {
@@ -99,6 +166,10 @@ const styles = StyleSheet.create({
 	},
 	right: {
 		marginRight: 10,
+	},
+	absolute: {
+		zIndex: 5,
+		backgroundColor: COLORS.TRANSPARENT,
 	},
 });
 
