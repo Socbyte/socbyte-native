@@ -1,5 +1,13 @@
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, TextInput, Keyboard } from 'react-native';
+import {
+	StyleSheet,
+	View,
+	Text,
+	TouchableWithoutFeedback,
+	TouchableOpacity,
+	TextInput,
+	Keyboard,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import COLORS from '../../val/colors/Colors';
 
@@ -66,8 +74,30 @@ const Login = props => {
 						insertDatabase('username', '');
 						insertDatabase('primaryColor', COLORS.GREEN);
 						insertDatabase('invertPrimaryColor', COLORS.BLACK);
+
+						updateDatabase('theme', 'd');
+						updateDatabase('fontSize', 'm');
+						updateDatabase('email', email);
+						updateDatabase('username', '');
+						updateDatabase('primaryColor', COLORS.GREEN);
+						updateDatabase('invertPrimaryColor', COLORS.BLACK);
 					})
-					.catch(err => {});
+					.catch(err => {
+						console.log('DATABASE CREATED');
+						insertDatabase('theme', 'd');
+						insertDatabase('fontSize', 'm');
+						insertDatabase('email', email);
+						insertDatabase('username', '');
+						insertDatabase('primaryColor', COLORS.GREEN);
+						insertDatabase('invertPrimaryColor', COLORS.BLACK);
+
+						updateDatabase('theme', 'd');
+						updateDatabase('fontSize', 'm');
+						updateDatabase('email', email);
+						updateDatabase('username', '');
+						updateDatabase('primaryColor', COLORS.GREEN);
+						updateDatabase('invertPrimaryColor', COLORS.BLACK);
+					});
 
 				setDisabled(false);
 				setLoading(false);
@@ -79,7 +109,8 @@ const Login = props => {
 				if (err.code.includes('auth/user-not-found')) {
 					setError({
 						header: 'User Not Found!',
-						desc: 'There is no user record corresponding to this details. The user may have been deleted, banned or disabled. If you think the details are correct then contact the developer.',
+						desc:
+							'There is no user record corresponding to this details. The user may have been deleted, banned or disabled. If you think the details are correct then contact the developer.',
 						primary: 'Okay!',
 						primaryFunction: () => setError(false),
 					});
@@ -132,7 +163,16 @@ const Login = props => {
 			{loading ? <FullScreenLoading loadingType={true} /> : null}
 
 			{error ? (
-				<ModalAlert header={error.header} description={error.desc} disableFunction={setError} visible={error.header ? true : false} primary={error.primary} primaryFunction={error.primaryFunction ? error.primaryFunction : setError(false)} />
+				<ModalAlert
+					header={error.header}
+					description={error.desc}
+					disableFunction={setError}
+					visible={error.header ? true : false}
+					primary={error.primary}
+					primaryFunction={
+						error.primaryFunction ? error.primaryFunction : setError(false)
+					}
+				/>
 			) : null}
 
 			<TouchableWithoutFeedback
@@ -143,8 +183,14 @@ const Login = props => {
 					<View style={styles.textSection}>
 						<TouchableWithoutFeedback onPress={toggleTheme}>
 							<View>
-								<Text style={[styles.authText, whatIsTheme(null, styles.textLight)]}>Welcome</Text>
-								<Text style={[styles.authText, whatIsTheme(null, styles.textLight)]}>Back</Text>
+								<Text
+									style={[styles.authText, whatIsTheme(null, styles.textLight)]}>
+									Welcome
+								</Text>
+								<Text
+									style={[styles.authText, whatIsTheme(null, styles.textLight)]}>
+									Back
+								</Text>
 							</View>
 						</TouchableWithoutFeedback>
 						<View>
@@ -152,7 +198,11 @@ const Login = props => {
 								onPress={() => {
 									props.navigation.navigate('Information');
 								}}>
-								<Ionicons name='information' color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)} size={24} />
+								<Ionicons
+									name='information'
+									color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+									size={24}
+								/>
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -160,7 +210,11 @@ const Login = props => {
 					<View style={{ ...styles.input }}>
 						<TextInput
 							autoCompleteType='email'
-							style={disabled ? whatIsTheme(styles.disabledInput, styles.disabledInputLight) : whatIsTheme(styles.inputItself, styles.inputItselfLight)}
+							style={
+								disabled
+									? whatIsTheme(styles.disabledInput, styles.disabledInputLight)
+									: whatIsTheme(styles.inputItself, styles.inputItselfLight)
+							}
 							editable={!disabled}
 							placeholder='Email'
 							placeholderTextColor={COLORS.PLACEHOLDER}
@@ -174,7 +228,14 @@ const Login = props => {
 					<View style={{ ...styles.passwordInput, ...styles.input }}>
 						<View style={styles.passwordInputs}>
 							<TextInput
-								style={disabled ? whatIsTheme(styles.disabledInput, styles.disabledInputLight) : whatIsTheme(styles.inputItself, styles.inputItselfLight)}
+								style={
+									disabled
+										? whatIsTheme(
+												styles.disabledInput,
+												styles.disabledInputLight
+										  )
+										: whatIsTheme(styles.inputItself, styles.inputItselfLight)
+								}
 								editable={!disabled}
 								placeholder='Password'
 								placeholderTextColor={COLORS.PLACEHOLDER}
@@ -184,31 +245,63 @@ const Login = props => {
 							/>
 						</View>
 						<TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-							<Ionicons style={{ marginLeft: 8 }} name={showPassword ? 'eye-off' : 'eye'} size={20} color={COLORS.WHITE} />
+							<Ionicons
+								style={{ marginLeft: 8 }}
+								name={showPassword ? 'eye-off' : 'eye'}
+								size={20}
+								color={COLORS.WHITE}
+							/>
 						</TouchableOpacity>
 					</View>
 
-					<View style={whatIsTheme(styles.registerTextContainer, styles.registerTextContainerLight)}>
+					<View
+						style={whatIsTheme(
+							styles.registerTextContainer,
+							styles.registerTextContainerLight
+						)}>
 						<TouchableOpacity onPress={loginExistingUser}>
-							<Text style={whatIsTheme(styles.registerText, styles.registerTextLight)}>Sign In</Text>
+							<Text
+								style={whatIsTheme(styles.registerText, styles.registerTextLight)}>
+								Sign In
+							</Text>
 						</TouchableOpacity>
 
 						<TouchableOpacity onPress={loginExistingUser}>
-							<View style={whatIsTheme(styles.registerIconContainer, styles.registerIconContainerLight)}>
-								<Ionicons name='arrow-forward' color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)} size={28} />
+							<View
+								style={whatIsTheme(
+									styles.registerIconContainer,
+									styles.registerIconContainerLight
+								)}>
+								<Ionicons
+									name='arrow-forward'
+									color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}
+									size={28}
+								/>
 							</View>
 						</TouchableOpacity>
 					</View>
 
 					<View style={styles.registerContainer}>
 						<TouchableOpacity onPress={loadRegisterForm}>
-							<View style={whatIsTheme(styles.otherContainer, styles.otherContainerLight)}>
-								<Text style={whatIsTheme(styles.other, styles.otherLight)}>Sign Up!</Text>
+							<View
+								style={whatIsTheme(
+									styles.otherContainer,
+									styles.otherContainerLight
+								)}>
+								<Text style={whatIsTheme(styles.other, styles.otherLight)}>
+									Sign Up!
+								</Text>
 							</View>
 						</TouchableOpacity>
 						<TouchableOpacity onPress={loadForgotPasswordForm}>
-							<View style={whatIsTheme(styles.otherContainer, styles.otherContainerLight)}>
-								<Text style={whatIsTheme(styles.other, styles.otherLight)}>Forgot Password</Text>
+							<View
+								style={whatIsTheme(
+									styles.otherContainer,
+									styles.otherContainerLight
+								)}>
+								<Text style={whatIsTheme(styles.other, styles.otherLight)}>
+									Forgot Password
+								</Text>
 							</View>
 						</TouchableOpacity>
 					</View>
