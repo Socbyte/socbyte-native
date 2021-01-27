@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.zmxv.RNSound.RNSoundPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -30,6 +31,7 @@ import javax.annotation.Nullable;
 
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
+import com.guichaguri.trackplayer.TrackPlayer;
 
 public class MainApplication extends Application implements ReactApplication {
   private final ReactModuleRegistryProvider mModuleRegistryProvider = new ReactModuleRegistryProvider(
@@ -49,6 +51,8 @@ public class MainApplication extends Application implements ReactApplication {
       packages.add(new ModuleRegistryAdapter(mModuleRegistryProvider));
       packages.add(new SafeAreaContextPackage());
       packages.add(new LottiePackage());
+//      packages.add(new TrackPlayer());
+//      packages.add(new RNSoundPackage());
       
       return packages;
     }
