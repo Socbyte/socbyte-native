@@ -3,6 +3,15 @@ import React, { useEffect } from 'react';
 import * as Font from 'expo-font';
 import * as AppLoading from 'expo-splash-screen';
 
+import TrackPlayer, {
+	CAPABILITY_PAUSE,
+	CAPABILITY_PLAY,
+	CAPABILITY_SEEK_TO,
+	CAPABILITY_SKIP_TO_NEXT,
+	CAPABILITY_SKIP_TO_PREVIOUS,
+	CAPABILITY_STOP,
+} from 'react-native-track-player';
+
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider, useDispatch } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
@@ -12,6 +21,28 @@ import SettingsReducer, { loadSettings } from './store/Settings';
 import MainAuthNavigation from './navigations/Navigation';
 import { databaseInit, fetchDatabase, insertDatabase, updateDatabase } from './sql/SQLStarter';
 import COLORS from './val/colors/Colors';
+import GroupsReducer from './store/GroupsStore';
+import MessagesReducer from './store/ChatsStore';
+
+TrackPlayer.updateOptions({
+	stopWithApp: false,
+	capabilities: [
+		CAPABILITY_PLAY,
+		CAPABILITY_PAUSE,
+		CAPABILITY_STOP,
+		CAPABILITY_SEEK_TO,
+		CAPABILITY_SKIP_TO_NEXT,
+		CAPABILITY_SKIP_TO_PREVIOUS,
+	],
+});
+TrackPlayer.registerPlaybackService(() => require('./scenes/main/profileMusic/Services'));
+TrackPlayer.setupPlayer()
+	.then(async () => {
+		// TrackPlayer.setVolume(0.7);
+	})
+	.catch(err => {
+		console.log('ERROR HAPPENED', err);
+	});
 
 const CheckAfterEffects = store => {
 	return next => {
@@ -27,6 +58,8 @@ const CheckAfterEffects = store => {
 const rootReducer = combineReducers({
 	main: MainReducer,
 	settings: SettingsReducer,
+	groups: GroupsReducer,
+	messages: MessagesReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(CheckAfterEffects, ReduxThunk));
