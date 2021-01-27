@@ -1,3 +1,7 @@
+# firebase configs...
+src/firebase/Firebase.js
+socbyte-backend
+
 # OSX
 #
 .DS_Store
@@ -62,3 +66,4 @@ buck-out/
 # Expo
 .expo/*
 web-build/
+

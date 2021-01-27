@@ -3,31 +3,26 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import Profile from '../../scenes/main/Profile';
+import MusicHome from '../../scenes/main/music/MusicHome';
+import SearchSong from '../../scenes/main/music/SearchSong';
+import SearchVideo from '../../scenes/main/music/VideoSearch';
 
-import EditProfileByPart from '../../scenes/main/EditProfileTabs/EditProfileSingle';
-import { EditProfileAbout } from '../../scenes/main/EditProfileTabs/EditProfile';
-import ProfileMusic from '../../scenes/main/profileMusic/ProfileMusic';
-import PlayerScreen from '../../scenes/main/profileMusic/test/PlayerScreen';
 import MiniPlayer from '../../scenes/main/music/MiniPlayer';
 import MusicPlayer from '../../scenes/main/music/MusicPlayer';
 
-const ProfileStack = createStackNavigator();
-const ProfileNavigator = () => {
+const MusicNavigator = createStackNavigator();
+const MusicNavigation = () => {
 	return (
-		<ProfileStack.Navigator
+		<MusicNavigator.Navigator
 			screenOptions={{
 				headerShown: false,
 			}}>
-			<ProfileStack.Screen name='Profile' component={Profile} />
+			<MusicNavigator.Screen name='MusicHome' component={MusicHome} />
 
-			<ProfileStack.Screen name='ProfileMusic' component={ProfileMusic} />
-			{/* <ProfileStack.Screen name='ProfileMusic' component={PlayerScreen} /> */}
+			<MusicNavigator.Screen name='SearchSong' component={SearchSong} />
 
-			<ProfileStack.Screen name='EditProfile' component={EditProfileAbout} />
-
-			<ProfileStack.Screen name='EditProfilePart' component={EditProfileByPart} />
-		</ProfileStack.Navigator>
+			<MusicNavigator.Screen name='SearchVideo' component={SearchVideo} />
+		</MusicNavigator.Navigator>
 	);
 };
 
@@ -44,13 +39,13 @@ const BottomNavigator = () => {
 					height: 10,
 				},
 			}}>
-			<MaterialBottomNavigator.Screen name='MainProfileScreen' component={ProfileNavigator} />
+			<MaterialBottomNavigator.Screen name='MusicPlayerTab' component={MusicNavigation} />
 		</MaterialBottomNavigator.Navigator>
 	);
 };
 
 const MainNavigator = createStackNavigator();
-const MainProfileNavigation = () => {
+const MainMusicNavigation = () => {
 	return (
 		<MainNavigator.Navigator
 			headerMode='none'
@@ -64,5 +59,4 @@ const MainProfileNavigation = () => {
 		</MainNavigator.Navigator>
 	);
 };
-
-export default MainProfileNavigation;
+export default MainMusicNavigation;

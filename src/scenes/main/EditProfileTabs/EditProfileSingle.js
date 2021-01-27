@@ -64,7 +64,7 @@ const EditProfileByPart = props => {
 	const [newExpertise, setNewExpertise] = useState(finalExpertise ? finalExpertise : []);
 	const [addExpertise, setAddExpertise] = useState('');
 
-	const [updatedEducation, setUpdatedEducation] = useState(education);
+	const [updatedEducation, setUpdatedEducation] = useState(education ? education : {});
 	const [newEducation, setNewEducation] = useState([]);
 	const [degree, setDegree] = useState('');
 	const [school, setSchool] = useState('');
@@ -137,7 +137,7 @@ const EditProfileByPart = props => {
 			setDisabled(true);
 			Firebase.database()
 				.ref('Users')
-				.child(username)
+				.child(Firebase.auth().currentUser.uid)
 				.update({
 					status: '',
 				})
@@ -165,7 +165,7 @@ const EditProfileByPart = props => {
 			setDisabled(true);
 			Firebase.database()
 				.ref('Users')
-				.child(username)
+				.child(Firebase.auth().currentUser.uid)
 				.update({
 					status: edit ? newStatus : '',
 				})
@@ -206,7 +206,7 @@ const EditProfileByPart = props => {
 			setDisabled(true);
 			Firebase.database()
 				.ref('Users')
-				.child(username)
+				.child(Firebase.auth().currentUser.uid)
 				.update({
 					about: '',
 				})
@@ -235,7 +235,7 @@ const EditProfileByPart = props => {
 				setDisabled(true);
 				Firebase.database()
 					.ref('Users')
-					.child(username)
+					.child(Firebase.auth().currentUser.uid)
 					.update({
 						about: edit ? newAbout : '',
 					})
@@ -286,7 +286,7 @@ const EditProfileByPart = props => {
 			setDisabled(true);
 			Firebase.database()
 				.ref('Users')
-				.child(username)
+				.child(Firebase.auth().currentUser.uid)
 				.update({
 					location: '',
 				})
@@ -315,7 +315,7 @@ const EditProfileByPart = props => {
 				setDisabled(true);
 				Firebase.database()
 					.ref('Users')
-					.child(username)
+					.child(Firebase.auth().currentUser.uid)
 					.update({
 						location: edit ? newLocation : '',
 					})
@@ -357,7 +357,7 @@ const EditProfileByPart = props => {
 			setDisabled(true);
 			Firebase.database()
 				.ref('Users')
-				.child(username)
+				.child(Firebase.auth().currentUser.uid)
 				.update({
 					social: {
 						github: github,
@@ -461,7 +461,7 @@ const EditProfileByPart = props => {
 
 			Firebase.database()
 				.ref('Users')
-				.child(username)
+				.child(Firebase.auth().currentUser.uid)
 				.update({
 					expertise: updatedExpertise,
 				})
@@ -559,6 +559,10 @@ const EditProfileByPart = props => {
 		// 	ToastAndroid.show('Please enter valid years.');
 		// 	return;
 		// }
+		//
+		//
+		//
+		//
 
 		let toContinueAddinItem = true;
 		Object.keys(updatedEducation).map(item => {
@@ -585,8 +589,20 @@ const EditProfileByPart = props => {
 			...updatedEducation,
 			...educationToAdd,
 		};
-		setUpdatedEducation(tempEducation);
 
+		setUpdatedEducation(tempEducation);
+		console.log(tempEducation);
+
+		setDegree('');
+		setSchool('');
+		setYearFrom('');
+		setYearTo('');
+
+		//
+		//
+		//
+		//
+		//
 		// if (tempEducation.length > 10) {
 		// 	setAlert(
 		// 		new Alert(
@@ -609,7 +625,7 @@ const EditProfileByPart = props => {
 
 			Firebase.database()
 				.ref('Users')
-				.child(username)
+				.child(Firebase.auth().currentUser.uid)
 				.update({
 					education: updatedEducation,
 				})

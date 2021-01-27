@@ -10,6 +10,7 @@ import COLORS from '../../../../val/colors/Colors';
 
 const DeleteUserAccount = props => {
 	const { username, email } = useSelector(state => state.main.user);
+	const { uid } = useSelector(state => state.main.currentUser);
 	const { theme } = useSelector(state => state.settings.settings);
 
 	const [reason, setReason] = useState('');
@@ -21,11 +22,11 @@ const DeleteUserAccount = props => {
 
 	const deleteAccount = () => {
 		setLoading(true);
+
 		Firebase.database()
 			.ref('DelAccReq')
-			.child(username)
-			.once('value')
-			.then(snap => {
+			.child(uid)
+			.on('value', snap => {
 				if (snap.val()) {
 					//user already requested to delete account...
 					ToastAndroid.showWithGravity(
@@ -39,11 +40,12 @@ const DeleteUserAccount = props => {
 					const timestamp = new Date().getTime();
 					Firebase.database()
 						.ref('DelAccReq')
-						.child(username)
+						.child(Firebase.auth().currentUser.uid)
 						.update({
 							[timestamp]: {
 								email: email,
 								reason: reason,
+								username: username,
 							},
 						})
 						.then(res => {
@@ -64,18 +66,18 @@ const DeleteUserAccount = props => {
 							setLoading(false);
 						});
 				}
-			})
-			.then(res => {
-				setLoading(false);
-			})
-			.catch(err => {
-				ToastAndroid.showWithGravity(
-					'Servers are busy. Please try again',
-					ToastAndroid.LONG,
-					ToastAndroid.CENTER
-				);
-				setLoading(false);
 			});
+		// .then(res => {
+		// 	setLoading(false);
+		// })
+		// .catch(err => {
+		// 	ToastAndroid.showWithGravity(
+		// 		'Servers are busy. Please try again',
+		// 		ToastAndroid.LONG,
+		// 		ToastAndroid.CENTER
+		// 	);
+		// 	setLoading(false);
+		// });
 	};
 
 	return (
@@ -93,6 +95,18 @@ const DeleteUserAccount = props => {
 				permanently from server, that means you cannot get this account again.
 			</Text>
 			<View style={styles.buttonContainer}>
+				<View style={whatIsTheme(styles.inputContainerDark, styles.inputContainerLight)}>
+					<Input
+						placeholder='Reason???'
+						value={reason}
+						onChangeText={value => setReason(value)}
+						multiline
+						numberOfLines={6}
+						textAlignVertical='top'
+						style={whatIsTheme(styles.textDark2, styles.textLight2)}
+					/>
+				</View>
+
 				<Button
 					title='Delete Account'
 					disabledStyle={styles.opacityDown}
@@ -144,6 +158,36 @@ const styles = StyleSheet.create({
 	},
 	thank: {
 		fontSize: 18,
+	},
+
+	inputContainerDark: {
+		margin: 5,
+		marginVertical: 8,
+		marginHorizontal: 15,
+		paddingBottom: 0,
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+		borderBottomLeftRadius: 1,
+		borderBottomRightRadius: 1,
+		backgroundColor: COLORS.DARKPRIMARY,
+	},
+	inputContainerLight: {
+		margin: 5,
+		marginVertical: 8,
+		marginHorizontal: 15,
+		paddingBottom: 0,
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+		borderBottomLeftRadius: 1,
+		borderBottomRightRadius: 1,
+		backgroundColor: COLORS.NEXTLIGHT,
+	},
+
+	textDark2: {
+		color: COLORS.WHITE,
+	},
+	textLight2: {
+		color: COLORS.BLACK,
 	},
 });
 

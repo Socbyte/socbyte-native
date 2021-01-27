@@ -115,7 +115,10 @@ const AppearanceSetting = props => {
 						}}
 						isVisible={showThemeChanger}
 						containerStyle={{
-							backgroundColor: whatIsTheme(COLORS.DARKSECONDARY, COLORS.DARKFORLIGHT),
+							backgroundColor: whatIsTheme(
+								`${COLORS.DARKPRIMARY}6f`,
+								`${COLORS.DARKFORLIGHT}6f`
+							),
 						}}>
 						<ListItem
 							onPress={() => {

@@ -22,7 +22,7 @@ export function loadUserData(userData) {
 		firebase
 			.database()
 			.ref('Users')
-			.child(currentUser.displayName)
+			.child(currentUser.uid)
 			.on('value', snapshot => {
 				const emailHash = md5(currentUser.email);
 
@@ -30,6 +30,7 @@ export function loadUserData(userData) {
 					dispatch({
 						type: LOAD_USER_DATA,
 						userData: snapshot.val(),
+						currentUser: currentUser,
 						profileImg: `https://www.gravatar.com/avatar/${emailHash}.jpg?s=200`,
 					});
 					// const val = ImageColors.getColors(snapshot.val().coverImg, {
@@ -72,6 +73,7 @@ export function setProfileImageURL(profileImg) {
  */
 const initialState = {
 	user: {},
+	currentUser: {},
 };
 
 const MainReducer = (state = initialState, action) => {
@@ -86,6 +88,7 @@ const MainReducer = (state = initialState, action) => {
 					...action.userData,
 					profileImg: action.profileImg,
 				},
+				currentUser: action.currentUser,
 			};
 		case SET_PROFILE_IMAGE_URL:
 			return {

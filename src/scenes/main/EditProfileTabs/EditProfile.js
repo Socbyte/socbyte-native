@@ -17,10 +17,10 @@ export const EditProfileAbout = props => {
 	);
 	const { theme } = useSelector(state => state.settings.settings);
 
-	const [newFullname, setNewFullname] = useState(fullname);
-	const [newStatus, setNewStatus] = useState(status);
-	const [newAbout, setNewAbout] = useState(about);
-	const [newCoverImg, setNewCoverImg] = useState(coverImg);
+	const [newFullname, setNewFullname] = useState(fullname ? fullname : '');
+	const [newStatus, setNewStatus] = useState(status ? status : '');
+	const [newAbout, setNewAbout] = useState(about ? about : '');
+	const [newCoverImg, setNewCoverImg] = useState(coverImg ? coverImg : '');
 
 	const [loading, setLoading] = useState(false);
 	const [disabled, setDisabled] = useState(false);
@@ -36,7 +36,7 @@ export const EditProfileAbout = props => {
 	const updateProfile = () => {
 		setLoading(true);
 		setDisabled(true);
-		if (newCoverImg.length > 100) {
+		if (newCoverImg.length > 150) {
 			ToastAndroid.show(
 				"Cover image link's can maximum contain 100 character. Or provide a shortened link."
 			);
@@ -49,7 +49,7 @@ export const EditProfileAbout = props => {
 			firebase
 				.database()
 				.ref('Users')
-				.child(username)
+				.child(firebase.auth().currentUser.uid)
 				.update({
 					fullname: newFullname,
 					status: newStatus,
@@ -162,9 +162,20 @@ export const EditProfileAbout = props => {
 						value={newCoverImg}
 						onChangeText={value => setNewCoverImg(value)}
 						textAlignVertical='top'
-						maxLength={500}
+						maxLength={150}
 						style={whatIsTheme(styles.textDark, styles.textLight)}
 					/>
+					{/* <Input
+						placeholderTextColor={COLORS.MID}
+						placeholder='Music Link (only mp3 without and special characters)'
+						textContentType='URL'
+						selectionColor={COLORS.MID}
+						value={newSound}
+						onChangeText={value => setNewSound(value)}
+						textAlignVertical='top'
+						maxLength={150}
+						style={whatIsTheme(styles.textDark, styles.textLight)}
+					/> */}
 				</View>
 				<View style={styles.buttonContainer}>
 					<Button

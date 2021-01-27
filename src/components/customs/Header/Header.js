@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { IconButton, Card } from 'react-native-paper';
-import { ListItem, Avatar, Icon } from 'react-native-elements';
+import { StyleSheet, View, Text } from 'react-native';
+import { IconButton, Card, TouchableRipple, Avatar } from 'react-native-paper';
+import { Icon } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -14,8 +14,17 @@ const Header = ({
 	renderRightActions,
 	absolute,
 	backgroundColor,
+	realBackgroundColor,
+	extraButtons,
+	extraImageButtons = null,
+	onImagePress,
+	extraImage,
+	extraImageText,
 }) => {
+	const imageValidator = /(https?:\/\/.*\.(?:png|jpg))/i;
 	const { theme } = useSelector(state => state.settings.settings);
+
+	//for group details screen currently to animate the image...
 
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
@@ -25,17 +34,19 @@ const Header = ({
 		<Card
 			style={[
 				styles.card,
-				absolute ? styles.absolute : null,
+				absolute ? styles.zIndex : null,
 				{
 					backgroundColor: backgroundColor
 						? backgroundColor
-						: theme === 'd'
-						? COLORS.TRANSPARENT
-						: COLORS.TRANSPARENT,
+						: whatIsTheme(COLORS.TRANSPARENT, COLORS.TRANSPARENT),
 				},
 				whatIsTheme(styles.borderBottomDark, styles.borderBottomLight),
 			]}>
-			<View style={styles.content}>
+			<View
+				style={[
+					styles.content,
+					realBackgroundColor ? { backgroundColor: realBackgroundColor } : null,
+				]}>
 				<Card.Title
 					title={headerTitle}
 					titleStyle={{
@@ -43,10 +54,9 @@ const Header = ({
 							? ISDARKCOLOR.colorIsLight(backgroundColor)
 								? COLORS.BLACK
 								: COLORS.WHITE
-							: theme === 'd'
-							? COLORS.BEFORELIGHT
-							: COLORS.DARKSECONDARY,
+							: whatIsTheme(COLORS.BEFORELIGHT, COLORS.DARKSECONDARY),
 					}}
+					titleNumberOfLines={1}
 					left={props =>
 						back ? (
 							// <IconButton
@@ -87,9 +97,7 @@ const Header = ({
 										? ISDARKCOLOR.colorIsLight(backgroundColor)
 											? COLORS.BLACK
 											: COLORS.WHITE
-										: theme === 'd'
-										? COLORS.BEFORELIGHT
-										: COLORS.DARKSECONDARY
+										: whatIsTheme(COLORS.BEFORELIGHT, COLORS.DARKSECONDARY)
 								}
 							/>
 						) : (
@@ -108,9 +116,10 @@ const Header = ({
 												? ISDARKCOLOR.colorIsLight(backgroundColor)
 													? COLORS.BLACK
 													: COLORS.WHITE
-												: theme === 'd'
-												? COLORS.BEFORELIGHT
-												: COLORS.DARKSECONDARY
+												: whatIsTheme(
+														COLORS.BEFORELIGHT,
+														COLORS.DARKSECONDARY
+												  )
 										}
 										size={26}
 									/>
@@ -118,7 +127,84 @@ const Header = ({
 							/>
 						)
 					}
-					right={renderRightActions ? renderRightActions : null}
+					right={() =>
+						renderRightActions ? (
+							<View
+								style={{
+									paddingVertical: 8,
+									paddingHorizontal: 10,
+									flexDirection: 'row',
+									alignItems: 'center',
+									justifyContent: 'center',
+								}}>
+								{extraButtons
+									? extraButtons.map(item => {
+											return (
+												<Icon
+													name={item.name}
+													type={item.type}
+													size={item.size}
+													onPress={item.onPress}
+													color={
+														item.color
+															? item.color
+															: whatIsTheme(
+																	COLORS.WHITE,
+																	COLORS.BLACK
+															  )
+													}
+													iconStyle={{
+														paddingHorizontal: 6,
+													}}
+												/>
+											);
+									  })
+									: null}
+
+								{extraImageButtons == true ? (
+									<TouchableRipple
+										rippleColor={COLORS.TRANSPARENT}
+										onPress={onImagePress}>
+										{extraImage && extraImage.match(imageValidator) ? (
+											<Avatar.Image
+												size={40}
+												source={{
+													uri: extraImage,
+												}}
+												style={{
+													borderRadius: 100,
+													borderWidth: 1,
+													borderColor: COLORS.MID,
+													marginHorizontal: 6,
+													backgroundColor: whatIsTheme(
+														COLORS.DARKSECONDARY,
+														COLORS.FINALBEFORELIGHT
+													),
+												}}
+											/>
+										) : (
+											<Avatar.Text
+												size={40}
+												label={extraImageText}
+												style={{
+													borderRadius: 100,
+													borderWidth: 1,
+													borderColor: COLORS.MID,
+													backgroundColor: whatIsTheme(
+														COLORS.DARKSECONDARY,
+														COLORS.FINALBEFORELIGHT
+													),
+													marginHorizontal: 6,
+												}}
+											/>
+										)}
+									</TouchableRipple>
+								) : null}
+
+								{/* {renderRightActions} */}
+							</View>
+						) : null
+					}
 				/>
 			</View>
 		</Card>
@@ -167,7 +253,7 @@ const styles = StyleSheet.create({
 	right: {
 		marginRight: 10,
 	},
-	absolute: {
+	zIndex: {
 		zIndex: 5,
 		backgroundColor: COLORS.TRANSPARENT,
 	},
