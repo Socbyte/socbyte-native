@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
 	StyleSheet,
 	View,
@@ -11,6 +11,8 @@ import {
 	Easing,
 	Linking,
 	ToastAndroid,
+	TouchableOpacity,
+	Image,
 } from 'react-native';
 import {
 	TouchableRipple,
@@ -21,7 +23,6 @@ import {
 	ProgressBar,
 	Paragraph,
 	Banner,
-	Menu,
 	Button,
 	IconButton,
 	Card,
@@ -32,7 +33,7 @@ import {
 	DarkTheme,
 	DefaultTheme,
 } from 'react-native-paper';
-import { Icon, SocialIcon } from 'react-native-elements';
+import { Icon, SocialIcon, Avatar as ElementAvatar } from 'react-native-elements';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
@@ -43,6 +44,10 @@ import Header from '../../components/customs/Header/Header';
 import { databaseInit, fetchDatabase, insertDatabase, updateDatabase } from '../../sql/SQLStarter';
 import { updateSettings } from '../../store/Settings';
 import COLORS, { ISDARKCOLOR } from '../../val/colors/Colors';
+import { usePlayerContext } from './music/context/PlayerContext';
+
+var Sound = require('react-native-sound');
+Sound.setCategory('Playback');
 
 const imageCoverTemp =
 	'https://user-images.githubusercontent.com/50291544/104044423-4de27b80-5203-11eb-84e8-11fd627a7fc4.png';
@@ -115,10 +120,13 @@ const Profile = props => {
 		education,
 		social,
 		joinedOn,
+		sound,
 		ratings,
 		facolor,
 	} = useSelector(state => state.main.user);
 	const dispatch = useDispatch();
+
+	const playerContext = usePlayerContext();
 
 	const [lengthOfAbout, setLengthOfAbout] = useState(textLengthLimit);
 	const [socialAvailable, setSocialAvailable] = useState(false);
@@ -285,11 +293,25 @@ const Profile = props => {
 		);
 	};
 
-	const [menu, setMenu] = useState(false);
-
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' || !theme ? f : s;
 	};
+
+	function formatDuration(num) {
+		function numPadding(n, z) {
+			z = z || 2;
+			return ('00' + n).slice(-z);
+		}
+
+		var ms = num % 1000;
+		num = (num - ms) / 1000;
+		var secs = num % 60;
+		num = (num - secs) / 60;
+		var mins = num % 60;
+		var hrs = (num - mins) / 60;
+
+		return hrs > 0 ? numPadding(hrs) + ':' : '' + numPadding(mins) + ':' + numPadding(secs);
+	}
 
 	useEffect(() => {
 		if (social) {
@@ -317,7 +339,10 @@ const Profile = props => {
 				}}
 				headerTitle={username}
 				absolute
-				backgroundColor={vibrants.vibrant ? vibrants.vibrant : null}
+				backgroundColor={whatIsTheme(
+					COLORS.TRANSPARENT,
+					vibrants.vibrant ? vibrants.vibrant : null
+				)}
 			/>
 
 			<ScrollView>
@@ -325,20 +350,6 @@ const Profile = props => {
 				<ImageBackground
 					style={styles.coverImg}
 					source={{ uri: coverImg ? coverImg : imageCoverTemp }}>
-					{/* <View style={styles.particularHeader}>
-						<View style={styles.defaultHeaderWay}>
-							<Icon type='ionicons' name='menu' color={COLORS.WHITE} size={24} />
-							<Text
-								style={[
-									{
-										color: whatIsTheme(COLORS.WHITE, COLORS.BLACK),
-									},
-								]}>
-								{username}
-							</Text>
-						</View>
-						<View style={styles.otherHeaderButtons}></View>
-					</View> */}
 					{profileImg ? (
 						<Avatar.Image
 							style={whatIsTheme(styles.avatarDark, styles.avatarLight)}
@@ -362,9 +373,32 @@ const Profile = props => {
 					<Text style={whatIsTheme(styles.fullnameDark, styles.fullnameLight)}>
 						{fullname}
 					</Text>
-					<Caption style={whatIsTheme(styles.usernameDark, styles.usernameLight)}>
-						@{username}
-					</Caption>
+
+					<TouchableRipple
+						onPress={() => {
+							// props.navigation.navigate('ProfileMusic', {
+							// 	coverImg: coverImg ? coverImg : imageCoverTemp,
+							// 	sound: sound.url,
+							// 	username: username,
+							// });
+
+							const formatedDuration = formatDuration(sound.duration);
+
+							playerContext.play({
+								id: sound.id,
+								title: `${username}'s Profile Music.`,
+								artist: 'Profile Music',
+								duration: sound.duration,
+								url: sound.url,
+								artwork: coverImg ? coverImg : imageCoverTemp,
+								durationEdited: formatedDuration,
+							});
+						}}>
+						<Caption style={whatIsTheme(styles.usernameDark, styles.usernameLight)}>
+							@{username}
+						</Caption>
+					</TouchableRipple>
+
 					<Caption style={whatIsTheme(styles.emailDark, styles.emailLight)}>
 						{email}
 					</Caption>
@@ -635,6 +669,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-end',
 		elevation: 5,
 		alignItems: 'center',
+		overflow: 'visible',
 	},
 	particularHeader: {
 		flexDirection: 'row',
@@ -686,7 +721,7 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		borderWidth: 1,
 		borderColor: COLORS.PRIMARY,
-		overflow: 'hidden',
+		overflow: 'visible',
 		maxWidth: 111,
 		maxHeight: 111,
 		width: 111,
@@ -702,7 +737,7 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		borderWidth: 1,
 		borderColor: COLORS.GREEN,
-		overflow: 'hidden',
+		overflow: 'visible',
 		maxWidth: 111,
 		maxHeight: 111,
 		width: 111,

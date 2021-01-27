@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
 	IconButton,
@@ -10,11 +10,22 @@ import {
 	DefaultTheme,
 } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
+import ytdl from 'react-native-ytdl';
 
 import COLORS from '../../val/colors/Colors';
 
 const Home = props => {
 	const [menu, setMenu] = useState(false);
+
+	useEffect(() => {
+		// async function loadThisSongData() {
+		// 	const youtubeURL = 'http://www.youtube.com/watch?v=MgGMoAHcM18';
+		// 	const urls = await ytdl(youtubeURL, { quality: 'highestaudio' });
+		// 	console.log(urls[0].url);
+		// }
+		// loadThisSongData();
+	}, []);
+
 	return (
 		<View style={styles.screen}>
 			{/* <Provider theme={DarkTheme}>

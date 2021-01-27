@@ -54,10 +54,11 @@ export const ContactUS = props => {
 
 			Firebase.database()
 				.ref('Query')
-				.child(`${username}/` + timestamp)
+				.child(`${Firebase.auth().currentUser.uid}/` + timestamp)
 				.set({
 					query: text,
 					rating: rating.toString(),
+					username: username,
 				})
 				.then(res => {
 					ToastAndroid.show('Thanks for sharing your experience.', ToastAndroid.SHORT);
