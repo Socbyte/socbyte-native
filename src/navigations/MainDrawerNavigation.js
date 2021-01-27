@@ -25,6 +25,7 @@ import {
 } from '@react-navigation/drawer';
 
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Avatar as ElementAvatar } from 'react-native-elements';
 
 import md5 from 'md5';
 
@@ -42,6 +43,9 @@ import Header from '../components/customs/Header/Header';
 
 import ProfileNavigator from './content/ProfileNavigator';
 import SettingStack from './content/SettingsNavigator';
+import ChatNavigation from '../scenes/main/chats/ChatNavigation';
+import MusicNavigation from './content/MusicNavigator';
+import { PlayerContextProvider } from '../scenes/main/music/context/PlayerContext';
 
 const DrawerNavigator = createDrawerNavigator();
 const DrawerNavigation = props => {
@@ -50,50 +54,57 @@ const DrawerNavigation = props => {
 	const setProfileImg = props.setProfileImg;
 
 	return (
-		<NavigationContainer theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}>
-			<DrawerNavigator.Navigator
-				screenOptions={props => {
-					return {
-						headerShown: false,
-						headerLeft: () => {
-							return (
-								<TouchableRipple onPress={() => props.navigation.toggleDrawer()}>
-									<Ionicons
-										name='menu'
-										color={
-											settings.theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY
-										}
-										size={25}
-										style={{ margin: 10 }}
+		<PlayerContextProvider>
+			<NavigationContainer theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}>
+				<DrawerNavigator.Navigator
+					screenOptions={props => {
+						return {
+							headerShown: false,
+							headerLeft: () => {
+								return (
+									<TouchableRipple
+										onPress={() => props.navigation.toggleDrawer()}>
+										<Ionicons
+											name='menu'
+											color={
+												settings.theme === 'd'
+													? COLORS.GREEN
+													: COLORS.PRIMARY
+											}
+											size={25}
+											style={{ margin: 10 }}
+										/>
+									</TouchableRipple>
+								);
+							},
+							header: () => {
+								return (
+									<Header
+										leftButton={() => {
+											props.navigation.toggleDrawer();
+										}}
+										rightButton='ellipsis-vertical'
+										// headerTitle={username}
 									/>
-								</TouchableRipple>
-							);
-						},
-						header: () => {
-							return (
-								<Header
-									leftButton={() => {
-										props.navigation.toggleDrawer();
-									}}
-									rightButton='ellipsis-vertical'
-									// headerTitle={username}
-								/>
-							);
-						},
-					};
-				}}
-				drawerContent={props => (
-					<MainDrawerNavigation setProfileImg={setProfileImg} {...props} />
-				)}>
-				<DrawerNavigator.Screen name='Home' component={Home} />
+								);
+							},
+						};
+					}}
+					drawerContent={props => (
+						<MainDrawerNavigation setProfileImg={setProfileImg} {...props} />
+					)}>
+					<DrawerNavigator.Screen name='Home' component={Home} />
 
-				<DrawerNavigator.Screen name='Profile' component={ProfileNavigator} />
+					<DrawerNavigator.Screen name='Profile' component={ProfileNavigator} />
 
-				<DrawerNavigator.Screen name='Chats' component={Home} />
+					<DrawerNavigator.Screen name='Chats' component={ChatNavigation} />
 
-				<DrawerNavigator.Screen name='Settings' component={SettingStack} />
-			</DrawerNavigator.Navigator>
-		</NavigationContainer>
+					<DrawerNavigator.Screen name='Settings' component={SettingStack} />
+
+					<DrawerNavigator.Screen name='Music' component={MusicNavigation} />
+				</DrawerNavigator.Navigator>
+			</NavigationContainer>
+		</PlayerContextProvider>
 	);
 };
 
@@ -106,6 +117,10 @@ const MainDrawerNavigation = props => {
 
 	const [selectedTab, setSelectedTab] = useState('home');
 	const [userProfileImageFound, setUserProfileImageFound] = useState(false);
+
+	const whatIsTheme = (f, s) => {
+		return !theme || theme === 'd' ? f : s;
+	};
 
 	const toggleTheme = () => {
 		// console.log('TOGGLE THE CURRENT THEME...');
@@ -167,18 +182,36 @@ const MainDrawerNavigation = props => {
 									theme === 'd' ? styles.usersectionDark : styles.usersectionLight
 								}>
 								{userProfileImageFound ? (
-									<Avatar.Image
-										style={
-											theme === 'd' ? styles.avatarDark : styles.avatarLight
-										}
-										size={57}
+									// <Avatar.Image
+									// 	style={
+									// 		theme === 'd' ? styles.avatarDark : styles.avatarLight
+									// 	}
+									// 	size={57}
+									// 	source={{ uri: userData.profileImg }}
+									// />
+									<ElementAvatar
 										source={{ uri: userData.profileImg }}
+										size={57}
+										avatarStyle={whatIsTheme(
+											styles.avatarDark,
+											styles.avatarLight
+										)}
 									/>
 								) : (
 									<Avatar.Text
-										style={
-											theme === 'd' ? styles.avatarDark : styles.avatarLight
-										}
+										style={[
+											whatIsTheme(styles.avatarDark, styles.avatarLight),
+											whatIsTheme(
+												{
+													borderWidth: 1,
+													borderColor: COLORS.GREEN,
+												},
+												{
+													borderWidth: 1,
+													borderColor: COLORS.PRIMARY,
+												}
+											),
+										]}
 										labelStyle={
 											theme === 'd'
 												? styles.avatarLabelDark
@@ -246,12 +279,22 @@ const MainDrawerNavigation = props => {
 						<PureDrawerItem
 							onPress={() => {
 								setSelectedTabText('chats');
-								props.navigation.navigate('Profile');
+								props.navigation.navigate('Chats');
 							}}
 							theme={theme}
 							identity={['chats', 'Chats']}
 							selected={selectedTab}
 							iconName='message'
+						/>
+						<PureDrawerItem
+							onPress={() => {
+								setSelectedTabText('music');
+								props.navigation.navigate('Music');
+							}}
+							theme={theme}
+							identity={['music', 'Music']}
+							selected={selectedTab}
+							iconName='music-note'
 						/>
 						<PureDrawerItem
 							onPress={() => {
