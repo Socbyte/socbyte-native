@@ -25,9 +25,9 @@ const Register = props => {
 	const { theme } = useSelector(state => state.settings.settings);
 	const dispatch = useDispatch();
 
-	const [username, setUsername] = useState('asdfasdf');
-	const [email, setEmail] = useState('asdfsadf');
-	const [password, setPassword] = useState('asdfasdf');
+	const [username, setUsername] = useState('testuser');
+	const [email, setEmail] = useState('sobhanbera260@gmail.com');
+	const [password, setPassword] = useState('testuser1');
 	const [showPassword, setShowPassword] = useState(true);
 	const [disabled, setDisabled] = useState(false);
 	const [error, setError] = useState({});
@@ -143,9 +143,10 @@ const Register = props => {
 									Firebase.auth()
 										.createUserWithEmailAndPassword(email, password)
 										.then(res => {
+											console.log(res.user.uid);
 											Firebase.database()
 												.ref('Users')
-												.child(username)
+												.child(res.user.uid)
 												.set({
 													written: {
 														written: 0,
@@ -174,6 +175,11 @@ const Register = props => {
 														millisec: time.getMilliseconds(),
 													},
 													verified: '',
+													sound: {
+														id: '',
+														url: '',
+														duration: 0,
+													},
 													profileImg: '',
 													education: {},
 													ratings: 1,
@@ -197,7 +203,7 @@ const Register = props => {
 												.ref('Accounts')
 												.child(username)
 												.set({
-													username: username,
+													uid: res.user.uid,
 												});
 
 											Firebase.auth().currentUser.updateProfile({
