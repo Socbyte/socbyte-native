@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	SafeAreaView,
 	StyleSheet,
@@ -10,9 +10,11 @@ import {
 	ActivityIndicator,
 	ScrollView,
 	ToastAndroid,
+	TouchableOpacity,
 } from 'react-native';
 import { Text, Icon, Slider, BottomSheet, ListItem } from 'react-native-elements';
 import Marquee from 'react-native-text-ticker';
+import LottieView from 'lottie-react-native';
 
 import COLORS from '../../../val/colors/Colors';
 import { usePlayerContext } from './context/PlayerContext';
@@ -51,6 +53,23 @@ const MusicPlayer = props => {
 
 	const [showRateChanger, setShowRateChanger] = useState(false);
 	const [queue, setQueue] = useState([]);
+	const likeAnimation = useRef(null);
+	const firstTimeAnim = useRef(true);
+
+	useEffect(() => {
+		if (firstTimeAnim.current) {
+			if (currentTrack.id === sound.id) {
+				likeAnimation.current.play(50, 50);
+			} else {
+				likeAnimation.current.play(9, 9);
+			}
+			firstTimeAnim.current = false;
+		} else if (currentTrack.id === sound.id) {
+			likeAnimation.current.play(9, 50);
+		} else {
+			likeAnimation.current.play(0, 9);
+		}
+	}, [currentTrack.id, sound.id]);
 
 	const getQueue = useCallback(async () => {
 		const track = await TrackPlayer.getQueue();
@@ -180,7 +199,7 @@ const MusicPlayer = props => {
 										alignItems: 'flex-end',
 									},
 								]}>
-								<Icon
+								{/* <Icon
 									name={currentTrack?.id === sound?.id ? 'heart' : 'hearto'}
 									type='ant-design'
 									size={25}
@@ -189,7 +208,16 @@ const MusicPlayer = props => {
 										currentTrack?.id === sound?.id ? COLORS.RED : COLORS.WHITE
 									}
 									containerStyle={{ marginRight: 5, marginTop: 5 }}
-								/>
+								/> */}
+								<TouchableOpacity onPress={updateProfileSong}>
+									<LottieView
+										source={require('../../../assets/animations/likeWhite.json')}
+										style={styles.likeAnimation}
+										autoPlay={false}
+										loop={false}
+										ref={likeAnimation}
+									/>
+								</TouchableOpacity>
 							</ImageBackground>
 						</View>
 					</ImageBackground>
@@ -739,6 +767,11 @@ const styles = StyleSheet.create({
 		width: 45,
 		height: 45,
 		borderRadius: 3,
+	},
+
+	likeAnimation: {
+		width: 30,
+		height: 30,
 	},
 
 	lastElement: {
