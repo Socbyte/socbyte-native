@@ -132,18 +132,25 @@ const MusicPlayer = props => {
 					{/* SONG IMAGE WITH BACKGROUND IMAGE */}
 					<ImageBackground
 						source={{ uri: currentTrack.artwork }}
-						blurRadius={7}
+						blurRadius={5}
 						resizeMode='cover'
 						style={styles.backgroundImage}>
 						<View style={styles.navigator}>
-							<Icon
+							<TouchableOpacity
 								onPress={() => props.navigation.goBack()}
-								name='chevron-thin-down'
-								type='entypo'
-								size={26}
-								color={COLORS.WHITE}
-								style={styles.navigationIcon}
-							/>
+								style={{
+									// backgroundColor: `${COLORS.WHITE}25`,
+									borderRadius: 20,
+									padding: 2,
+								}}>
+								<Icon
+									name='chevron-thin-down'
+									type='entypo'
+									size={26}
+									color={COLORS.WHITE}
+									style={styles.navigationIcon}
+								/>
+							</TouchableOpacity>
 							<View
 								style={{
 									flexDirection: 'row',
@@ -180,6 +187,31 @@ const MusicPlayer = props => {
 										setVolume(level);
 									}}
 								/>
+
+								<TouchableOpacity onPress={updateProfileSong}>
+									<View
+										style={{
+											justifyContent: 'center',
+											alignItems: 'center',
+											width: 40,
+											height: 40,
+											borderRadius: 50,
+											overflow: 'hidden',
+											marginHorizontal: 12,
+											backgroundColor: COLORS.DARKINLIGHTVIDIBLE,
+											// padding: 15,
+										}}>
+										<LottieView
+											source={require('../../../assets/animations/likeWhite.json')}
+											style={styles.likeAnimation}
+											autoPlay={false}
+											loop={false}
+											ref={likeAnimation}
+											autoSize={true}
+										/>
+									</View>
+								</TouchableOpacity>
+
 								<Text
 									onPress={() => setShowRateChanger(true)}
 									style={styles.rateText}>
@@ -209,15 +241,6 @@ const MusicPlayer = props => {
 									}
 									containerStyle={{ marginRight: 5, marginTop: 5 }}
 								/> */}
-								<TouchableOpacity onPress={updateProfileSong}>
-									<LottieView
-										source={require('../../../assets/animations/likeWhite.json')}
-										style={styles.likeAnimation}
-										autoPlay={false}
-										loop={false}
-										ref={likeAnimation}
-									/>
-								</TouchableOpacity>
 							</ImageBackground>
 						</View>
 					</ImageBackground>
@@ -625,7 +648,9 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 		paddingHorizontal: 12,
 	},
-	navigationIcon: {},
+	navigationIcon: {
+		padding: 5,
+	},
 	imageContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -722,17 +747,15 @@ const styles = StyleSheet.create({
 		color: COLORS.RED,
 	},
 	rateText: {
-		// paddingHorizontal: 12,
-		// paddingVertical: 10,
-		marginHorizontal: 10,
+		marginRight: 10,
 		textAlign: 'center',
 		textAlignVertical: 'center',
-		backgroundColor: COLORS.WHITEINDARKVIDIBLE,
-		color: COLORS.WHITE,
+		backgroundColor: COLORS.DARKINLIGHTVIDIBLE,
+		color: COLORS.BLACK,
 		borderRadius: 100,
-		width: 45,
-		height: 45,
-		fontSize: 15,
+		width: 40,
+		height: 40,
+		fontSize: 14,
 		fontWeight: 'bold',
 	},
 
@@ -743,7 +766,7 @@ const styles = StyleSheet.create({
 		borderTopColor: COLORS.DARKSECONDARY,
 		borderTopWidth: 1,
 		paddingVertical: 5,
-		marginTop: 100,
+		marginTop: 35,
 	},
 	queueTextContianerLight: {
 		borderBottomColor: COLORS.DARKFORLIGHT,
@@ -770,8 +793,10 @@ const styles = StyleSheet.create({
 	},
 
 	likeAnimation: {
-		width: 30,
-		height: 30,
+		width: 105,
+		height: 105,
+		padding: 0,
+		margin: 0,
 	},
 
 	lastElement: {

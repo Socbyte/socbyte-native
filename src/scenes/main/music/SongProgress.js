@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { ProgressComponent } from 'react-native-track-player';
 import { Text, Slider } from 'react-native-elements';
 import { PlayerContext } from './context/PlayerContext';
@@ -77,6 +77,44 @@ class SongProgressSlider extends ProgressComponent {
 	}
 }
 
-const styles = StyleSheet.create({});
+export class MiniplayerSongProgressSlider extends ProgressComponent {
+	static contextType = PlayerContext;
+
+	render() {
+		return (
+			<View style={{ padding: 0, margin: 0, alignItems: 'center', justifyContent: 'center' }}>
+				<Slider
+					disabled
+					animateTransitions={true}
+					animationType='timing'
+					style={{ width: '100%', padding: 0, margin: 0, paddingTop: 0 }}
+					minimumValue={0}
+					maximumValue={this.context.currentTrack.duration / 1000}
+					value={this.state.position}
+					step={0.01}
+					onSlidingComplete={value => {
+						this.context.seekLevel(value);
+					}}
+					trackStyle={{
+						height: 2,
+						backgroundColor: COLORS.DARKINLIGHTVIDIBLE,
+						borderRadius: 10,
+					}}
+					thumbStyle={{
+						borderRadius: 10,
+						height: 2,
+						width: 2,
+						backgroundColor: this.context.themeProvider(COLORS.WHITE, COLORS.BLACK),
+					}}
+					minimumTrackTintColor={this.context.themeProvider(COLORS.WHITE, COLORS.BLACK)}
+					maximumTrackTintColor={this.context.themeProvider(
+						COLORS.DARKGLOW,
+						COLORS.DARKFORLIGHT
+					)}
+				/>
+			</View>
+		);
+	}
+}
 
 export default SongProgressSlider;

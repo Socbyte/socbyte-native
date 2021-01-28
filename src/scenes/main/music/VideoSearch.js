@@ -11,7 +11,7 @@ import {
 import { Icon, ListItem, Text } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 
-import { KEY, TrendingSearchQueries, SufflerList } from '../../../val/constants/Constants';
+import { KEY, TrendingVideoSearchQueries, SufflerList } from '../../../val/constants/Constants';
 import COLORS from '../../../val/colors/Colors';
 import { ActivityIndicator } from 'react-native-paper';
 import { usePlayerContext } from './context/PlayerContext';
@@ -325,34 +325,39 @@ const SearchVideo = props => {
 							</ListItem>
 						);
 					})}
-					{SufflerList.provideARandomOrderSearchHintList().map((result, index) => {
-						// console.log(String(result));
-						return (
-							<ListItem
-								// bottomDivider
-								onPress={() => showResults(result)}
-								key={result + index}
-								underlayColor={whatIsTheme(COLORS.DARKPRIMARY, COLORS.BEFORELIGHT)}
-								// bottomDivider
-								containerStyle={[
-									index === TrendingSearchQueries.length - 1
-										? styles.lastElement
-										: null,
-									{
-										backgroundColor: COLORS.TRANSPARENT,
-										paddingVertical: 14,
-									},
-								]}>
-								<ListItem.Content style={styles.searchHintConatiner}>
-									<ListItem.Title
-										numberOfLines={1}
-										style={whatIsTheme(styles.textDark, styles.textLight)}>
-										{`${result}`}
-									</ListItem.Title>
-								</ListItem.Content>
-							</ListItem>
-						);
-					})}
+					{SufflerList.provideARandomOrderSearchHintListForVideos().map(
+						(result, index) => {
+							// console.log(String(result));
+							return (
+								<ListItem
+									// bottomDivider
+									onPress={() => showResults(result)}
+									key={result + index}
+									underlayColor={whatIsTheme(
+										COLORS.DARKPRIMARY,
+										COLORS.BEFORELIGHT
+									)}
+									// bottomDivider
+									containerStyle={[
+										index === TrendingVideoSearchQueries.length - 1
+											? styles.lastElement
+											: null,
+										{
+											backgroundColor: COLORS.TRANSPARENT,
+											paddingVertical: 14,
+										},
+									]}>
+									<ListItem.Content style={styles.searchHintConatiner}>
+										<ListItem.Title
+											numberOfLines={1}
+											style={whatIsTheme(styles.textDark, styles.textLight)}>
+											{`${result}`}
+										</ListItem.Title>
+									</ListItem.Content>
+								</ListItem>
+							);
+						}
+					)}
 				</ScrollView>
 			)}
 		</View>

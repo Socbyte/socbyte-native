@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 
 import { usePlayerContext } from './context/PlayerContext';
 import COLORS from '../../../val/colors/Colors';
+import { MiniplayerSongProgressSlider } from './SongProgress';
 
 const MiniPlayer = props => {
 	const playerContext = usePlayerContext();
@@ -88,27 +89,18 @@ const MiniPlayer = props => {
 							/>
 						) : null}
 					</View>
-					{/* <View style={[styles.iconContainer, { padding: 6 }]}>
-						{playerContext.isPlaying ||
-						playerContext.isPaused ||
-						playerContext.isLoading ? (
-							<Icon
-								onPress={() => playerContext.seekTo(10)}
-								name='spinner-rotate-forward'
-								type='fontisto'
-								size={23}
-								color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
-							/>
-						) : null} */}
-					{/* <Icon
-							onPress={() => playerContext.seekTo(10)}
-							name='spinner-rotate-forward'
-							type='fontisto'
-							size={23}
+
+					<View style={[styles.iconContainer, { padding: 6 }]}>
+						<Icon
+							onPress={() => playerContext.resetPlayer()}
+							name='clear'
+							type='material-icons'
+							size={30}
 							color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
-						/> */}
-					{/* </View> */}
+						/>
+					</View>
 				</View>
+				<MiniplayerSongProgressSlider />
 			</View>
 		</TouchableOpacity>
 	);

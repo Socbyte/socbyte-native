@@ -23,6 +23,7 @@ export const PlayerContext = createContext({
 	isLoading: false,
 	currentTrack: null,
 	addToQueue: () => null,
+	resetPlayer: () => null,
 
 	play: () => null,
 	pause: () => null,
@@ -80,17 +81,24 @@ export const PlayerContextProvider = props => {
 		});
 
 		TrackPlayer.addEventListener('playback-track-changed', async res => {
-			if (!res.track) {
+			if (!res.nextTrack) {
 				// || currentTrack.id === res.track) {
+				setLoading(false);
 				return;
 			}
 
 			await TrackPlayer.getTrack(res.nextTrack)
 				.then(async result => {
-					if (result === null) return;
+					if (result === null) {
+						setLoading(false);
+						console.log(isLoading);
+						return;
+					}
 					setCurrentTrack(result);
 				})
-				.catch(err => {});
+				.catch(err => {
+					setLoading(false);
+				});
 		});
 
 		(async () => {
@@ -172,6 +180,12 @@ export const PlayerContextProvider = props => {
 			setCurrentTrack(track);
 			await TrackPlayer.play();
 		}
+	};
+
+	const resetPlayer = async () => {
+		await TrackPlayer.reset().then(res => {
+			setCurrentTrack(null);
+		});
 	};
 
 	const play = async track => {
@@ -300,6 +314,7 @@ export const PlayerContextProvider = props => {
 		seekTo,
 		seekLevel,
 		addToQueue,
+		resetPlayer,
 
 		rate,
 		getRateText,

@@ -16,29 +16,80 @@ const TrendingSearchQueries = [
 	'hindi party songs',
 	'hindi romantic songs',
 	'hindi new song',
-	'hindi songs 2020',
+	'hindi songs 2021',
 	'hindi dance songs',
-	'new hits 2020',
+	'new hits 2021',
 	'new hits',
 	'new hits 2021',
-	'new hits 2020 remix',
-	'new hits hip hop 2020',
+	'new hits 2021 remix',
+	'new hits hip hop 2021',
 	'new hits 97.3',
-	'new hits 2020 rap',
+	'new hits 2021 rap',
 	'remix',
-	'remix 2020',
-	'new song 2020',
+	'remix 2021',
+	'new song 2021',
 	'new songs',
-	'new songs 2020',
+	'new songs 2021',
 	'new song',
 	'new songs 2021',
 	'mylie cyrus new song',
 	'english songs',
 	'english beat',
-	'english songs 2020',
+	'english songs 2021',
 	'english love affair 5sos',
 	'english music',
 	'sasageyo english',
+];
+
+export const TrendingVideoSearchQueries = [
+	'podcasts',
+	'podcasts true crime',
+	'podcasts about life',
+	'podcasts to listen to',
+	'podcasts joe rogan',
+	'podcasts about healthy living',
+	'podcasts about self love',
+	'stories',
+	'stories snowman',
+	'stories for kids',
+	'stories trapt',
+	'stories i forgot',
+	'stories brother louie',
+	'stories black clover',
+	'mashup songs',
+	'mashup',
+	'mashups',
+	'mashup t pain',
+	'mashup 2021',
+	'mashups that should be songs',
+	'top hits 2020',
+	'top hits',
+	'top hits 2020 playlist',
+	'top hits 2021',
+	'top hits 2020 clean',
+	'top hits 2000',
+	'top hits clean',
+	'new hits',
+	'top podcasts',
+	'top podcasts for motivation',
+	'joe rogan top podcasts',
+	'top podcasts 2020',
+	'top podcasts on youtube',
+	'top podcasts on spotify',
+	'top podcasts to listen to',
+	'new hits 2020',
+	'new hits 2021',
+	'new hits 2020 remix',
+	'new hits hip hop 2020',
+	'new hits 97.3',
+	'new hits 2020 rap',
+	'new movies 2020 full movie',
+	'new movies',
+	'new movies 2020 full movie action',
+	'new movies 2020',
+	'new movies of songs',
+	'new movies songs',
+	'new movies 2020 deadpool',
 ];
 
 const RecommendedSongsList = [
@@ -237,14 +288,11 @@ class Suffler {
 	}
 
 	provideARandomOrderSearchHintList() {
-		for (let i = TrendingSearchQueries.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[TrendingSearchQueries[i], TrendingSearchQueries[j]] = [
-				TrendingSearchQueries[j],
-				TrendingSearchQueries[i],
-			];
-		}
-		return TrendingSearchQueries;
+		return this.shuffleArray(TrendingSearchQueries);
+	}
+
+	provideARandomOrderSearchHintListForVideos() {
+		return this.shuffleArray(TrendingVideoSearchQueries);
 	}
 }
 

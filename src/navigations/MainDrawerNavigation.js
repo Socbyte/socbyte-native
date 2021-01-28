@@ -54,57 +54,54 @@ const DrawerNavigation = props => {
 	const setProfileImg = props.setProfileImg;
 
 	return (
-		<PlayerContextProvider>
-			<NavigationContainer theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}>
-				<DrawerNavigator.Navigator
-					screenOptions={props => {
-						return {
-							headerShown: false,
-							headerLeft: () => {
-								return (
-									<TouchableRipple
-										onPress={() => props.navigation.toggleDrawer()}>
-										<Ionicons
-											name='menu'
-											color={
-												settings.theme === 'd'
-													? COLORS.GREEN
-													: COLORS.PRIMARY
-											}
-											size={25}
-											style={{ margin: 10 }}
-										/>
-									</TouchableRipple>
-								);
-							},
-							header: () => {
-								return (
-									<Header
-										leftButton={() => {
-											props.navigation.toggleDrawer();
-										}}
-										rightButton='ellipsis-vertical'
-										// headerTitle={username}
+		// <PlayerContextProvider>
+		<NavigationContainer theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}>
+			<DrawerNavigator.Navigator
+				screenOptions={props => {
+					return {
+						headerShown: false,
+						headerLeft: () => {
+							return (
+								<TouchableRipple onPress={() => props.navigation.toggleDrawer()}>
+									<Ionicons
+										name='menu'
+										color={
+											settings.theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY
+										}
+										size={25}
+										style={{ margin: 10 }}
 									/>
-								);
-							},
-						};
-					}}
-					drawerContent={props => (
-						<MainDrawerNavigation setProfileImg={setProfileImg} {...props} />
-					)}>
-					<DrawerNavigator.Screen name='Home' component={Home} />
+								</TouchableRipple>
+							);
+						},
+						header: () => {
+							return (
+								<Header
+									leftButton={() => {
+										props.navigation.toggleDrawer();
+									}}
+									rightButton='ellipsis-vertical'
+									// headerTitle={username}
+								/>
+							);
+						},
+					};
+				}}
+				drawerContent={props => (
+					<MainDrawerNavigation setProfileImg={setProfileImg} {...props} />
+				)}>
+				<DrawerNavigator.Screen name='Home' component={Home} />
 
-					<DrawerNavigator.Screen name='Profile' component={ProfileNavigator} />
+				<DrawerNavigator.Screen name='Profile' component={ProfileNavigator} />
 
-					<DrawerNavigator.Screen name='Chats' component={ChatNavigation} />
+				<DrawerNavigator.Screen name='Chats' component={ChatNavigation} />
 
-					<DrawerNavigator.Screen name='Settings' component={SettingStack} />
+				<DrawerNavigator.Screen name='Settings' component={SettingStack} />
 
-					<DrawerNavigator.Screen name='Music' component={MusicNavigation} />
-				</DrawerNavigator.Navigator>
-			</NavigationContainer>
-		</PlayerContextProvider>
+				<DrawerNavigator.Screen name='Music' component={MusicNavigation} />
+			</DrawerNavigator.Navigator>
+		</NavigationContainer>
+		// </PlayerContextProvider>
 	);
 };
 
