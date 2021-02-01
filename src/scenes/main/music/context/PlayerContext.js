@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { ToastAndroid } from 'react-native';
+import { ToastAndroid, Vibration } from 'react-native';
 import TrackPlayer, {
 	STATE_PLAYING,
 	STATE_PAUSED,
@@ -22,10 +22,11 @@ export const PlayerContext = createContext({
 	isEmpty: false,
 	isLoading: false,
 	currentTrack: null,
-	addToQueue: () => null,
+	addToQueue: track => null,
 	resetPlayer: () => null,
+	addRecommendedSong: song => null,
 
-	play: () => null,
+	play: track => null,
 	pause: () => null,
 	loader: () => null,
 	seekTo: interval => null,
@@ -41,6 +42,8 @@ export const PlayerContext = createContext({
 	playPrev: () => null,
 	playNext: () => null,
 	themeProvider: (first, second) => null,
+
+	recommendedSongsList: [],
 });
 
 export const PlayerContextProvider = props => {
@@ -54,6 +57,7 @@ export const PlayerContextProvider = props => {
 	const [isLoading, setLoading] = useState(false);
 	const [volume, setVolume] = useState(1);
 	const [rate, setRate] = useState(1);
+	const [recommendedSongsList, setRecommendedSongsList] = useState([]);
 
 	const getRateText = () => {
 		return rate === 0.25
@@ -80,6 +84,14 @@ export const PlayerContextProvider = props => {
 			setPlayerState(state);
 		});
 
+		const playerNext = TrackPlayer.addEventListener('remote-previous', async () => {
+			playPrev();
+		});
+
+		const playerPrev = TrackPlayer.addEventListener('remote-next', async () => {
+			playNext();
+		});
+
 		TrackPlayer.addEventListener('playback-track-changed', async res => {
 			if (!res.nextTrack) {
 				// || currentTrack.id === res.track) {
@@ -101,6 +113,11 @@ export const PlayerContextProvider = props => {
 				});
 		});
 
+		TrackPlayer.addEventListener('remote-stop', () => {
+			TrackPlayer.reset();
+			setCurrentTrack(null);
+		});
+
 		(async () => {
 			await TrackPlayer.getVolume().then(res => {
 				setVolume(res);
@@ -113,28 +130,32 @@ export const PlayerContextProvider = props => {
 
 		return () => {
 			listener.remove();
+			playerNext.remove();
+			playerPrev.remove();
 		};
 	}, []);
 
-	useEffect(() => {
-		TrackPlayer.updateOptions({
-			stopWithApp: false,
-			capabilities: [
-				CAPABILITY_PLAY,
-				CAPABILITY_PAUSE,
-				CAPABILITY_STOP,
-				// CAPABILITY_SKIP,
-				// CAPABILITY_SKIP_TO_NEXT,
-				// CAPABILITY_SKIP_TO_PREVIOUS,
-				CAPABILITY_JUMP_BACKWARD,
-				CAPABILITY_JUMP_FORWARD,
-			],
-			jumpInterval: 5,
-		});
-		TrackPlayer.setupPlayer().then(async res => {});
-	}, []);
+	// useEffect(() => {
+	// 	TrackPlayer.updateOptions({
+	// 		stopWithApp: false,
+	// 		capabilities: [
+	// 			CAPABILITY_PLAY,
+	// 			CAPABILITY_PAUSE,
+	// 			CAPABILITY_STOP,
+	// 			// CAPABILITY_SKIP,
+	// 			// CAPABILITY_SKIP_TO_NEXT,
+	// 			// CAPABILITY_SKIP_TO_PREVIOUS,
+	// 			CAPABILITY_JUMP_BACKWARD,
+	// 			CAPABILITY_JUMP_FORWARD,
+	// 		],
+	// 		jumpInterval: 5,
+	// 	});
+	// 	TrackPlayer.setupPlayer().then(async res => {});
+	// }, []);
 
 	const addToQueue = async (track = {}) => {
+		Vibration.vibrate([50, 100, 250, 50]);
+
 		try {
 			await TrackPlayer.getTrack(track.id)
 				.then(async res => {
@@ -277,27 +298,49 @@ export const PlayerContextProvider = props => {
 	};
 
 	const playPrev = async () => {
-		setLoading(true);
 		TrackPlayer.skipToPrevious()
-			.then(res => {
-				setLoading(false);
-			})
+			.then(res => {})
 			.catch(err => {
-				setLoading(false);
 				console.log('ERRO WHILE PREVIOUS', err.code);
 			});
 	};
 
 	const playNext = async () => {
-		setLoading(true);
 		TrackPlayer.skipToNext()
-			.then(res => {
-				setLoading(false);
-			})
+			.then(res => {})
 			.catch(err => {
-				setLoading(false);
 				console.log('ERRO WHILE NEXT', err.code);
 			});
+	};
+
+	const arr = [
+		{
+			sadf: 1,
+		},
+	];
+
+	const addRecommendedSong = track => {
+		if (recommendedSongsList.length > 50) {
+			return;
+		}
+
+		// const recommendIsPresent = recommendedSongsList.filter(song => song.id === track.id);
+		if (recommendedSongsList.filter(song => song.id === track.id).length <= 0) {
+			const temp = recommendedSongsList;
+			temp.push(track);
+			setRecommendedSongsList(temp);
+		}
+
+		// let thresold = 5,
+		// 	ranIndex = 0,
+		// 	rate = 2;
+		// while (thresold-- && rate) {
+		// 	ranIndex = Math.floor(Math.random() * list.length);
+		// 	if (!recommendedSongsList.includes(list[ranIndex])) {
+		// 		setRecommendedSongsList(recommendedSongsList.push(list[ranIndex]));
+		// 		rate--;
+		// 	}
+		// }
 	};
 
 	const value = {
@@ -315,6 +358,7 @@ export const PlayerContextProvider = props => {
 		seekLevel,
 		addToQueue,
 		resetPlayer,
+		addRecommendedSong,
 
 		rate,
 		getRateText,
@@ -325,9 +369,39 @@ export const PlayerContextProvider = props => {
 		playPrev,
 		playNext,
 		themeProvider: whatIsTheme,
+		recommendedSongsList,
 	};
 
 	return <PlayerContext.Provider value={value}>{props.children}</PlayerContext.Provider>;
 };
 
 export const usePlayerContext = () => useContext(PlayerContext);
+
+const recommend = {
+	album: { browseId: 'UCWXJyrk1diAufFuTHCTfQ2A', name: 'Vishal & Shekhar' },
+	artist: [
+		{ browseId: 'UCWXJyrk1diAufFuTHCTfQ2A', name: 'Vishal & Shekhar' },
+		{ browseId: 'UC41L0sFqy6_Q43RGgUnJ75Q', name: 'Sunidhi Chauhan' },
+		{ browseId: 'UCfMelS8PmfNmL_PsuUS6RFQ', name: 'Benny Dayal' },
+	],
+	duration: 234000,
+	name: 'Punjabi Wedding Song (From "Hasee Toh Phasee")',
+	params: 'wAEB',
+	playlistId: 'RDAMVMHy8b8Uh9QvI',
+	thumbnails: [
+		{
+			height: 60,
+			url:
+				'https://lh3.googleusercontent.com/4ZwXVEk6RQLYtLP10MvzCLbKWJdR55fKzfQwXsZ0gqL-XWSMwmR1Q3y9DSg-VrFyfefhBAyEEDK6QaA=w60-h60-l90-rj',
+			width: 60,
+		},
+		{
+			height: 120,
+			url:
+				'https://lh3.googleusercontent.com/4ZwXVEk6RQLYtLP10MvzCLbKWJdR55fKzfQwXsZ0gqL-XWSMwmR1Q3y9DSg-VrFyfefhBAyEEDK6QaA=w120-h120-l90-rj',
+			width: 120,
+		},
+	],
+	type: 'song',
+	videoId: 'Hy8b8Uh9QvI',
+};

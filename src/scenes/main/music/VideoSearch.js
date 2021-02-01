@@ -6,10 +6,12 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	ImageBackground,
+	FlatList,
 } from 'react-native';
 
 import { Icon, ListItem, Text } from 'react-native-elements';
 import { useSelector } from 'react-redux';
+import LottieView from 'lottie-react-native';
 
 import { KEY, TrendingVideoSearchQueries, SufflerList } from '../../../val/constants/Constants';
 import COLORS from '../../../val/colors/Colors';
@@ -43,16 +45,9 @@ const SearchVideo = props => {
 		return `${minsStr}:${sec}`;
 	}
 
-	function formatArtistsList(author) {
-		if (author.length > 30) {
-			return author.substring(0, 25);
-		}
-		return author;
-	}
+	const formatArtistsList = author => (author.length > 30 ? author.substring(0, 25) : author);
 
-	function findThumbnail(thumbnail) {
-		return `${thumbnail}=w249-h249-l90-rj`;
-	}
+	const findThumbnail = thumbnail => `${thumbnail}=w260-h260-l90-rj`;
 
 	async function loadSong(item, authors = '', thumbnail, dur) {
 		// console.log(thumbnail, dur);
@@ -77,6 +72,21 @@ const SearchVideo = props => {
 			artwork: thumbnail,
 			durationEdited: dur,
 		});
+
+		// for (let i = 0; i < 3; ++i) {
+		// 	let ranListItem = searchResults[Math.floor(Math.random() * searchResults.length)];
+		// 	playerContext.addRecommendedSong({
+		// 		id: ranListItem.videoId,
+		// 		title: ranListItem.name,
+		// 		artist: formatArtistsList(ranListItem.author),
+		// 		duration: ranListItem.duration,
+		// 		artwork: findThumbnail(
+		// 			ranListItem.thumbnails[ranListItem.thumbnails.length - 1]?.url
+		// 		),
+		// 		durationEdited: formatDuration(ranListItem.duration),
+		// 	});
+		// 	// console.log(ranListItem);
+		// }
 	}
 
 	async function addSongToQueue(item, authors = '', formatedDuration, imageFormated) {
@@ -92,15 +102,28 @@ const SearchVideo = props => {
 			artwork: imageFormated,
 			durationEdited: formatedDuration,
 		});
+
+		for (let i = 0; i < 3; ++i) {
+			let ranListItem = searchResults[Math.floor(Math.random() * searchResults.length)];
+			playerContext.addRecommendedSong({
+				id: ranListItem.videoId,
+				title: ranListItem.name,
+				artist: formatArtistsList(ranListItem.author),
+				duration: ranListItem.duration,
+				artwork: findThumbnail(ranListItem.thumbnails?.url),
+				durationEdited: formatDuration(ranListItem.duration / 1000),
+			});
+			// console.log(ranListItem);
+		}
 	}
 
 	function handleInputChange(value) {
 		setAvaliability(false);
-		if (value.length > 0) {
+		if (value.length > 10) {
 			fetch(
-				`https://socbyte-backend.herokuapp.com/searchq/?query=${value.trim()}&key=${
-					KEY.API_KEY
-				}`
+				`https://socbyte-backend${
+					Math.floor(Math.random() * 10) < 5 ? '-2' : ''
+				}.herokuapp.com/searchq/?query=${value.trim()}&key=${KEY.API_KEY}`
 			)
 				.then(res => res.json())
 				.then(res => {
@@ -119,7 +142,9 @@ const SearchVideo = props => {
 		setSearchText(text);
 
 		fetch(
-			`https://socbyte-backend.herokuapp.com/video/?query=${text.trim()}&key=${KEY.API_KEY}`
+			`https://socbyte-backend${
+				Math.floor(Math.random() * 10) < 5 ? '-2' : ''
+			}.herokuapp.com/video/?query=${text.trim()}&key=${KEY.API_KEY}`
 		)
 			.then(res => res.json())
 			.then(res => {
@@ -175,7 +200,7 @@ const SearchVideo = props => {
 					maxLength={100}
 					value={searchText}
 					onChangeText={handleInputChange}
-					placeholder='Search Song...'
+					placeholder='Search More Songs...'
 					placeholderTextColor={COLORS.MID}
 				/>
 				<View style={styles.iconContainer}>
@@ -199,15 +224,10 @@ const SearchVideo = props => {
 					color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
 				/>
 			) : avaliable ? (
-				<ScrollView
-					showsVerticalScrollIndicator={false}
-					style={{
-						paddingBottom: 20,
-					}}>
-					{searchResults.map((item, index) => {
-						if (item.author.includes('Bollywood Mashup')) {
-							console.log('YUP GOT IT', item);
-						}
+				<FlatList
+					data={searchResults}
+					keyExtractor={item => item.videoId}
+					renderItem={({ item, index }) => {
 						const authors = formatArtistsList(item.author);
 						const formatedDuration = formatDuration(item.duration / 1000);
 						const foundThumbnail = findThumbnail(item.thumbnails?.url);
@@ -217,6 +237,10 @@ const SearchVideo = props => {
 								onPress={() =>
 									loadSong(item, authors, foundThumbnail, formatedDuration)
 								}
+								showsVerticalScrollIndicator={false}
+								style={{
+									paddingBottom: 20,
+								}}
 								key={item.videoId + item.playlistId + index}
 								underlayColor={whatIsTheme(COLORS.DARKPRIMARY, COLORS.BEFORELIGHT)}
 								bottomDivider
@@ -235,6 +259,24 @@ const SearchVideo = props => {
 										uri: foundThumbnail,
 									}}
 									style={styles.songImage}>
+									{playerContext.isPlaying &&
+									item.videoId === playerContext.currentTrack.id ? (
+										<LottieView
+											source={require('../../../assets/animations/waves.json')}
+											style={{
+												width: 80,
+												height: 80,
+												padding: 0,
+												margin: 0,
+												backgroundColor: `${COLORS.BLACK}30`,
+												position: 'absolute',
+											}}
+											autoPlay={true}
+											loop={true}
+											autoSize={true}
+											resizeMode='cover'
+										/>
+									) : null}
 									<Text style={styles.durationText}>{formatedDuration}</Text>
 								</ImageBackground>
 
@@ -276,8 +318,8 @@ const SearchVideo = props => {
 								/>
 							</ListItem>
 						);
-					})}
-				</ScrollView>
+					}}
+				/>
 			) : (
 				<ScrollView>
 					{searchText ? (

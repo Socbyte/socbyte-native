@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	TouchableOpacity,
 	StyleSheet,
@@ -24,7 +24,15 @@ const MiniPlayer = props => {
 		return !theme || theme === 'd' ? f : s;
 	};
 
-	if ((playerContext.isEmpty || !playerContext.currentTrack) && !playerContext.isLoading) {
+	// if ((playerContext.isEmpty || !playerContext.currentTrack) && !playerContext.isLoading) {
+	// 	return null;
+	// }
+	// this condition gives an error of
+	// undefined for this.context.currentTrack.duration in
+	// songProgressMiniplayer component since the music player is
+	// not currently loaded upto this point
+
+	if (playerContext.isEmpty || !playerContext.currentTrack) {
 		return null;
 	}
 
@@ -87,7 +95,15 @@ const MiniPlayer = props => {
 								size={33}
 								color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
 							/>
-						) : null}
+						) : (
+							<Icon
+								onPress={() => playerContext.play()}
+								name='controller-play'
+								type='entypo'
+								size={33}
+								color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+							/>
+						)}
 					</View>
 
 					<View style={[styles.iconContainer, { padding: 6 }]}>
@@ -100,6 +116,7 @@ const MiniPlayer = props => {
 						/>
 					</View>
 				</View>
+
 				<MiniplayerSongProgressSlider />
 			</View>
 		</TouchableOpacity>
@@ -111,7 +128,7 @@ const styles = StyleSheet.create({
 		// position: 'relative',
 	},
 	miniplayer: {
-		height: 53,
+		height: 55,
 		paddingTop: 3,
 		paddingBottom: 4,
 		paddingHorizontal: 5,

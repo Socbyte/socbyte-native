@@ -17,6 +17,7 @@ import ImageExists from 'image-exists';
 import Header from '../../../../components/customs/Header/Header';
 import COLORS from '../../../../val/colors/Colors';
 import { loadGroupsData, loadGroupsLastMessage } from '../../../../store/GroupsStore';
+import firebase from '../../../../firebase/Firebase';
 
 const MainChat = props => {
 	const imageValidator = /(https?:\/\/.*\.(?:png|jpg|gif))/i;
@@ -91,6 +92,20 @@ const MainChat = props => {
 		}
 		setGroupsList(tempGroup);
 	}, [group]);
+
+	useEffect(() => {
+		// firebase
+		// 	.database()
+		// 	.ref('Users')
+		// 	.orderByChild('username')
+		// 	.startAt('%sobhan%')
+		// 	.limitToFirst(5)
+		//  .endAt('sobhan' + '\uf8ff')
+		// 	.once('value')
+		// 	.then(snap => {
+		// 		console.log('AAAA', snap.val());
+		// 	});
+	}, []);
 
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

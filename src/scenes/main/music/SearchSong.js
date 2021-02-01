@@ -6,10 +6,12 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	ImageBackground,
+	FlatList,
 } from 'react-native';
 
 import { Icon, ListItem, Text } from 'react-native-elements';
 import { useSelector } from 'react-redux';
+import LottieView from 'lottie-react-native';
 
 import { KEY, TrendingSearchQueries, SufflerList } from '../../../val/constants/Constants';
 import COLORS from '../../../val/colors/Colors';
@@ -66,7 +68,7 @@ const SearchSong = props => {
 	function findThumbnail(thumbnail) {
 		//sample link -> https://lh3.googleusercontent.com/IDWg6Ino1Owzlr06w6OgWAc8JYWj8-E8xWfzE7LA2gQbbLSh090IAiPnZ1GS7b2piWL23tnPS_NvGFtg=w60-h60-l90-rj
 		const uptoEqualSign = thumbnail.split('=');
-		return `${uptoEqualSign[0]}=w249-h249-l90-rj`;
+		return `${uptoEqualSign[0]}=w260-h260-l90-rj`;
 	}
 
 	async function loadSong(item, artist = '', thumbnail, dur) {
@@ -92,6 +94,21 @@ const SearchSong = props => {
 			artwork: thumbnail,
 			durationEdited: dur,
 		});
+
+		// for (let i = 0; i < 3; ++i) {
+		// 	let ranListItem = searchResults[Math.floor(Math.random() * searchResults.length)];
+		// 	playerContext.addRecommendedSong({
+		// 		id: ranListItem.videoId,
+		// 		title: ranListItem.name,
+		// 		artist: formatArtistsList(ranListItem.artist),
+		// 		duration: ranListItem.duration,
+		// 		artwork: findThumbnail(
+		// 			ranListItem.thumbnails[ranListItem.thumbnails.length - 1]?.url
+		// 		),
+		// 		durationEdited: formatDuration(ranListItem.duration),
+		// 	});
+		// 	// console.log(ranListItem);
+		// }
 	}
 
 	async function addSongToQueue(item, authors = '', formatedDuration, imageFormated) {
@@ -107,15 +124,30 @@ const SearchSong = props => {
 			artwork: imageFormated,
 			durationEdited: formatedDuration,
 		});
+
+		for (let i = 0; i < 3; ++i) {
+			let ranListItem = searchResults[Math.floor(Math.random() * searchResults.length)];
+			playerContext.addRecommendedSong({
+				id: ranListItem.videoId,
+				title: ranListItem.name,
+				artist: formatArtistsList(ranListItem.artist),
+				duration: ranListItem.duration,
+				artwork: findThumbnail(
+					ranListItem.thumbnails[ranListItem.thumbnails.length - 1]?.url
+				),
+				durationEdited: formatDuration(ranListItem.duration),
+			});
+			// console.log(ranListItem);
+		}
 	}
 
 	function handleInputChange(value) {
 		setAvaliability(false);
-		if (value.length > 0) {
+		if (value.length > 10) {
 			fetch(
-				`https://socbyte-backend.herokuapp.com/searchq/?query=${value.trim()}&key=${
-					KEY.API_KEY
-				}`
+				`https://socbyte-backend${
+					Math.floor(Math.random() * 10) < 5 ? '-2' : ''
+				}.herokuapp.com/searchq/?query=${value.trim()}&key=${KEY.API_KEY}`
 			)
 				.then(res => res.json())
 				.then(res => {
@@ -133,7 +165,11 @@ const SearchSong = props => {
 		setSearchResult([]);
 		setSearchText(text);
 
-		fetch(`https://socbyte-backend.herokuapp.com/msc/?query=${text.trim()}&key=${KEY.API_KEY}`)
+		fetch(
+			`https://socbyte-backend${
+				Math.floor(Math.random() * 10) < 5 ? '-2' : ''
+			}.herokuapp.com/msc/?query=${text.trim()}&key=${KEY.API_KEY}`
+		)
 			.then(res => res.json())
 			.then(res => {
 				setSearchResult(res);
@@ -212,17 +248,20 @@ const SearchSong = props => {
 					color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
 				/>
 			) : avaliable ? (
-				<ScrollView
+				<FlatList
+					data={searchResults}
 					showsVerticalScrollIndicator={false}
+					keyExtractor={item => item.videoId}
 					style={{
 						paddingBottom: 20,
-					}}>
-					{searchResults.map((item, index) => {
+					}}
+					renderItem={({ item, index }) => {
 						const artistList = formatArtistsList(item.artist);
 						const formatedDuration = formatDuration(item.duration);
 						const foundThumbnail = findThumbnail(
 							item.thumbnails[item.thumbnails.length - 1]?.url
 						);
+
 						return (
 							<ListItem
 								onPress={() =>
@@ -246,6 +285,24 @@ const SearchSong = props => {
 										uri: foundThumbnail,
 									}}
 									style={styles.songImage}>
+									{playerContext.isPlaying &&
+									item.videoId === playerContext.currentTrack.id ? (
+										<LottieView
+											source={require('../../../assets/animations/waves.json')}
+											style={{
+												width: 80,
+												height: 80,
+												padding: 0,
+												margin: 0,
+												backgroundColor: `${COLORS.BLACK}30`,
+												position: 'absolute',
+											}}
+											autoPlay={true}
+											loop={true}
+											autoSize={true}
+											resizeMode='cover'
+										/>
+									) : null}
 									<Text style={styles.durationText}>{formatedDuration}</Text>
 								</ImageBackground>
 
@@ -282,83 +339,101 @@ const SearchSong = props => {
 								/>
 							</ListItem>
 						);
-					})}
-				</ScrollView>
+					}}
+				/>
 			) : (
-				<ScrollView>
-					{searchText ? (
-						<ListItem
-							// bottomDivider
-							onPress={() => showResults(searchText)}
-							underlayColor={whatIsTheme(COLORS.DARKPRIMARY, COLORS.BEFORELIGHT)}
-							containerStyle={{
-								backgroundColor: COLORS.TRANSPARENT,
-								paddingVertical: 14,
-							}}>
-							<ListItem.Content style={styles.searchHintConatiner}>
-								<ListItem.Title
-									numberOfLines={1}
-									style={whatIsTheme(styles.textDark, styles.textLight)}>
-									{searchText}
-								</ListItem.Title>
-							</ListItem.Content>
-						</ListItem>
-					) : null}
-
-					{searchHelperResults.map((result, index) => {
-						// console.log(String(result));
-						return (
+				// <ScrollView
+				// 	showsVerticalScrollIndicator={false}
+				// 	style={{
+				// 		paddingBottom: 20,
+				// 	}}>
+				// 	{searchResults.map((item, index) )}
+				// </ScrollView>
+				<ScrollView key='scrollview'>
+					<View key='random1'>
+						{searchText ? (
 							<ListItem
 								// bottomDivider
-								onPress={() => showResults(result)}
-								key={result + index}
+								onPress={() => showResults(searchText)}
 								underlayColor={whatIsTheme(COLORS.DARKPRIMARY, COLORS.BEFORELIGHT)}
-								// bottomDivider
-								containerStyle={[
-									// index === searchResults.length - 1 ? styles.lastElement : null,
-									{
-										backgroundColor: COLORS.TRANSPARENT,
-										paddingVertical: 14,
-									},
-								]}>
+								containerStyle={{
+									backgroundColor: COLORS.TRANSPARENT,
+									paddingVertical: 14,
+								}}>
 								<ListItem.Content style={styles.searchHintConatiner}>
 									<ListItem.Title
 										numberOfLines={1}
 										style={whatIsTheme(styles.textDark, styles.textLight)}>
-										{`${result}`}
+										{searchText}
 									</ListItem.Title>
 								</ListItem.Content>
 							</ListItem>
-						);
-					})}
-					{SufflerList.provideARandomOrderSearchHintList().map((result, index) => {
-						// console.log(String(result));
-						return (
-							<ListItem
-								// bottomDivider
-								onPress={() => showResults(result)}
-								key={result + index}
-								underlayColor={whatIsTheme(COLORS.DARKPRIMARY, COLORS.BEFORELIGHT)}
-								// bottomDivider
-								containerStyle={[
-									index === TrendingSearchQueries.length - 1
-										? styles.lastElement
-										: null,
-									{
-										backgroundColor: COLORS.TRANSPARENT,
-										paddingVertical: 14,
-									},
-								]}>
-								<ListItem.Content style={styles.searchHintConatiner}>
-									<ListItem.Title
-										numberOfLines={1}
-										style={whatIsTheme(styles.textDark, styles.textLight)}>
-										{`${result}`}
-									</ListItem.Title>
-								</ListItem.Content>
-							</ListItem>
-						);
-					})}
+						) : null}
+					</View>
+					<View key='random2'>
+						{searchHelperResults.map((result, index) => {
+							// console.log(String(result));
+							return (
+								<ListItem
+									// bottomDivider
+									onPress={() => showResults(result)}
+									key={result + index}
+									underlayColor={whatIsTheme(
+										COLORS.DARKPRIMARY,
+										COLORS.BEFORELIGHT
+									)}
+									// bottomDivider
+									containerStyle={[
+										// index === searchResults.length - 1 ? styles.lastElement : null,
+										{
+											backgroundColor: COLORS.TRANSPARENT,
+											paddingVertical: 14,
+										},
+									]}>
+									<ListItem.Content style={styles.searchHintConatiner}>
+										<ListItem.Title
+											numberOfLines={1}
+											style={whatIsTheme(styles.textDark, styles.textLight)}>
+											{`${result}`}
+										</ListItem.Title>
+									</ListItem.Content>
+								</ListItem>
+							);
+						})}
+					</View>
+					<View key='random3'>
+						{SufflerList.provideARandomOrderSearchHintList().map((result, index) => {
+							// console.log(String(result));
+							return (
+								<ListItem
+									// bottomDivider
+									onPress={() => showResults(result)}
+									key={result + index}
+									underlayColor={whatIsTheme(
+										COLORS.DARKPRIMARY,
+										COLORS.BEFORELIGHT
+									)}
+									// bottomDivider
+									containerStyle={[
+										index === TrendingSearchQueries.length - 1
+											? styles.lastElement
+											: null,
+										{
+											backgroundColor: COLORS.TRANSPARENT,
+											paddingVertical: 14,
+										},
+									]}>
+									<ListItem.Content style={styles.searchHintConatiner}>
+										<ListItem.Title
+											numberOfLines={1}
+											style={whatIsTheme(styles.textDark, styles.textLight)}>
+											{`${result}`}
+										</ListItem.Title>
+									</ListItem.Content>
+								</ListItem>
+							);
+						})}
+					</View>
 				</ScrollView>
 			)}
 		</View>

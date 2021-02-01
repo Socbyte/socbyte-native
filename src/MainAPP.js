@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react';
+import { Icon } from 'react-native-elements';
 
 import * as Font from 'expo-font';
 import * as AppLoading from 'expo-splash-screen';
 
 import TrackPlayer, {
+	CAPABILITY_JUMP_BACKWARD,
+	CAPABILITY_JUMP_FORWARD,
 	CAPABILITY_PAUSE,
 	CAPABILITY_PLAY,
-	CAPABILITY_SEEK_TO,
+	CAPABILITY_SKIP,
 	CAPABILITY_SKIP_TO_NEXT,
 	CAPABILITY_SKIP_TO_PREVIOUS,
 	CAPABILITY_STOP,
@@ -24,32 +27,10 @@ import COLORS from './val/colors/Colors';
 import GroupsReducer from './store/GroupsStore';
 import MessagesReducer from './store/ChatsStore';
 
-TrackPlayer.updateOptions({
-	stopWithApp: false,
-	capabilities: [
-		CAPABILITY_PLAY,
-		CAPABILITY_PAUSE,
-		CAPABILITY_STOP,
-		CAPABILITY_SEEK_TO,
-		CAPABILITY_SKIP_TO_NEXT,
-		CAPABILITY_SKIP_TO_PREVIOUS,
-	],
-});
-TrackPlayer.registerPlaybackService(() => require('./scenes/main/profileMusic/Services'));
-TrackPlayer.setupPlayer()
-	.then(async () => {
-		// TrackPlayer.setVolume(0.7);
-	})
-	.catch(err => {
-		console.log('ERROR HAPPENED', err);
-	});
-
 const CheckAfterEffects = store => {
 	return next => {
 		return action => {
 			const dispatch = next(action);
-			// console.log('STATE ->> ', store.getState());
-
 			return dispatch;
 		};
 	};
@@ -92,7 +73,6 @@ const MainAppStartEntryPoint = () => {
 				.then(result => {
 					const settings = JSON.parse(JSON.stringify(result.rows._array));
 					dispatch(loadSettings(settings));
-					// console.log('MAIN SETTINGS', settings);
 					// .then(() => {
 					// })
 					// .catch(err => {
@@ -101,9 +81,6 @@ const MainAppStartEntryPoint = () => {
 					AppLoading.hideAsync();
 				})
 				.catch(err => {
-					console.log('ERROR WHILE FETCHING LOCAL DATABASE FROM MAIN SECTION');
-					console.log(err);
-
 					// updateDatabase('email', email);
 					// updateDatabase('username', '');
 					databaseInit()
@@ -120,13 +97,11 @@ const MainAppStartEntryPoint = () => {
 							fetchDatabase()
 								.then(result => {
 									AppLoading.hideAsync();
-									console.log('2ND SUCC');
 									const settings = JSON.parse(JSON.stringify(result.rows._array));
 									dispatch(loadSettings(settings));
 								})
 								.catch(err => {
 									AppLoading.hideAsync();
-									console.log('2ND ERORR');
 								});
 						})
 						.catch(err => {
@@ -136,6 +111,44 @@ const MainAppStartEntryPoint = () => {
 						});
 				});
 		});
+	}, []);
+
+	useEffect(() => {
+		TrackPlayer.updateOptions({
+			stopWithApp: false,
+			icon: () => <Icon name='down' type='ant-design' />,
+			jumpInterval: 5,
+			color: '#4040efff',
+			capabilities: [
+				CAPABILITY_PLAY,
+				CAPABILITY_PAUSE,
+				CAPABILITY_STOP,
+				CAPABILITY_SKIP,
+				CAPABILITY_SKIP_TO_NEXT,
+				CAPABILITY_SKIP_TO_PREVIOUS,
+				CAPABILITY_JUMP_BACKWARD,
+				CAPABILITY_JUMP_FORWARD,
+			],
+			notificationCapabilities: [
+				CAPABILITY_PLAY,
+				CAPABILITY_PAUSE,
+				CAPABILITY_STOP,
+				CAPABILITY_JUMP_BACKWARD,
+				CAPABILITY_JUMP_FORWARD,
+			],
+			compactCapabilities: [
+				CAPABILITY_PLAY,
+				CAPABILITY_PAUSE,
+				CAPABILITY_STOP,
+				CAPABILITY_SKIP,
+				CAPABILITY_SKIP_TO_NEXT,
+				CAPABILITY_SKIP_TO_PREVIOUS,
+			],
+		});
+
+		TrackPlayer.registerPlaybackService(() => require('./scenes/main/profileMusic/Services'));
+
+		TrackPlayer.setupPlayer().then(async res => {});
 	}, []);
 
 	return <MainAuthNavigation />;
