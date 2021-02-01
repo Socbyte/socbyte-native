@@ -25,9 +25,9 @@ const Register = props => {
 	const { theme } = useSelector(state => state.settings.settings);
 	const dispatch = useDispatch();
 
-	const [username, setUsername] = useState('testuser');
-	const [email, setEmail] = useState('sobhanbera260@gmail.com');
-	const [password, setPassword] = useState('testuser1');
+	const [username, setUsername] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(true);
 	const [disabled, setDisabled] = useState(false);
 	const [error, setError] = useState({});
