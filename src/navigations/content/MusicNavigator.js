@@ -9,6 +9,7 @@ import SearchVideo from '../../scenes/main/music/VideoSearch';
 
 import MiniPlayer from '../../scenes/main/music/MiniPlayer';
 import MusicPlayer from '../../scenes/main/music/MusicPlayer';
+import COLORS from '../../val/colors/Colors';
 
 const MusicNavigator = createStackNavigator();
 const MusicNavigation = () => {
@@ -30,6 +31,7 @@ const MaterialBottomNavigator = createBottomTabNavigator();
 const BottomNavigator = () => {
 	return (
 		<MaterialBottomNavigator.Navigator
+			backBehavior='order'
 			tabBar={tabProps => {
 				// console.log(tabProps);
 				return <MiniPlayer {...tabProps} />;
