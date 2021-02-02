@@ -7,6 +7,8 @@ import {
 	Keyboard,
 	TouchableWithoutFeedback,
 	TouchableOpacity,
+	Linking,
+	BackHandler,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -19,10 +21,18 @@ import { databaseInit, fetchDatabase, insertDatabase, updateDatabase } from '../
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSettings } from '../../store/Settings';
 
+const termsURL = 'https://telebyte.vercel.app/terms';
+const privacyURL = 'https://telebyte.vercel.app/privacy';
+const canOpenTerms = Linking.canOpenURL(termsURL);
+const canOpenPrivacy = Linking.canOpenURL(privacyURL);
+
 const Register = props => {
 	const emailValidator = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 	const usernameValidator = /^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$/;
 	const { theme } = useSelector(state => state.settings.settings);
+	const whatIsTheme = (firstVal, secondVal) => {
+		return !theme || theme === 'd' ? firstVal : secondVal;
+	};
 	const dispatch = useDispatch();
 
 	const [username, setUsername] = useState('');
@@ -117,12 +127,12 @@ const Register = props => {
 		let time = new Date();
 
 		Firebase.database()
-			.ref('Details')
-			.child('authentication_settings')
+			.ref('App_Details')
+			.child('auth_avail')
 			.once('value')
 			.then(snap => {
 				if (snap.val()) {
-					if (snap.val().regOpen) {
+					if (snap.val().registrationOpened) {
 						Firebase.database()
 							.ref('Accounts')
 							.child(username)
@@ -204,6 +214,9 @@ const Register = props => {
 												.child(username)
 												.set({
 													uid: res.user.uid,
+													username,
+													email,
+													fullname: '',
 												});
 
 											Firebase.auth().currentUser.updateProfile({
@@ -348,10 +361,6 @@ const Register = props => {
 		props.navigation.navigate('Information');
 	};
 
-	const whatIsTheme = (firstVal, secondVal) => {
-		return !theme || theme === 'd' ? firstVal : secondVal;
-	};
-
 	const toggleTheme = () => {
 		// console.log('TOGGLE THE CURRENT THEME...');
 		const toggledTheme = whatIsTheme('l', 'd');
@@ -367,6 +376,50 @@ const Register = props => {
 			});
 	};
 
+	useEffect(() => {
+		setError({
+			header: <Text style={{ textAlign: 'center' }}>"Socbyte" Notice</Text>,
+			desc: (
+				<Text style={{ fontSize: 16 }}>
+					"Socbyte" requires the following permissions to provide services for you: access
+					the network and access storage data (to search for, download and delete songs
+					(available in future), read, write, delete, update the user settings, obtain
+					user behavior data and function settings (this is done to improve your user
+					experience) and read phone-state (to provide a personalized recommendations).
+					For more details, refer to the{' '}
+					<Text
+						style={{ color: whatIsTheme(COLORS.GREEN, COLORS.PRIMARY) }}
+						onPress={async () => {
+							if (canOpenPrivacy) {
+								await Linking.openURL(privacyURL);
+							}
+						}}>
+						Socbyte Privacy Statement
+					</Text>
+					{' and '}
+					<Text
+						style={{ color: whatIsTheme(COLORS.GREEN, COLORS.PRIMARY) }}
+						onPress={async () => {
+							if (canOpenTerms) {
+								await Linking.openURL(termsURL);
+							}
+						}}>
+						Socbyte Terms And Conditions
+					</Text>
+					<Text style={{ color: COLORS.MID, fontSize: 13 }}>
+						{
+							'\n\nBy tapping on Agree you are deemed to have agreed to the above contents.'
+						}
+					</Text>
+				</Text>
+			),
+			primary: 'Agree',
+			primaryFunction: () => setError(false),
+			secondary: <Text style={{ color: COLORS.MID }}>Exit</Text>,
+			secondaryFuntion: () => BackHandler.exitApp(),
+		});
+	}, []);
+
 	return (
 		<View style={styles.screen}>
 			{loading ? <FullScreenLoading loadingType={true} /> : null}
@@ -381,6 +434,8 @@ const Register = props => {
 					primaryFunction={
 						error.primaryFunction ? error.primaryFunction : setError(false)
 					}
+					secondary={error.secondary ? error.secondary : null}
+					secondaryFuntion={error.secondaryFuntion ? error.secondaryFuntion : null}
 				/>
 			) : null}
 

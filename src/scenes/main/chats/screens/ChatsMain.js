@@ -93,19 +93,19 @@ const MainChat = props => {
 		setGroupsList(tempGroup);
 	}, [group]);
 
-	useEffect(() => {
-		firebase
-			.database()
-			.ref('Users')
-			.orderByChild('username')
-			.startAt('%sobhan%')
-			.limitToFirst(5)
-			.endAt('sobhan' + '\uf8ff')
-			.once('value')
-			.then(snap => {
-				console.log('AAAA', snap.val());
-			});
-	}, []);
+	// useEffect(() => {
+	// 	firebase
+	// 		.database()
+	// 		.ref('Users')
+	// 		.orderByChild('username')
+	// 		.startAt('%sobhan%')
+	// 		.limitToFirst(5)
+	// 		.endAt('sobhan' + '\uf8ff')
+	// 		.once('value')
+	// 		.then(snap => {
+	// 			console.log('AAAA', snap.val());
+	// 		});
+	// }, []);
 
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

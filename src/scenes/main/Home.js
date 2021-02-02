@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import ytdl from 'react-native-ytdl';
 
 import COLORS from '../../val/colors/Colors';
+import Firebase from '../../firebase/Firebase';
 
 const Home = props => {
 	const [menu, setMenu] = useState(false);

@@ -381,6 +381,7 @@ const DrawerNavigation = props => {
 		// <PlayerContextProvider>
 		<NavigationContainer theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}>
 			<DrawerNavigator.Navigator
+				backBehavior='initialRoute'
 				screenOptions={props => {
 					return {
 						headerShown: false,

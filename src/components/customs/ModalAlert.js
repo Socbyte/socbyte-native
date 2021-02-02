@@ -1,17 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import {
+	StyleSheet,
+	View,
+	Text,
+	Modal,
+	TouchableOpacity,
+	TouchableWithoutFeedback,
+} from 'react-native';
 import { useSelector } from 'react-redux';
 import { fetchDatabase } from '../../sql/SQLStarter';
 import COLORS from '../../val/colors/Colors';
 
-const ModalAlert = ({ header, description, visible, primary, secondary, disableFunction, primaryFunction, secondaryFuntion }) => {
+const ModalAlert = ({
+	header,
+	description,
+	visible,
+	primary,
+	secondary,
+	disableFunction,
+	primaryFunction,
+	secondaryFuntion,
+	cancellable,
+}) => {
 	const [theme, setTheme] = useState();
 
 	useEffect(() => {
 		fetchDatabase()
 			.then(res => {
 				const settings = JSON.parse(JSON.stringify(res.rows._array));
-				for (let i in settings) if (settings[i].key === 'theme') setTheme(settings[i].value);
+				for (let i in settings)
+					if (settings[i].key === 'theme') setTheme(settings[i].value);
 			})
 			.catch(err => {
 				setTheme(false);
@@ -20,7 +38,7 @@ const ModalAlert = ({ header, description, visible, primary, secondary, disableF
 
 	return (
 		<Modal transparent={true} visible={visible}>
-			<TouchableWithoutFeedback onPress={() => disableFunction({})}>
+			<TouchableWithoutFeedback onPress={() => (cancellable ? disableFunction({}) : {})}>
 				<View
 					style={{
 						backgroundColor: COLORS.SOMEWHATDARKALPHA,
@@ -28,23 +46,65 @@ const ModalAlert = ({ header, description, visible, primary, secondary, disableF
 						justifyContent: 'center',
 						alignItems: 'center',
 					}}>
-					<View style={[styles.inside, !theme ? null : theme === 'd' ? null : styles.darkLight]}>
-						<Text style={[styles.heading, !theme ? null : theme === 'd' ? null : styles.darkLight]}>{header}</Text>
-						<Text style={[styles.description, !theme ? null : theme === 'd' ? null : styles.darkLight]}>{description}</Text>
-						<View style={[styles.buttonsArea, !theme ? null : theme === 'd' ? null : styles.darkLight]}>
+					<View
+						style={[
+							styles.inside,
+							!theme ? null : theme === 'd' ? null : styles.darkLight,
+						]}>
+						<Text
+							style={[
+								styles.heading,
+								!theme ? null : theme === 'd' ? null : styles.darkLight,
+							]}>
+							{header}
+						</Text>
+						<Text
+							style={[
+								styles.description,
+								!theme ? null : theme === 'd' ? null : styles.darkLight,
+							]}>
+							{description}
+						</Text>
+						<View
+							style={[
+								styles.buttonsArea,
+								!theme ? null : theme === 'd' ? null : styles.darkLight,
+							]}>
 							{secondary ? (
-								<TouchableOpacity onPress={() => (secondaryFuntion ? secondaryFuntion() : disableFunction({}))}>
+								<TouchableOpacity
+									onPress={() =>
+										secondaryFuntion ? secondaryFuntion() : disableFunction({})
+									}>
 									<View style={styles.buttonView}>
-										<Text style={[styles.buttonText, !theme ? null : theme === 'd' ? null : styles.buttonTextLight]}>
+										<Text
+											style={[
+												styles.buttonText,
+												!theme
+													? null
+													: theme === 'd'
+													? null
+													: styles.buttonTextLight,
+											]}>
 											{secondary}
 										</Text>
 									</View>
 								</TouchableOpacity>
 							) : null}
 							{primary ? (
-								<TouchableOpacity onPress={() => (primaryFunction ? primaryFunction() : disableFunction({}))}>
+								<TouchableOpacity
+									onPress={() =>
+										primaryFunction ? primaryFunction() : disableFunction({})
+									}>
 									<View style={styles.buttonView}>
-										<Text style={[styles.buttonText, !theme ? null : theme === 'd' ? null : styles.buttonTextLight]}>
+										<Text
+											style={[
+												styles.buttonText,
+												!theme
+													? null
+													: theme === 'd'
+													? null
+													: styles.buttonTextLight,
+											]}>
 											{primary}
 										</Text>
 									</View>
@@ -52,7 +112,17 @@ const ModalAlert = ({ header, description, visible, primary, secondary, disableF
 							) : (
 								<TouchableOpacity onPress={() => disableFunction({})}>
 									<View style={styles.buttonView}>
-										<Text style={[styles.buttonText, !theme ? null : theme === 'd' ? null : styles.buttonTextLight]}>Okay!</Text>
+										<Text
+											style={[
+												styles.buttonText,
+												!theme
+													? null
+													: theme === 'd'
+													? null
+													: styles.buttonTextLight,
+											]}>
+											Okay!
+										</Text>
 									</View>
 								</TouchableOpacity>
 							)}
@@ -66,10 +136,10 @@ const ModalAlert = ({ header, description, visible, primary, secondary, disableF
 
 const styles = StyleSheet.create({
 	inside: {
-		padding: 10,
+		padding: 7,
 		backgroundColor: COLORS.DARKSECONDARY,
 		borderRadius: 7,
-		width: '80%',
+		width: '83%',
 		// flex: 1,
 		// margin: 30,
 		// padding: 50,
@@ -78,7 +148,10 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		fontFamily: 'roboto',
 		padding: 10,
+		paddingTop: 5,
+		paddingHorizontal: 3,
 		color: COLORS.WHITE,
+		textAlign: 'center',
 	},
 	description: {
 		fontSize: 15,
