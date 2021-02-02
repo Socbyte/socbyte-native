@@ -202,6 +202,10 @@ const Profile = props => {
 		}
 	};
 
+	const openUserSearch = () => {
+		props.navigation.navigate('ProfileSearch');
+	};
+
 	const updateProfileStatus = () => {
 		props.navigation.navigate('EditProfilePart', { part: 'status', edit: true });
 	};
@@ -343,6 +347,16 @@ const Profile = props => {
 					COLORS.TRANSPARENT,
 					vibrants.vibrant ? vibrants.vibrant : null
 				)}
+				renderRightActions
+				extraButtons={[
+					{
+						name: 'search',
+						type: 'material-icon',
+						size: 24,
+						color: COLORS.WHITE,
+						onPress: openUserSearch,
+					},
+				]}
 			/>
 
 			<ScrollView>

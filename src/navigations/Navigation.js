@@ -12,6 +12,7 @@ import FullScreenLoading from '../components/customs/FullScreenLoading';
 import { loadUserData } from '../store/MainStore';
 import { fetchDatabase } from '../sql/SQLStarter';
 import { loadSettings } from '../store/Settings';
+import { PlayerContextProvider } from '../scenes/main/music/context/PlayerContext';
 
 class MainNavigation extends Component {
 	constructor() {
@@ -136,7 +137,11 @@ class MainNavigation extends Component {
 		if (this.state.showLoading) {
 			return <FullScreenLoading loadingType={this.state.loadingType} />;
 		} else if (this.state.user) {
-			return <DrawerNavigation />;
+			return (
+				<PlayerContextProvider>
+					<DrawerNavigation />
+				</PlayerContextProvider>
+			);
 		} else if (!this.state.user) {
 			return <AuthStackNavigation />;
 		}

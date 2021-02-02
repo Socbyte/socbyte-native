@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Vibration, View } from 'react-native';
 import {
 	IconButton,
 	Button,
@@ -13,15 +13,17 @@ import { Ionicons } from '@expo/vector-icons';
 import ytdl from 'react-native-ytdl';
 
 import COLORS from '../../val/colors/Colors';
+import Firebase from '../../firebase/Firebase';
 
 const Home = props => {
 	const [menu, setMenu] = useState(false);
 
 	useEffect(() => {
+		// console.log('NOPE');
 		// async function loadThisSongData() {
-		// 	const youtubeURL = 'http://www.youtube.com/watch?v=MgGMoAHcM18';
+		// 	const youtubeURL = `http://www.youtube.com/watch?v=${RecommendedSongsList[i].id}`;
 		// 	const urls = await ytdl(youtubeURL, { quality: 'highestaudio' });
-		// 	console.log(urls[0].url);
+		// 	console.log(RecommendedSongsList[i].title, urls[0].url);
 		// }
 		// loadThisSongData();
 	}, []);
@@ -73,9 +75,7 @@ const Home = props => {
 								onPress={() => {
 									props.navigation.toggleDrawer();
 								}}
-								icon={() => (
-									<Ionicons name='menu' color={COLORS.DARKSECONDARY} size={26} />
-								)}
+								icon={() => <Ionicons name='menu' color={COLORS.MID} size={26} />}
 							/>
 						}>
 						<Menu.Item onPress={() => {}} title='Item 1' />

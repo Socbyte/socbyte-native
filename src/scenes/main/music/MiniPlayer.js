@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	TouchableOpacity,
 	StyleSheet,
@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 
 import { usePlayerContext } from './context/PlayerContext';
 import COLORS from '../../../val/colors/Colors';
+import { MiniplayerSongProgressSlider } from './SongProgress';
 
 const MiniPlayer = props => {
 	const playerContext = usePlayerContext();
@@ -23,7 +24,15 @@ const MiniPlayer = props => {
 		return !theme || theme === 'd' ? f : s;
 	};
 
-	if ((playerContext.isEmpty || !playerContext.currentTrack) && !playerContext.isLoading) {
+	// if ((playerContext.isEmpty || !playerContext.currentTrack) && !playerContext.isLoading) {
+	// 	return null;
+	// }
+	// this condition gives an error of
+	// undefined for this.context.currentTrack.duration in
+	// songProgressMiniplayer component since the music player is
+	// not currently loaded upto this point
+
+	if (playerContext.isEmpty || !playerContext.currentTrack) {
 		return null;
 	}
 
@@ -86,29 +95,29 @@ const MiniPlayer = props => {
 								size={33}
 								color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
 							/>
-						) : null}
-					</View>
-					{/* <View style={[styles.iconContainer, { padding: 6 }]}>
-						{playerContext.isPlaying ||
-						playerContext.isPaused ||
-						playerContext.isLoading ? (
+						) : (
 							<Icon
-								onPress={() => playerContext.seekTo(10)}
-								name='spinner-rotate-forward'
-								type='fontisto'
-								size={23}
+								onPress={() => playerContext.play()}
+								name='controller-play'
+								type='entypo'
+								size={33}
 								color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
 							/>
-						) : null} */}
-					{/* <Icon
-							onPress={() => playerContext.seekTo(10)}
-							name='spinner-rotate-forward'
-							type='fontisto'
-							size={23}
+						)}
+					</View>
+
+					<View style={[styles.iconContainer, { padding: 6 }]}>
+						<Icon
+							onPress={() => playerContext.resetPlayer()}
+							name='clear'
+							type='material-icons'
+							size={30}
 							color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
-						/> */}
-					{/* </View> */}
+						/>
+					</View>
 				</View>
+
+				<MiniplayerSongProgressSlider />
 			</View>
 		</TouchableOpacity>
 	);
@@ -119,7 +128,7 @@ const styles = StyleSheet.create({
 		// position: 'relative',
 	},
 	miniplayer: {
-		height: 53,
+		height: 55,
 		paddingTop: 3,
 		paddingBottom: 4,
 		paddingHorizontal: 5,

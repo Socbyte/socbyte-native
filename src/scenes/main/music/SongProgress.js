@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { ProgressComponent } from 'react-native-track-player';
 import { Text, Slider } from 'react-native-elements';
 import { PlayerContext } from './context/PlayerContext';
@@ -25,7 +25,13 @@ class SongProgressSlider extends ProgressComponent {
 
 	render() {
 		return (
-			<>
+			<View
+				style={{
+					width: '100%',
+					flexDirection: 'row',
+					justifyContent: 'space-around',
+					alignItems: 'center',
+				}}>
 				<View>
 					<Text
 						style={{
@@ -38,11 +44,15 @@ class SongProgressSlider extends ProgressComponent {
 					allowTouchTrack={true}
 					animateTransitions={true}
 					animationType='timing'
-					style={{ padding: 1, width: '65%', marginVertical: 15 }}
+					style={{
+						padding: 1,
+						width: '65%',
+						marginVertical: 15,
+					}}
 					minimumValue={0}
 					maximumValue={this.context.currentTrack.duration / 1000}
 					value={this.state.position}
-					step={0.01}
+					step={0.001}
 					onSlidingComplete={value => {
 						// console.log(value);
 						this.context.seekLevel(value);
@@ -54,8 +64,8 @@ class SongProgressSlider extends ProgressComponent {
 					}}
 					minimumTrackTintColor={this.context.themeProvider(COLORS.WHITE, COLORS.BLACK)}
 					maximumTrackTintColor={this.context.themeProvider(
-						COLORS.DARKGLOW,
-						COLORS.DARKFORLIGHT
+						COLORS.WHITEINDARKVIDIBLE,
+						COLORS.DARKINLIGHTVIDIBLE
 					)}
 					thumbStyle={{
 						borderRadius: 100,
@@ -72,11 +82,49 @@ class SongProgressSlider extends ProgressComponent {
 						{this.context.currentTrack.durationEdited}
 					</Text>
 				</View>
-			</>
+			</View>
 		);
 	}
 }
 
-const styles = StyleSheet.create({});
+export class MiniplayerSongProgressSlider extends ProgressComponent {
+	static contextType = PlayerContext;
+
+	render() {
+		return (
+			<View style={{ padding: 0, margin: 0, alignItems: 'center', justifyContent: 'center' }}>
+				<Slider
+					disabled
+					animateTransitions={true}
+					animationType='timing'
+					style={{
+						width: '100%',
+						height: 3,
+					}}
+					minimumValue={0}
+					maximumValue={this.context.currentTrack.duration / 1000}
+					value={this.state.position}
+					step={0.001}
+					trackStyle={{
+						height: 3,
+						backgroundColor: COLORS.DARKINLIGHTVIDIBLE,
+						borderRadius: 0,
+					}}
+					thumbStyle={{
+						height: 3,
+						width: 3,
+						borderRadius: 0,
+						backgroundColor: this.context.themeProvider(COLORS.WHITE, COLORS.BLACK),
+					}}
+					minimumTrackTintColor={this.context.themeProvider(COLORS.WHITE, COLORS.BLACK)}
+					maximumTrackTintColor={this.context.themeProvider(
+						COLORS.DARKGLOW,
+						COLORS.DARKFORLIGHT
+					)}
+				/>
+			</View>
+		);
+	}
+}
 
 export default SongProgressSlider;

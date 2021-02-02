@@ -47,66 +47,51 @@ import ChatNavigation from '../scenes/main/chats/ChatNavigation';
 import MusicNavigation from './content/MusicNavigator';
 import { PlayerContextProvider } from '../scenes/main/music/context/PlayerContext';
 
-const DrawerNavigator = createDrawerNavigator();
-const DrawerNavigation = props => {
-	const settings = useSelector(state => state.settings.settings);
-
-	const setProfileImg = props.setProfileImg;
-
+function PureDrawerItem({ onPress, theme, extraStyles, identity, selected, iconName, customIcon }) {
 	return (
-		<PlayerContextProvider>
-			<NavigationContainer theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}>
-				<DrawerNavigator.Navigator
-					screenOptions={props => {
-						return {
-							headerShown: false,
-							headerLeft: () => {
-								return (
-									<TouchableRipple
-										onPress={() => props.navigation.toggleDrawer()}>
-										<Ionicons
-											name='menu'
-											color={
-												settings.theme === 'd'
-													? COLORS.GREEN
-													: COLORS.PRIMARY
-											}
-											size={25}
-											style={{ margin: 10 }}
-										/>
-									</TouchableRipple>
-								);
-							},
-							header: () => {
-								return (
-									<Header
-										leftButton={() => {
-											props.navigation.toggleDrawer();
-										}}
-										rightButton='ellipsis-vertical'
-										// headerTitle={username}
-									/>
-								);
-							},
-						};
-					}}
-					drawerContent={props => (
-						<MainDrawerNavigation setProfileImg={setProfileImg} {...props} />
-					)}>
-					<DrawerNavigator.Screen name='Home' component={Home} />
-
-					<DrawerNavigator.Screen name='Profile' component={ProfileNavigator} />
-
-					<DrawerNavigator.Screen name='Chats' component={ChatNavigation} />
-
-					<DrawerNavigator.Screen name='Settings' component={SettingStack} />
-
-					<DrawerNavigator.Screen name='Music' component={MusicNavigation} />
-				</DrawerNavigator.Navigator>
-			</NavigationContainer>
-		</PlayerContextProvider>
+		<DrawerItem
+			icon={({ color, size }) => {
+				return (
+					<View>
+						{customIcon ? (
+							customIcon
+						) : (
+							<MaterialCommunityIcons
+								name={iconName}
+								size={size}
+								color={
+									selected === identity[0]
+										? theme === 'd'
+											? COLORS.GREEN
+											: COLORS.PRIMARY
+										: COLORS.DARKFORLIGHT
+								}
+							/>
+						)}
+					</View>
+				);
+			}}
+			label={identity[1]}
+			labelStyle={
+				selected === identity[0]
+					? theme === 'd'
+						? styles.labelDark
+						: styles.labelLight
+					: theme === 'd'
+					? styles.labelDisabledDark
+					: styles.labelDisabledLight
+			}
+			focused={selected === identity[0]}
+			activeTintColor={theme === 'd' ? COLORS.WHITE : COLORS.DARKGLOW}
+			activeBackgroundColor={theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT}
+			style={[
+				theme === 'd' ? styles.drawerOptionsDark : styles.drawerOptionsLight,
+				extraStyles ? extraStyles : styles.NONE,
+			]}
+			onPress={onPress}
+		/>
 	);
-};
+}
 
 const MainDrawerNavigation = props => {
 	const { theme } = useSelector(state => state.settings.settings);
@@ -386,51 +371,64 @@ const MainDrawerNavigation = props => {
 	);
 };
 
-function PureDrawerItem({ onPress, theme, extraStyles, identity, selected, iconName, customIcon }) {
+const DrawerNavigator = createDrawerNavigator();
+const DrawerNavigation = props => {
+	const settings = useSelector(state => state.settings.settings);
+
+	const setProfileImg = props.setProfileImg;
+
 	return (
-		<DrawerItem
-			icon={({ color, size }) => {
-				return (
-					<View>
-						{customIcon ? (
-							customIcon
-						) : (
-							<MaterialCommunityIcons
-								name={iconName}
-								size={size}
-								color={
-									selected === identity[0]
-										? theme === 'd'
-											? COLORS.GREEN
-											: COLORS.PRIMARY
-										: COLORS.DARKFORLIGHT
-								}
-							/>
-						)}
-					</View>
-				);
-			}}
-			label={identity[1]}
-			labelStyle={
-				selected === identity[0]
-					? theme === 'd'
-						? styles.labelDark
-						: styles.labelLight
-					: theme === 'd'
-					? styles.labelDisabledDark
-					: styles.labelDisabledLight
-			}
-			focused={selected === identity[0]}
-			activeTintColor={theme === 'd' ? COLORS.WHITE : COLORS.DARKGLOW}
-			activeBackgroundColor={theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT}
-			style={[
-				theme === 'd' ? styles.drawerOptionsDark : styles.drawerOptionsLight,
-				extraStyles ? extraStyles : styles.NONE,
-			]}
-			onPress={onPress}
-		/>
+		// <PlayerContextProvider>
+		<NavigationContainer theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}>
+			<DrawerNavigator.Navigator
+				backBehavior='initialRoute'
+				screenOptions={props => {
+					return {
+						headerShown: false,
+						headerLeft: () => {
+							return (
+								<TouchableRipple onPress={() => props.navigation.toggleDrawer()}>
+									<Ionicons
+										name='menu'
+										color={
+											settings.theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY
+										}
+										size={25}
+										style={{ margin: 10 }}
+									/>
+								</TouchableRipple>
+							);
+						},
+						header: () => {
+							return (
+								<Header
+									leftButton={() => {
+										props.navigation.toggleDrawer();
+									}}
+									rightButton='ellipsis-vertical'
+									// headerTitle={username}
+								/>
+							);
+						},
+					};
+				}}
+				drawerContent={props => (
+					<MainDrawerNavigation setProfileImg={setProfileImg} {...props} />
+				)}>
+				<DrawerNavigator.Screen name='Home' component={Home} />
+
+				<DrawerNavigator.Screen name='Profile' component={ProfileNavigator} />
+
+				<DrawerNavigator.Screen name='Chats' component={ChatNavigation} />
+
+				<DrawerNavigator.Screen name='Settings' component={SettingStack} />
+
+				<DrawerNavigator.Screen name='Music' component={MusicNavigation} />
+			</DrawerNavigator.Navigator>
+		</NavigationContainer>
+		// </PlayerContextProvider>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	drawerBottomSection: {
