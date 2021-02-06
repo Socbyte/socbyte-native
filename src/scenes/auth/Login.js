@@ -164,6 +164,7 @@ const Login = props => {
 
 			{error ? (
 				<ModalAlert
+					cancellable
 					header={error.header}
 					description={error.desc}
 					disableFunction={setError}
@@ -249,7 +250,7 @@ const Login = props => {
 								style={{ marginLeft: 8 }}
 								name={showPassword ? 'eye-off' : 'eye'}
 								size={20}
-								color={COLORS.WHITE}
+								color={whatIsTheme(COLORS.WHITE, COLORS.DARKPRIMARY)}
 							/>
 						</TouchableOpacity>
 					</View>

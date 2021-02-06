@@ -91,7 +91,7 @@ const Header = ({
 								// name='return-up-back-outline'
 								name='keyboard-backspace'
 								type='material-community-icons'
-								size={26}
+								size={24}
 								color={
 									backgroundColor
 										? ISDARKCOLOR.colorIsLight(backgroundColor)
@@ -121,7 +121,7 @@ const Header = ({
 														COLORS.DARKSECONDARY
 												  )
 										}
-										size={26}
+										size={24}
 									/>
 								)}
 							/>

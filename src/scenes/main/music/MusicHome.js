@@ -8,7 +8,6 @@ import {
 	RefreshControl,
 	Dimensions,
 	ToastAndroid,
-	Vibration,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActivityIndicator } from 'react-native-paper';
@@ -19,6 +18,7 @@ import { KEY } from '../../../val/constants/Constants';
 import { usePlayerContext } from './context/PlayerContext';
 import ytdl from 'react-native-ytdl';
 import LottieView from 'lottie-react-native';
+import { EnglishSongs, HindiHits } from '../../../val/constants/SongsList';
 
 const MusicHome = props => {
 	const { theme } = useSelector(state => state.settings.settings);
@@ -26,18 +26,14 @@ const MusicHome = props => {
 		return !theme || theme === 'd' ? f : s;
 	};
 
-	let mainindex = 1;
-
 	const playerContext = usePlayerContext();
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 
 	const [refreshing, setRefresing] = useState(false);
 	const [reload, setReload] = useState(false);
 	const [loading, setLoading] = useState(true);
 
 	const [data, setData] = useState([]);
-	const [englishData, setEnglishData] = useState([]);
-	const [hindiData, setHindiData] = useState([]);
 
 	function formatDuration(num) {
 		function numPadding(n, z) {
@@ -70,13 +66,13 @@ const MusicHome = props => {
 	function findThumbnail(thumbnail) {
 		//sample link -> https://lh3.googleusercontent.com/IDWg6Ino1Owzlr06w6OgWAc8JYWj8-E8xWfzE7LA2gQbbLSh090IAiPnZ1GS7b2piWL23tnPS_NvGFtg=w60-h60-l90-rj
 		const uptoEqualSign = thumbnail.split('=');
-		return `${uptoEqualSign[0]}=w260-h260-l90-rj`;
+		return `${uptoEqualSign[0]}=w400-h400-l90-rj`;
 	}
 
 	function findThumbnailHigh(thumbnail) {
 		//sample link -> https://lh3.googleusercontent.com/IDWg6Ino1Owzlr06w6OgWAc8JYWj8-E8xWfzE7LA2gQbbLSh090IAiPnZ1GS7b2piWL23tnPS_NvGFtg=w60-h60-l90-rj
 		const uptoEqualSign = thumbnail.split('=');
-		return `${uptoEqualSign[0]}=w300-h300-l90-rj`;
+		return `${uptoEqualSign[0]}=w400-h400-l90-rj`;
 	}
 
 	const onRefresh = useCallback(() => {
@@ -94,7 +90,6 @@ const MusicHome = props => {
 		// 	image: findThumbnail(item.thumbnails[item.thumbnails.length - 1]?.url),
 		// });
 
-		playerContext.loader();
 		const youtubeURL = `http://www.youtube.com/watch?v=${item.videoId}`;
 		const urls = await ytdl(youtubeURL, { quality: 'highestaudio' });
 
@@ -151,6 +146,57 @@ const MusicHome = props => {
 		});
 	}
 
+	async function playSongDirect(item, list) {
+		playerContext.play({
+			id: item.videoId,
+			title: item.name,
+			artist: item.artist,
+			duration: item.duration,
+			url: item.url,
+			artwork: item.thumbnails,
+			durationEdited: item.formatedDuration,
+		});
+
+		for (let i = 0; i < 2; ++i) {
+			let ranListItem = list[Math.floor(Math.random() * list.length)];
+			playerContext.addRecommendedSong({
+				id: ranListItem.videoId,
+				title: ranListItem.name,
+				artist: formatArtistsList(ranListItem.artist),
+				duration: ranListItem.duration,
+				artwork: findThumbnail(
+					ranListItem.thumbnails[ranListItem.thumbnails.length - 1]?.url
+				),
+				durationEdited: formatDuration(ranListItem.duration),
+			});
+		}
+	}
+
+	async function addSongToQueueDirect(item, list) {
+		playerContext.addToQueue({
+			id: item.videoId,
+			title: item.name,
+			artist: item.artist,
+			duration: item.duration,
+			url: item.url,
+			artwork: item.thumbnails,
+			durationEdited: item.formatedDuration,
+		});
+		for (let i = 0; i < 2; ++i) {
+			let ranListItem = list[Math.floor(Math.random() * list.length)];
+			playerContext.addRecommendedSong({
+				id: ranListItem.videoId,
+				title: ranListItem.name,
+				artist: formatArtistsList(ranListItem.artist),
+				duration: ranListItem.duration,
+				artwork: findThumbnail(
+					ranListItem.thumbnails[ranListItem.thumbnails.length - 1]?.url
+				),
+				durationEdited: formatDuration(ranListItem.duration),
+			});
+		}
+	}
+
 	function openSongSearch() {
 		props.navigation.navigate('SearchSong');
 	}
@@ -171,60 +217,26 @@ const MusicHome = props => {
 	}
 
 	useEffect(() => {
-		const ran = Math.floor(Math.random() * 10);
-
 		setLoading(true);
 		fetch(
 			`https://socbyte-backend${
-				ran < 5 ? '-2' : ''
+				Math.floor(Math.random() * 10) < 5 ? '-2' : ''
 			}.herokuapp.com/msc/?query=today's%20top%20hindi%20songs&key=${KEY.API_KEY}`
 		)
 			.then(res => res.json())
 			.then(res => {
+				setLoading(false);
+				setRefresing(false);
 				setData(shuffleArray(res));
-				setLoading(false);
-				setRefresing(false);
 				return res;
 			})
 			.catch(err => {
+				setLoading(false);
+				setRefresing(false);
 				console.log('2.ERROR LOADING MUSIC DATA IN MUSIC HOME TAB', err);
-				setLoading(false);
-				setRefresing(false);
 			});
-		fetch(
-			`https://socbyte-backend${
-				ran < 5 ? '-2' : ''
-			}.herokuapp.com/msc/?query=top%20english%20songs&key=${KEY.API_KEY}`
-		)
-			.then(res => res.json())
-			.then(res => {
-				setEnglishData(shuffleArray(res));
-				setLoading(false);
-				setRefresing(false);
-				return res;
-			})
-			.catch(err => {
-				console.log('3.ERROR LOADING MUSIC DATA IN MUSIC HOME TAB', err);
-				setLoading(false);
-				setRefresing(false);
-			});
-		fetch(
-			`https://socbyte-backend${
-				ran < 5 ? '-2' : ''
-			}.herokuapp.com/msc/?query=hindi%20hits&key=${KEY.API_KEY}`
-		)
-			.then(res => res.json())
-			.then(res => {
-				setHindiData(shuffleArray(res));
-				setLoading(false);
-				setRefresing(false);
-				return res;
-			})
-			.catch(err => {
-				console.log('4.ERROR LOADING MUSIC DATA IN MUSIC HOME TAB', err);
-				setLoading(false);
-				setRefresing(false);
-			});
+
+		// there were three listeners for fetching songs but since the server load increased so two are removed
 	}, [reload]);
 
 	return (
@@ -264,13 +276,13 @@ const MusicHome = props => {
 					/>
 				}>
 				{loading ? (
-					<View key='asdfasdf5' style={styles.loader}>
+					<View key='randomval1' style={styles.loader}>
 						<ActivityIndicator animating size={38} color={COLORS.BLUE_FAV} />
 					</View>
 				) : (
-					<View key='asdfasdf6'>
+					<View key='randomval2'>
 						{/* HINDI TITLE */}
-						<View key='asdfasdf' style={styles.titleContainer}>
+						<View key='randomval3' style={styles.titleContainer}>
 							<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
 								Today's Hindi Hits
 							</Text>
@@ -282,7 +294,6 @@ const MusicHome = props => {
 							const imageFormated = findThumbnail(
 								item.thumbnails[item.thumbnails.length - 1]?.url
 							);
-							mainindex++;
 							return (
 								<ListItem
 									onPress={() =>
@@ -308,7 +319,7 @@ const MusicHome = props => {
 											imageFormated
 										);
 									}}
-									key={item.videoId + mainindex}
+									key={item.videoId}
 									underlayColor={whatIsTheme(
 										COLORS.DARKPRIMARY,
 										COLORS.BEFORELIGHT
@@ -352,16 +363,19 @@ const MusicHome = props => {
 
 									<ListItem.Content style={styles.fullContainer}>
 										<ListItem.Title
+											key='random1'
 											numberOfLines={2}
 											style={whatIsTheme(styles.textDark, styles.textLight)}>
 											{item.name}
 										</ListItem.Title>
 										<ListItem.Subtitle
+											key='random2'
 											numberOfLines={1}
 											style={{ color: COLORS.MID }}>
 											{formatArtistsList(item.artist)}
 										</ListItem.Subtitle>
 										<ListItem.Subtitle
+											key='random3'
 											numberOfLines={1}
 											style={{ color: COLORS.MID }}>
 											Duration: {formatedDuration}
@@ -385,248 +399,208 @@ const MusicHome = props => {
 								</ListItem>
 							);
 						})}
-
-						{/* NEW TITLE */}
-						<View key='asdfasdf3' style={styles.titleContainer}>
-							<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
-								Hindi Hits
-							</Text>
-						</View>
-
-						<View key='asdfasdf4'>
-							<ScrollView
-								horizontal
-								snapToInterval={Dimensions.get('window').width}
-								snapToAlignment='center'
-								decelerationRate='fast'
-								showsHorizontalScrollIndicator={false}
-								style={{
-									paddingBottom: 20,
-								}}>
-								{hindiData.map((item, index) => {
-									const artistList = formatArtistsList(item.artist);
-									const formatedDuration = formatDuration(item.duration);
-									const imageFormated = findThumbnailHigh(
-										item.thumbnails[item.thumbnails.length - 1]?.url
-									);
-
-									mainindex++;
-									return (
-										<TouchableOpacity
-											style={{
-												alignItems: 'center',
-											}}
-											delayLongPress={1500}
-											onLongPress={() => {
-												ToastAndroid.showWithGravity(
-													'Adding to queue...',
-													ToastAndroid.SHORT,
-													ToastAndroid.CENTER
-												);
-												addSongToQueue(
-													item,
-													artistList,
-													formatedDuration,
-													imageFormated
-												);
-											}}
-											onPress={() =>
-												loadSong(
-													item,
-													artistList,
-													formatedDuration,
-													imageFormated,
-													hindiData
-												)
-											}
-											key={item.videoId + mainindex}>
-											<View
-												style={[
-													styles.songCardContainer,
-													styles.songCardContainerLarge,
-												]}>
-												<ImageBackground
-													source={{
-														uri: imageFormated,
-													}}
-													style={[
-														styles.songCardImage,
-														styles.imageLargeDiff,
-													]}>
-													{playerContext.isPlaying &&
-													item.videoId ===
-														playerContext.currentTrack.id ? (
-														<LottieView
-															source={require('../../../assets/animations/waves.json')}
-															style={{
-																width: 200,
-																height: 200,
-																padding: 0,
-																margin: 0,
-																backgroundColor: `${COLORS.BLACK}30`,
-																position: 'absolute',
-															}}
-															autoPlay={true}
-															loop={true}
-															autoSize={true}
-															resizeMode='cover'
-														/>
-													) : null}
-													<Text style={styles.durationText}>
-														{formatedDuration}
-													</Text>
-												</ImageBackground>
-												<Text
-													style={[
-														whatIsTheme(
-															styles.cardSongNameDark,
-															styles.cardSongNameLight
-														),
-														styles.extraCardText,
-													]}
-													numberOfLines={2}>
-													{item.name}
-												</Text>
-												<Text
-													style={[
-														whatIsTheme(
-															styles.cardSongNameDark,
-															styles.cardSongNameLight
-														),
-														styles.extraCardText,
-													]}
-													numberOfLines={2}>
-													{artistList}
-												</Text>
-											</View>
-										</TouchableOpacity>
-									);
-								})}
-							</ScrollView>
-						</View>
-
-						{/* ENGLISH TITLE */}
-						<View key='asdfasdf2' style={styles.titleContainer}>
-							<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
-								English Songs
-							</Text>
-						</View>
-
-						<View key='asdfasdf7'>
-							<ScrollView
-								horizontal
-								snapToInterval={Dimensions.get('window').width}
-								snapToAlignment='center'
-								decelerationRate='fast'
-								showsHorizontalScrollIndicator={false}
-								style={{
-									paddingBottom: 20,
-								}}>
-								{englishData.map((item, index) => {
-									const artistList = formatArtistsList(item.artist);
-									const formatedDuration = formatDuration(item.duration);
-									const imageFormated = findThumbnailHigh(
-										item.thumbnails[item.thumbnails.length - 1]?.url
-									);
-
-									mainindex++;
-									return (
-										<TouchableOpacity
-											style={{
-												alignItems: 'center',
-											}}
-											delayLongPress={1500}
-											onLongPress={() => {
-												ToastAndroid.showWithGravity(
-													'Adding to queue...',
-													ToastAndroid.SHORT,
-													ToastAndroid.CENTER
-												);
-												addSongToQueue(
-													item,
-													artistList,
-													formatedDuration,
-													imageFormated
-												);
-											}}
-											onPress={() =>
-												loadSong(
-													item,
-													artistList,
-													formatedDuration,
-													imageFormated,
-													englishData
-												)
-											}
-											key={item.videoId + mainindex}>
-											<View
-												style={[
-													styles.songCardContainer,
-													styles.songCardContainerLarge,
-												]}>
-												<ImageBackground
-													source={{
-														uri: imageFormated,
-													}}
-													style={[
-														styles.songCardImage,
-														styles.imageLargeDiff,
-													]}>
-													{playerContext.isPlaying &&
-													item.videoId ===
-														playerContext.currentTrack.id ? (
-														<LottieView
-															source={require('../../../assets/animations/waves.json')}
-															style={{
-																width: 200,
-																height: 200,
-																padding: 0,
-																margin: 0,
-																backgroundColor: `${COLORS.BLACK}30`,
-																position: 'absolute',
-															}}
-															autoPlay={true}
-															loop={true}
-															autoSize={true}
-															resizeMode='cover'
-														/>
-													) : null}
-													<Text style={styles.durationText}>
-														{formatedDuration}
-													</Text>
-												</ImageBackground>
-												<Text
-													style={[
-														whatIsTheme(
-															styles.cardSongNameDark,
-															styles.cardSongNameLight
-														),
-														styles.extraCardText,
-													]}
-													numberOfLines={2}>
-													{item.name}
-												</Text>
-												<Text
-													style={[
-														whatIsTheme(
-															styles.cardSongNameDark,
-															styles.cardSongNameLight
-														),
-														styles.extraCardText,
-													]}
-													numberOfLines={2}>
-													{artistList}
-												</Text>
-											</View>
-										</TouchableOpacity>
-									);
-								})}
-							</ScrollView>
-						</View>
 					</View>
 				)}
 
-				<View style={styles.lastElementOfTheProfileScrollView}></View>
+				<View key='random11'>
+					{/* NEW TITLE */}
+					<View key='randomval5' style={styles.titleContainer}>
+						<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+							Hindi Hits
+						</Text>
+					</View>
+
+					<View key='randomval6'>
+						<ScrollView
+							horizontal
+							snapToInterval={Dimensions.get('window').width}
+							snapToAlignment='center'
+							decelerationRate='fast'
+							showsHorizontalScrollIndicator={false}
+							style={{
+								paddingBottom: 20,
+							}}>
+							{shuffleArray(HindiHits).map((item, index) => {
+								return (
+									<TouchableOpacity
+										style={{
+											alignItems: 'center',
+										}}
+										delayLongPress={1500}
+										onLongPress={() => {
+											ToastAndroid.showWithGravity(
+												'Adding to queue...',
+												ToastAndroid.SHORT,
+												ToastAndroid.CENTER
+											);
+											addSongToQueueDirect(item, HindiHits);
+										}}
+										onPress={() => playSongDirect(item, HindiHits)}
+										key={item.videoId}>
+										<View
+											style={[
+												styles.songCardContainer,
+												styles.songCardContainerLarge,
+											]}>
+											<ImageBackground
+												source={{
+													uri: item.thumbnails,
+												}}
+												style={[
+													styles.songCardImage,
+													styles.imageLargeDiff,
+												]}>
+												{playerContext.isPlaying &&
+												item.videoId === playerContext.currentTrack.id ? (
+													<LottieView
+														source={require('../../../assets/animations/waves.json')}
+														style={{
+															width: 200,
+															height: 200,
+															padding: 0,
+															margin: 0,
+															backgroundColor: `${COLORS.BLACK}30`,
+															position: 'absolute',
+														}}
+														autoPlay={true}
+														loop={true}
+														autoSize={true}
+														resizeMode='cover'
+													/>
+												) : null}
+												<Text style={styles.durationText}>
+													{item.formatedDuration}
+												</Text>
+											</ImageBackground>
+											<Text
+												style={[
+													whatIsTheme(
+														styles.cardSongNameDark,
+														styles.cardSongNameLight
+													),
+													styles.extraCardText,
+												]}
+												numberOfLines={2}>
+												{item.name}
+											</Text>
+											<Text
+												style={[
+													whatIsTheme(
+														styles.cardSongNameDark,
+														styles.cardSongNameLight
+													),
+													styles.extraCardText,
+												]}
+												numberOfLines={2}>
+												{item.artist}
+											</Text>
+										</View>
+									</TouchableOpacity>
+								);
+							})}
+						</ScrollView>
+					</View>
+
+					{/* ENGLISH TITLE */}
+					<View key='randomval7' style={styles.titleContainer}>
+						<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+							English Songs
+						</Text>
+					</View>
+
+					<View key='randomval8'>
+						<ScrollView
+							horizontal
+							snapToInterval={Dimensions.get('window').width}
+							snapToAlignment='center'
+							decelerationRate='fast'
+							showsHorizontalScrollIndicator={false}
+							style={{
+								paddingBottom: 20,
+							}}>
+							{shuffleArray(EnglishSongs).map((item, index) => {
+								return (
+									<TouchableOpacity
+										style={{
+											alignItems: 'center',
+										}}
+										delayLongPress={1500}
+										onLongPress={() => {
+											ToastAndroid.showWithGravity(
+												'Adding to queue...',
+												ToastAndroid.SHORT,
+												ToastAndroid.CENTER
+											);
+											addSongToQueueDirect(item, EnglishSongs);
+										}}
+										onPress={() => playSongDirect(item, EnglishSongs)}
+										key={item.videoId}>
+										<View
+											style={[
+												styles.songCardContainer,
+												styles.songCardContainerLarge,
+											]}>
+											<ImageBackground
+												source={{
+													uri: item.thumbnails,
+												}}
+												style={[
+													styles.songCardImage,
+													styles.imageLargeDiff,
+												]}>
+												{playerContext.isPlaying &&
+												item.videoId === playerContext.currentTrack.id ? (
+													<LottieView
+														source={require('../../../assets/animations/waves.json')}
+														style={{
+															width: 200,
+															height: 200,
+															padding: 0,
+															margin: 0,
+															backgroundColor: `${COLORS.BLACK}30`,
+															position: 'absolute',
+														}}
+														autoPlay={true}
+														loop={true}
+														autoSize={true}
+														resizeMode='cover'
+													/>
+												) : null}
+												<Text style={styles.durationText}>
+													{item.formatedDuration}
+												</Text>
+											</ImageBackground>
+											<Text
+												style={[
+													whatIsTheme(
+														styles.cardSongNameDark,
+														styles.cardSongNameLight
+													),
+													styles.extraCardText,
+												]}
+												numberOfLines={2}>
+												{item.name}
+											</Text>
+											<Text
+												style={[
+													whatIsTheme(
+														styles.cardSongNameDark,
+														styles.cardSongNameLight
+													),
+													styles.extraCardText,
+												]}
+												numberOfLines={2}>
+												{item.artist}
+											</Text>
+										</View>
+									</TouchableOpacity>
+								);
+							})}
+						</ScrollView>
+					</View>
+				</View>
+
+				<View key='randomval5' style={styles.lastElementOfTheProfileScrollView}></View>
 			</ScrollView>
 		</View>
 	);
@@ -640,10 +614,10 @@ const styles = StyleSheet.create({
 	},
 	loader: {
 		width: '100%',
-		height: '100%',
+		height: 50,
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingBottom: 120,
+		// paddingBottom: 120,
 	},
 
 	songCardContainer: {
@@ -661,12 +635,16 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		fontSize: 14,
 		color: COLORS.WHITE,
+		paddingTop: 3,
+		fontFamily: 'roboto',
 	},
 	cardSongNameLight: {
 		maxWidth: 115,
 		textAlign: 'center',
 		fontSize: 14,
 		color: COLORS.BLACK,
+		paddingTop: 3,
+		fontFamily: 'roboto',
 	},
 
 	songConatainer: {
@@ -684,11 +662,21 @@ const styles = StyleSheet.create({
 		color: COLORS.WHITE,
 		fontSize: 22,
 		fontWeight: 'bold',
+		fontFamily: 'roboto',
+		textAlign: 'center',
+		paddingVertical: 8,
+		borderBottomWidth: 0.3,
+		borderBottomColor: COLORS.NEXTTODARK,
 	},
 	titleLight: {
 		color: COLORS.BLACK,
 		fontSize: 22,
 		fontWeight: 'bold',
+		fontFamily: 'roboto',
+		textAlign: 'center',
+		paddingVertical: 8,
+		borderBottomWidth: 0.3,
+		borderBottomColor: COLORS.BEFOREDARKFORLIGHT,
 	},
 
 	imageContainer: {
@@ -746,6 +734,8 @@ const styles = StyleSheet.create({
 		width: Dimensions.get('window').width,
 		alignItems: 'center',
 		justifyContent: 'center',
+		paddingBottom: 0,
+		marginBottom: 0,
 	},
 
 	extraCardText: {

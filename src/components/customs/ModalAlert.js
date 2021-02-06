@@ -22,19 +22,10 @@ const ModalAlert = ({
 	secondaryFuntion,
 	cancellable,
 }) => {
-	const [theme, setTheme] = useState();
-
-	useEffect(() => {
-		fetchDatabase()
-			.then(res => {
-				const settings = JSON.parse(JSON.stringify(res.rows._array));
-				for (let i in settings)
-					if (settings[i].key === 'theme') setTheme(settings[i].value);
-			})
-			.catch(err => {
-				setTheme(false);
-			});
-	}, []);
+	const { theme } = useSelector(state => state.settings.settings);
+	const whatIsTheme = (firstVal, secondVal) => {
+		return !theme || theme === 'd' ? firstVal : secondVal;
+	};
 
 	return (
 		<Modal transparent={true} visible={visible}>
@@ -46,11 +37,7 @@ const ModalAlert = ({
 						justifyContent: 'center',
 						alignItems: 'center',
 					}}>
-					<View
-						style={[
-							styles.inside,
-							!theme ? null : theme === 'd' ? null : styles.darkLight,
-						]}>
+					<View style={[styles.inside, whatIsTheme(null, styles.darkLight)]}>
 						<Text
 							style={[
 								styles.heading,

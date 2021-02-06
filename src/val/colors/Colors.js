@@ -49,6 +49,7 @@ const COLORS = {
 
 	WHITEINDARKVIDIBLE: '#00000070',
 	DARKINLIGHTVIDIBLE: '#ffffff70',
+	ANTIQUE_BLUE: '#2089DC',
 };
 
 class DarkLight {

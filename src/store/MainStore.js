@@ -8,6 +8,7 @@ import firebase from '../firebase/Firebase';
  */
 export const LOAD_USER_DATA = 'LOAD_USER_DATA';
 export const SET_PROFILE_IMAGE_URL = 'SET_PROFILE_IMAGE_URL';
+export const RESET = 'RESET';
 /**
  * function dispatchers
  */
@@ -67,6 +68,10 @@ export function setProfileImageURL(profileImg) {
 	// return { type: SET_PROFILE_IMAGE_URL, profileImg: profileImg };
 }
 
+export function setDefaultsValuesLogOUt() {
+	return { type: RESET };
+}
+
 /*
  *  Redux Store state and
  *  reducers enters here...
@@ -97,6 +102,11 @@ const MainReducer = (state = initialState, action) => {
 					...state.user,
 					profileImg: action.profileImg,
 				},
+			};
+		case RESET:
+			return {
+				user: {},
+				currentUser: {},
 			};
 	}
 	return state;

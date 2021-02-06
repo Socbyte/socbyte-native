@@ -20,7 +20,7 @@ export const PlayerContext = createContext({
 	isPaused: false,
 	isStopped: false,
 	isEmpty: false,
-	isLoading: false,
+	// isLoading: false,here
 	currentTrack: null,
 	addToQueue: track => null,
 	resetPlayer: () => null,
@@ -28,7 +28,7 @@ export const PlayerContext = createContext({
 
 	play: track => null,
 	pause: () => null,
-	loader: () => null,
+	// loader: () => null,here
 	seekTo: interval => null,
 	seekLevel: () => null,
 
@@ -54,7 +54,7 @@ export const PlayerContextProvider = props => {
 
 	const [playerState, setPlayerState] = useState();
 	const [currentTrack, setCurrentTrack] = useState();
-	const [isLoading, setLoading] = useState(false);
+	// const [isLoading, setLoading] = useState(false);here
 	const [volume, setVolume] = useState(1);
 	const [rate, setRate] = useState(1);
 	const [recommendedSongsList, setRecommendedSongsList] = useState([]);
@@ -95,21 +95,21 @@ export const PlayerContextProvider = props => {
 		TrackPlayer.addEventListener('playback-track-changed', async res => {
 			if (!res.nextTrack) {
 				// || currentTrack.id === res.track) {
-				setLoading(false);
+				// setLoading(false);here
 				return;
 			}
 
 			await TrackPlayer.getTrack(res.nextTrack)
 				.then(async result => {
 					if (result === null) {
-						setLoading(false);
-						console.log(isLoading);
+						// setLoading(false);here
+						// console.log(isLoading);here
 						return;
 					}
 					setCurrentTrack(result);
 				})
 				.catch(err => {
-					setLoading(false);
+					// setLoading(false);here
 				});
 		});
 
@@ -222,7 +222,7 @@ export const PlayerContextProvider = props => {
 			return;
 		}
 
-		setLoading(true);
+		// setLoading(true); here
 		try {
 			//we are checking that the track exists or not...
 			await TrackPlayer.getTrack(track.id)
@@ -241,7 +241,7 @@ export const PlayerContextProvider = props => {
 			//and finally set currentTrack to track and
 			//play after skiping to the track with id [track.id]
 			setCurrentTrack(track);
-			setLoading(false);
+			// setLoading(false);here
 			await TrackPlayer.skip(track.id)
 				.then(res => {})
 				.catch(async err => {
@@ -266,9 +266,9 @@ export const PlayerContextProvider = props => {
 		await TrackPlayer.pause();
 	};
 
-	const loader = () => {
-		setLoading(true);
-	};
+	// const loader = () => {
+	// 	setLoading(true);
+	// };herehereherehere
 
 	const seekTo = async (interval = 10) => {
 		const currPos = await TrackPlayer.getPosition();
@@ -348,12 +348,11 @@ export const PlayerContextProvider = props => {
 		isPaused: playerState === STATE_PAUSED,
 		isStopped: playerState === STATE_STOPPED,
 		isEmpty: playerState === null,
-		isLoading,
 
 		currentTrack,
 		play,
 		pause,
-		loader,
+		// loader,here
 		seekTo,
 		seekLevel,
 		addToQueue,

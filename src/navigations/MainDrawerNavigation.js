@@ -29,7 +29,7 @@ import { Avatar as ElementAvatar } from 'react-native-elements';
 
 import md5 from 'md5';
 
-import { setProfileImageURL } from '../store/MainStore';
+import { setProfileImageURL, setDefaultsValuesLogOUt } from '../store/MainStore';
 import firebase from '../firebase/Firebase';
 
 import COLORS from '../val/colors/Colors';
@@ -123,7 +123,11 @@ const MainDrawerNavigation = props => {
 	};
 
 	const logOutUser = () => {
-		firebase.auth().signOut().then().catch();
+		firebase
+			.auth()
+			.signOut()
+			.then(() => {})
+			.catch();
 	};
 
 	const setSelectedTabText = text => {

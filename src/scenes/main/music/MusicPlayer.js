@@ -37,7 +37,6 @@ const MusicPlayer = props => {
 		isPlaying,
 		isPaused,
 		// isStopped,
-		isLoading,
 
 		currentTrack,
 		seekTo,
@@ -162,13 +161,16 @@ const MusicPlayer = props => {
 
 	const onHandlerStateChange = event => {
 		if (event.nativeEvent.oldState == State.ACTIVE) {
-			console.log(translateX);
+			const value = translateX._value;
 			// Animated.parallel([
 			Animated.timing(translateX, {
 				toValue: 0,
 				duration: 450,
 				useNativeDriver: false,
-			}).start();
+			}).start(() => {
+				if (value <= -145.0) playerContext.playPrev();
+				else if (value >= 145.0) playerContext.playNext();
+			});
 			// 	Animated.timing(translateY, {
 			// 		toValue: 0,
 			// 		duration: 300,
@@ -407,15 +409,9 @@ const MusicPlayer = props => {
 											size={48}
 											color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
 										/>
-									) : playerContext.isLoading ? (
-										<ActivityIndicator
-											size={48}
-											color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
-										/>
 									) : (
 										<Icon
-											onPress={() => {}}
-											disabledStyle={{ backgroundColor: COLORS.TRANSPARENT }}
+											// onPress={() => play()}here
 											name='play-arrow'
 											type='ionicons'
 											size={48}

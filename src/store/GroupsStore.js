@@ -1,4 +1,5 @@
 import firebase from '../firebase/Firebase';
+import { RESET } from './MainStore';
 
 /*
  *	Action constants and
@@ -35,8 +36,9 @@ export function loadGroupsLastMessage(groupsList) {
 		for (let i in groupsList) {
 			firebase
 				.database()
-				.ref('LastMessages')
+				.ref('Messages')
 				.child(groupsList[i].id)
+				.limitToLast(1)
 				.on('value', snap => {
 					dispatch({
 						type: LOAD_LAST_MESSAGE,
@@ -78,6 +80,10 @@ const GroupsReducer = (state = initialState, action) => {
 						lastMsg: action.groupData,
 					},
 				},
+			};
+		case RESET:
+			return {
+				group: {},
 			};
 	}
 	return state;

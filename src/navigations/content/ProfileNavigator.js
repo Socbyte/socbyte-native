@@ -11,7 +11,9 @@ import ProfileMusic from '../../scenes/main/profileMusic/ProfileMusic';
 import PlayerScreen from '../../scenes/main/profileMusic/test/PlayerScreen';
 import MiniPlayer from '../../scenes/main/music/MiniPlayer';
 import MusicPlayer from '../../scenes/main/music/MusicPlayer';
-import ProfileSearch from '../../scenes/main/settings/profileSearch/ProfileSearch';
+import ProfileSearch from '../../scenes/main/ProfileSearch/ProfileSearch';
+import ShowSearchedUserProfile from '../../scenes/main/ProfileSearch/ShowSearchedUserProfile';
+import ProfileNotification from '../../scenes/main/Notifications/ProfileNotification';
 
 const ProfileStack = createStackNavigator();
 const ProfileNavigator = () => {
@@ -30,6 +32,13 @@ const ProfileNavigator = () => {
 			<ProfileStack.Screen name='EditProfilePart' component={EditProfileByPart} />
 
 			<ProfileStack.Screen name='ProfileSearch' component={ProfileSearch} />
+
+			<ProfileStack.Screen name='ProfileNotification' component={ProfileNotification} />
+
+			<ProfileStack.Screen
+				name='ShowSearchedUserProfile'
+				component={ShowSearchedUserProfile}
+			/>
 		</ProfileStack.Navigator>
 	);
 };
