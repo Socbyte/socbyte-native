@@ -1,3 +1,5 @@
+import { RESET } from './MainStore';
+
 /*
  *	Action constants and
  *	Action json data provider functions and
@@ -79,6 +81,17 @@ const PlayerReducer = (state = initialState, action) => {
 				recommended: {
 					...action.recommended,
 				},
+			};
+		case RESET:
+			return {
+				player: {
+					id: '',
+				},
+				meta: {
+					playing: true,
+				},
+				songList: {},
+				recommended: [],
 			};
 	}
 	return state;

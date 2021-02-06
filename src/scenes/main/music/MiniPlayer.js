@@ -90,14 +90,9 @@ const MiniPlayer = props => {
 								size={33}
 								color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
 							/>
-						) : playerContext.isLoading ? (
-							<ActivityIndicator
-								size={33}
-								color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
-							/>
 						) : (
 							<Icon
-								onPress={() => playerContext.play()}
+								// onPress={() => playerContext.play()}here
 								name='controller-play'
 								type='entypo'
 								size={33}

@@ -58,14 +58,32 @@ export const EditProfileAbout = props => {
 				})
 				.then(res => {
 					// ToastAndroid.show('Profile Updated!', ToastAndroid.SHORT);
-					ToastAndroid.showWithGravity(
-						'Profile Updated!',
-						ToastAndroid.SHORT,
-						ToastAndroid.CENTER
-					);
-					setLoading(false);
-					setDisabled(false);
-					props.navigation.goBack();
+					firebase
+						.database()
+						.ref('Accounts')
+						.child(firebase.auth().currentUser.uid)
+						.update({
+							fullname: newFullname,
+						})
+						.then(res => {
+							ToastAndroid.showWithGravity(
+								'Profile Updated!',
+								ToastAndroid.SHORT,
+								ToastAndroid.CENTER
+							);
+							setLoading(false);
+							setDisabled(false);
+							props.navigation.goBack();
+						})
+						.catch(err => {
+							ToastAndroid.showWithGravity(
+								'Cannot Update Profile Currently! Error in server. Please try again.',
+								ToastAndroid.SHORT,
+								ToastAndroid.CENTER
+							);
+							setLoading(false);
+							setDisabled(false);
+						});
 				})
 				.catch(err => {
 					ToastAndroid.showWithGravity(
@@ -136,7 +154,7 @@ export const EditProfileAbout = props => {
 						selectionColor={COLORS.MID}
 						value={newStatus}
 						onChangeText={value => setNewStatus(value)}
-						maxLength={50}
+						maxLength={100}
 						multiline
 						textAlignVertical='top'
 						placeholderTextColor={COLORS.MID}
@@ -151,7 +169,7 @@ export const EditProfileAbout = props => {
 						multiline
 						numberOfLines={8}
 						textAlignVertical='top'
-						maxLength={500}
+						maxLength={750}
 						style={whatIsTheme(styles.textDark, styles.textLight)}
 					/>
 					<Input
@@ -183,6 +201,7 @@ export const EditProfileAbout = props => {
 						loading={loading}
 						disabled={disabled}
 						disabledStyle={styles.opacityDown}
+						disabledTitleStyle={styles.opacityDownTitle}
 						buttonStyle={styles.updateButton}
 						onPress={updateProfile}
 					/>
@@ -310,7 +329,11 @@ const styles = StyleSheet.create({
 		minHeight: 50,
 	},
 	opacityDown: {
-		opacity: 0.5,
+		opacity: 1,
+		backgroundColor: COLORS.ANTIQUE_BLUE,
+	},
+	opacityDownTitle: {
+		color: COLORS.WHITE,
 	},
 
 	textDark: {

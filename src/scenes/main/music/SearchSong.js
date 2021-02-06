@@ -81,7 +81,6 @@ const SearchSong = props => {
 		// 	image: thumbnail,
 		// });
 
-		playerContext.loader();
 		const youtubeURL = `http://www.youtube.com/watch?v=${item.videoId}`;
 		const urls = await ytdl(youtubeURL, { quality: 'highestaudio' });
 

@@ -121,6 +121,8 @@ const Profile = props => {
 		social,
 		joinedOn,
 		sound,
+		followers,
+		following,
 		ratings,
 		facolor,
 	} = useSelector(state => state.main.user);
@@ -184,6 +186,7 @@ const Profile = props => {
 	};
 
 	const posLength = text => {
+		if (!text) return false;
 		return text.length > 0;
 	};
 
@@ -204,6 +207,10 @@ const Profile = props => {
 
 	const openUserSearch = () => {
 		props.navigation.navigate('ProfileSearch');
+	};
+
+	const openNorifications = () => {
+		props.navigation.navigate('ProfileNotification');
 	};
 
 	const updateProfileStatus = () => {
@@ -322,16 +329,22 @@ const Profile = props => {
 			socialArePresent();
 		}
 	}, [social]);
-	const [vibrants, setVibrants] = useState('#804088');
+	const [vibrants, setVibrants] = useState({ vibrant: '#804088' });
 
 	useEffect(() => {
-		ImageColors.getColors(coverImg ? coverImg : imageCoverTemp, {
-			fallback: '#000000',
-			quality: 'low',
-			pixelSpacing: 5,
-		}).then(res => {
-			setVibrants(res);
-		});
+		if (coverImg) {
+			if (coverImg.length > 20) {
+				ImageColors.getColors(coverImg ? coverImg : imageCoverTemp, {
+					fallback: '#000000',
+					quality: 'low',
+					pixelSpacing: 5,
+				}).then(res => {
+					setVibrants(res);
+				});
+			}
+		} else {
+			setVibrants({ vibrant: '#804088' });
+		}
 	}, []);
 
 	return (
@@ -350,6 +363,13 @@ const Profile = props => {
 				renderRightActions
 				extraButtons={[
 					{
+						name: 'notifications-outline',
+						type: 'ionicon',
+						size: 24,
+						color: COLORS.WHITE,
+						onPress: openNorifications,
+					},
+					{
 						name: 'search',
 						type: 'material-icon',
 						size: 24,
@@ -359,7 +379,8 @@ const Profile = props => {
 				]}
 			/>
 
-			<ScrollView>
+			{/* Main content of profile starts here */}
+			<ScrollView showsVerticalScrollIndicator={false}>
 				{/* coverImg, profileImgGravatar */}
 				<ImageBackground
 					style={styles.coverImg}
@@ -396,17 +417,25 @@ const Profile = props => {
 							// 	username: username,
 							// });
 
-							const formatedDuration = formatDuration(sound.duration);
+							if (sound && sound.duration) {
+								const formatedDuration = formatDuration(sound.duration);
 
-							playerContext.play({
-								id: sound.id,
-								title: `${username}'s Profile Music.`,
-								artist: 'Profile Music',
-								duration: sound.duration,
-								url: sound.url,
-								artwork: coverImg ? coverImg : imageCoverTemp,
-								durationEdited: formatedDuration,
-							});
+								playerContext.play({
+									id: sound.id,
+									title: `${username}'s Profile Music.`,
+									artist: 'Profile Music',
+									duration: sound.duration,
+									url: sound.url,
+									artwork: coverImg ? coverImg : imageCoverTemp,
+									durationEdited: formatedDuration,
+								});
+							} else {
+								ToastAndroid.showWithGravity(
+									"you haven't provided any favourite track.",
+									ToastAndroid.SHORT,
+									ToastAndroid.CENTER
+								);
+							}
 						}}>
 						<Caption style={whatIsTheme(styles.usernameDark, styles.usernameLight)}>
 							@{username}
@@ -416,6 +445,48 @@ const Profile = props => {
 					<Caption style={whatIsTheme(styles.emailDark, styles.emailLight)}>
 						{email}
 					</Caption>
+				</View>
+
+				{/* user follow status */}
+				<View style={styles.followSection}>
+					{/* followers */}
+					<View
+						style={[
+							styles.followTextContainer,
+							{ borderRightColor: COLORS.MID, borderRightWidth: 0.25 },
+						]}>
+						<Text
+							style={[
+								whatIsTheme(styles.paraDark, styles.paraLight),
+								styles.followTextCaption,
+							]}>
+							Followers
+						</Text>
+						<Text
+							style={[
+								whatIsTheme(styles.paraDark, styles.paraLight),
+								styles.followText,
+							]}>
+							{followers}
+						</Text>
+					</View>
+					{/* followings */}
+					<View style={styles.followTextContainer}>
+						<Text
+							style={[
+								whatIsTheme(styles.paraDark, styles.paraLight),
+								styles.followTextCaption,
+							]}>
+							Following
+						</Text>
+						<Text
+							style={[
+								whatIsTheme(styles.paraDark, styles.paraLight),
+								styles.followText,
+							]}>
+							{following}
+						</Text>
+					</View>
 				</View>
 
 				{/* status */}
@@ -474,14 +545,14 @@ const Profile = props => {
 								// selectionColor={whatIsTheme(COLORS.GREEN, COLORS.PRIMARY)}
 								style={whatIsTheme(styles.paraDark, styles.paraLight)}>
 								{lengthOfAbout === textLengthLimit
-									? about.substring(0, textLengthLimit - 3)
+									? about.substring(0, textLengthLimit - 3) + '...'
 									: about}
 								{'  '}
 								{about.length > textLengthLimit - 3 ? (
 									<Caption style={styles.extraText}>
 										{lengthOfAbout === textLengthLimit
 											? 'Read More...'
-											: 'Read Less...'}
+											: '\nRead Less...'}
 									</Caption>
 								) : null}
 							</Paragraph>
@@ -518,79 +589,83 @@ const Profile = props => {
 				) : null}
 
 				{/* expertise */}
-				<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-					<Swipeable
-						renderLeftActions={renderLeftActions}
-						onSwipeableLeftOpen={updateExpertise}>
-						<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
-							Expertise
-						</Title>
-					</Swipeable>
+				{expertise ? (
+					<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
+						<Swipeable
+							renderLeftActions={renderLeftActions}
+							onSwipeableLeftOpen={updateExpertise}>
+							<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+								Expertise
+							</Title>
+						</Swipeable>
 
-					<View style={[styles.expertiseHolder]}>
-						{finalExpertise.map(exp => {
-							return (
-								<Text
-									key={exp}
-									style={whatIsTheme(
-										styles.expertiseDark,
-										styles.expertiseLight
-									)}>
-									{exp}
-								</Text>
-							);
-						})}
+						<View style={[styles.expertiseHolder]}>
+							{finalExpertise.map(exp => {
+								return (
+									<Text
+										key={exp}
+										style={whatIsTheme(
+											styles.expertiseDark,
+											styles.expertiseLight
+										)}>
+										{exp}
+									</Text>
+								);
+							})}
+						</View>
 					</View>
-				</View>
+				) : null}
 
 				{/* educations */}
-				<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-					<Swipeable
-						renderLeftActions={renderLeftActions}
-						onSwipeableLeftOpen={updateEducation}>
-						<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
-							Education
-						</Title>
-					</Swipeable>
+				{education ? (
+					<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
+						<Swipeable
+							renderLeftActions={renderLeftActions}
+							onSwipeableLeftOpen={updateEducation}>
+							<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+								Education
+							</Title>
+						</Swipeable>
 
-					<View styles={styles.educationHolder}>
-						{finalEducation.map((item, _) => {
-							return (
-								<View
-									key={_}
-									style={whatIsTheme(
-										styles.educationSectionCardDark,
-										styles.educationSectionCardLight
-									)}>
-									<Text
-										style={[
-											whatIsTheme(
+						<View styles={styles.educationHolder}>
+							{finalEducation.map((item, _) => {
+								return (
+									<View
+										key={_}
+										style={whatIsTheme(
+											styles.educationSectionCardDark,
+											styles.educationSectionCardLight
+										)}>
+										<Text
+											style={[
+												whatIsTheme(
+													styles.educationBoldTextDark,
+													styles.educationBoldTextLight
+												),
+												whatIsTheme(styles.font16Dark, styles.font16Light),
+											]}>
+											{item.degree}
+										</Text>
+										<Text
+											style={whatIsTheme(
 												styles.educationBoldTextDark,
 												styles.educationBoldTextLight
-											),
-											whatIsTheme(styles.font16Dark, styles.font16Light),
-										]}>
-										{item.degree}
-									</Text>
-									<Text
-										style={whatIsTheme(
-											styles.educationBoldTextDark,
-											styles.educationBoldTextLight
-										)}>
-										{item.school}
-									</Text>
-									<Caption
-										style={whatIsTheme(
-											styles.educationRegularTextDark,
-											styles.educationRegularTextLight
-										)}>
-										{`${item.yearFrom} - ${item.yearTo}`}
-									</Caption>
-								</View>
-							);
-						})}
+											)}>
+											{item.school}
+										</Text>
+										<Caption
+											style={whatIsTheme(
+												styles.educationRegularTextDark,
+												styles.educationRegularTextLight
+											)}>
+											{`${item.yearFrom} - ${item.yearTo}`}
+										</Caption>
+									</View>
+								);
+							})}
+						</View>
 					</View>
-				</View>
+				) : null}
 
 				{/* social links */}
 				{socialAvailable ? (
@@ -599,7 +674,8 @@ const Profile = props => {
 						onSwipeableLeftOpen={updateSocialLinks}>
 						<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
 							<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
-								{`${fullname}'s Social Media`}
+								{/* {`${fullname}'s Social Media`} */}
+								Your Social Media Profile
 							</Title>
 							<View style={styles.iconContainer}>
 								{social.github ? (
@@ -986,6 +1062,36 @@ const styles = StyleSheet.create({
 		marginVertical: 10,
 		fontSize: 19,
 		fontFamily: 'Inter',
+	},
+
+	followSection: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		alignItems: 'center',
+		// borderTopColor: COLORS.MID,
+		// borderTopWidth: 0.25,
+
+		// borderBottomColor: COLORS.MID,
+		// borderBottomWidth: 0.25,
+		// backgroundColor: COLORS.RED,
+	},
+	followTextContainer: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'space-around',
+		alignItems: 'center',
+		// backgroundColor: COLORS.BLUE,
+		paddingVertical: 12,
+	},
+	followTextCaption: {
+		fontFamily: 'roboto',
+		textAlign: 'center',
+	},
+	followText: {
+		fontSize: 19,
+		fontFamily: 'roboto',
+		fontWeight: 'bold',
+		textAlign: 'center',
 	},
 });
 

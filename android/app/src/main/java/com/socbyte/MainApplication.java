@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.guichaguri.trackplayer.TrackPlayer;
+import com.BV.LinearGradient.LinearGradientPackage;
 
 public class MainApplication extends Application implements ReactApplication {
   private final ReactModuleRegistryProvider mModuleRegistryProvider = new ReactModuleRegistryProvider(
@@ -53,7 +54,8 @@ public class MainApplication extends Application implements ReactApplication {
       packages.add(new LottiePackage());
 //      packages.add(new TrackPlayer());
 //      packages.add(new RNSoundPackage());
-      
+      packages.add(new LinearGradientPackage());
+
       return packages;
     }
 

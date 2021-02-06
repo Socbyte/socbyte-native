@@ -21,11 +21,6 @@ import { databaseInit, fetchDatabase, insertDatabase, updateDatabase } from '../
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSettings } from '../../store/Settings';
 
-const termsURL = 'https://telebyte.vercel.app/terms';
-const privacyURL = 'https://telebyte.vercel.app/privacy';
-const canOpenTerms = Linking.canOpenURL(termsURL);
-const canOpenPrivacy = Linking.canOpenURL(privacyURL);
-
 const Register = props => {
 	const emailValidator = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 	const usernameValidator = /^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$/;
@@ -135,7 +130,8 @@ const Register = props => {
 					if (snap.val().registrationOpened) {
 						Firebase.database()
 							.ref('Accounts')
-							.child(username)
+							.orderByChild('username')
+							.equalTo(username)
 							.once('value')
 							.then(snap => {
 								if (snap.val()) {
@@ -161,12 +157,8 @@ const Register = props => {
 													written: {
 														written: 0,
 													},
-													follow: {
-														following: 0,
-														followers: 0,
-														followingList: {},
-														followerList: {},
-													},
+													followers: 0,
+													following: 1,
 													social: {
 														github: '',
 														linkedin: '',
@@ -198,7 +190,7 @@ const Register = props => {
 													location: '',
 													coverImg: '',
 													facolor: '#0f60b6',
-													fullname: '',
+													fullname: username,
 													phoneNo: '',
 													profileType: true,
 													publics: true,
@@ -211,10 +203,10 @@ const Register = props => {
 
 											Firebase.database()
 												.ref('Accounts')
-												.child(username)
+												.child(res.user.uid)
 												.set({
 													uid: res.user.uid,
-													username,
+													username: username,
 													email,
 													fullname: '',
 												});
@@ -241,7 +233,7 @@ const Register = props => {
 													updateDatabase('theme', 'd');
 													updateDatabase('fontSize', 'm');
 													updateDatabase('email', email);
-													updateDatabase('username', '');
+													updateDatabase('username', username);
 													updateDatabase('primaryColor', COLORS.GREEN);
 													updateDatabase(
 														'invertPrimaryColor',
@@ -253,7 +245,7 @@ const Register = props => {
 													insertDatabase('theme', 'd');
 													insertDatabase('fontSize', 'm');
 													insertDatabase('email', email);
-													insertDatabase('username', '');
+													insertDatabase('username', username);
 													insertDatabase('primaryColor', COLORS.GREEN);
 													insertDatabase(
 														'invertPrimaryColor',
@@ -263,7 +255,7 @@ const Register = props => {
 													updateDatabase('theme', 'd');
 													updateDatabase('fontSize', 'm');
 													updateDatabase('email', email);
-													updateDatabase('username', '');
+													updateDatabase('username', username);
 													updateDatabase('primaryColor', COLORS.GREEN);
 													updateDatabase(
 														'invertPrimaryColor',
@@ -376,56 +368,13 @@ const Register = props => {
 			});
 	};
 
-	useEffect(() => {
-		setError({
-			header: <Text style={{ textAlign: 'center' }}>"Socbyte" Notice</Text>,
-			desc: (
-				<Text style={{ fontSize: 16 }}>
-					"Socbyte" requires the following permissions to provide services for you: access
-					the network and access storage data (to search for, download and delete songs
-					(available in future), read, write, delete, update the user settings, obtain
-					user behavior data and function settings (this is done to improve your user
-					experience) and read phone-state (to provide a personalized recommendations).
-					For more details, refer to the{' '}
-					<Text
-						style={{ color: whatIsTheme(COLORS.GREEN, COLORS.PRIMARY) }}
-						onPress={async () => {
-							if (canOpenPrivacy) {
-								await Linking.openURL(privacyURL);
-							}
-						}}>
-						Socbyte Privacy Statement
-					</Text>
-					{' and '}
-					<Text
-						style={{ color: whatIsTheme(COLORS.GREEN, COLORS.PRIMARY) }}
-						onPress={async () => {
-							if (canOpenTerms) {
-								await Linking.openURL(termsURL);
-							}
-						}}>
-						Socbyte Terms And Conditions
-					</Text>
-					<Text style={{ color: COLORS.MID, fontSize: 13 }}>
-						{
-							'\n\nBy tapping on Agree you are deemed to have agreed to the above contents.'
-						}
-					</Text>
-				</Text>
-			),
-			primary: 'Agree',
-			primaryFunction: () => setError(false),
-			secondary: <Text style={{ color: COLORS.MID }}>Exit</Text>,
-			secondaryFuntion: () => BackHandler.exitApp(),
-		});
-	}, []);
-
 	return (
 		<View style={styles.screen}>
 			{loading ? <FullScreenLoading loadingType={true} /> : null}
 
 			{error ? (
 				<ModalAlert
+					cancellable
 					header={error.header}
 					description={error.desc}
 					disableFunction={setError}
@@ -483,7 +432,7 @@ const Register = props => {
 								COLORS.DARKPLACEHOLDER
 							)}
 							value={username}
-							onChangeText={setUsername}
+							onChangeText={value => setUsername(value.toLowerCase())}
 							keyboardType='default'
 							returnKeyType='next'
 						/>

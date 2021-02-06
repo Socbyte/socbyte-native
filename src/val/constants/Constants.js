@@ -10,6 +10,10 @@ const messageChatTypes = {
 	TIME: 'time',
 };
 
+const notificationsType = {
+	NEWFOLLOWER: 'newfollower',
+};
+
 const TrendingSearchQueries = [
 	'hindi songs',
 	'hindi song',
@@ -298,7 +302,7 @@ class Suffler {
 
 const SufflerList = new Suffler();
 
-export { messageChatTypes as ChatTypes };
+export { messageChatTypes as ChatTypes, notificationsType as NotificationTypes };
 export { SECERT_KEYS as KEY };
 export { TrendingSearchQueries };
 export { SufflerList };

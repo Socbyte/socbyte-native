@@ -81,7 +81,7 @@ const MainChat = props => {
 		}
 
 		dispatch(loadGroupsData(tempGroups));
-		// dispatch(loadGroupsLastMessage(tempGroups));
+		dispatch(loadGroupsLastMessage(tempGroups));
 	}, [groups]);
 
 	useEffect(() => {
@@ -92,20 +92,6 @@ const MainChat = props => {
 		}
 		setGroupsList(tempGroup);
 	}, [group]);
-
-	// useEffect(() => {
-	// 	firebase
-	// 		.database()
-	// 		.ref('Users')
-	// 		.orderByChild('username')
-	// 		.startAt('%sobhan%')
-	// 		.limitToFirst(5)
-	// 		.endAt('sobhan' + '\uf8ff')
-	// 		.once('value')
-	// 		.then(snap => {
-	// 			console.log('AAAA', snap.val());
-	// 		});
-	// }, []);
 
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -183,12 +169,13 @@ const MainChat = props => {
 							if (item.image) {
 								valid = item.image.match(imageValidator);
 							}
-							let lastMsgTime = null;
-							if (item.lastMsg) {
-								lastMsgTime = new Date(new Number(item.lastMsg.at));
-							}
-							// console.log(item.lastMsg.at);
 
+							let lastMsg = {};
+							let lastMsgTime = null;
+							for (let i in item.lastMsg) lastMsg = item.lastMsg[i];
+							if (lastMsg) {
+								lastMsgTime = new Date(new Number(lastMsg.at));
+							}
 							return (
 								<ListItem
 									key={item.id ? item.id : 'group' + index}
@@ -250,11 +237,11 @@ const MainChat = props => {
 											{item.name}
 										</ListItem.Title>
 										<ListItem.Subtitle style={{ color: COLORS.MID }}>
-											{item.lastMsg
-												? `${item.lastMsg.sender}: ${
-														item.lastMsg.msg.length > 20
-															? item.lastMsg.msg.substring(0, 20)
-															: item.lastMsg.msg
+											{lastMsg.msg
+												? `${lastMsg.sender}: ${
+														lastMsg.msg.length + lastMsg.msg.length > 20
+															? `${lastMsg.msg.substring(0, 18)}...`
+															: lastMsg.msg
 												  }`
 												: 'Loading...'}
 										</ListItem.Subtitle>
@@ -285,16 +272,16 @@ const MainChat = props => {
 				) : groups ? (
 					<View style={styles.screen}>
 						<Text style={whatIsTheme(styles.notTextDark, styles.notTextLight)}>
-							You Haven't Joined any group Yet.
-						</Text>
-						<Text style={whatIsTheme(styles.notTextDark, styles.notTextLight)}>
-							Create One Or Search for existing Groups.
+							Loading...
 						</Text>
 					</View>
 				) : (
 					<View style={styles.screen}>
 						<Text style={whatIsTheme(styles.notTextDark, styles.notTextLight)}>
-							Loading...
+							You Haven't Joined any group Yet.
+						</Text>
+						<Text style={whatIsTheme(styles.notTextDark, styles.notTextLight)}>
+							Create One Or Search for existing Groups.
 						</Text>
 					</View>
 				)}

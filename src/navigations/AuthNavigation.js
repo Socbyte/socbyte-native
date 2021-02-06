@@ -9,6 +9,8 @@ import ForgotPassword from '../scenes/auth/ForgotPass';
 import AuthInformation from '../scenes/auth/Information';
 import { deleteTable, fetchDatabase } from '../sql/SQLStarter';
 import { useSelector } from 'react-redux';
+import IntroScreen from '../scenes/auth/IntroScreen';
+import TermsAndConditionPrivacyPolicy from '../scenes/auth/Policy';
 
 const AuthStack = createStackNavigator();
 function AuthStackNavigation(props) {
@@ -20,6 +22,11 @@ function AuthStackNavigation(props) {
 				screenOptions={{
 					headerShown: false,
 				}}>
+				{/* only one time visit */}
+				<AuthStack.Screen name='IntroScreen' component={IntroScreen} />
+
+				<AuthStack.Screen name='TandCandPP' component={TermsAndConditionPrivacyPolicy} />
+
 				<AuthStack.Screen name='Register' component={Register} />
 				<AuthStack.Screen name='Login' component={Login} />
 

@@ -1,4 +1,5 @@
 import firebase from '../firebase/Firebase';
+import { RESET } from './MainStore';
 
 /*
  *	Action constants and
@@ -49,6 +50,10 @@ const MessagesReducer = (state = initialState, action) => {
 						...action.messages,
 					},
 				},
+			};
+		case RESET:
+			return {
+				messages: {},
 			};
 	}
 	return state;

@@ -14,9 +14,9 @@ const CreateChattingGroup = props => {
 	const { theme } = useSelector(state => state.settings.settings);
 	const { uid, email, displayName } = useSelector(state => state.main.currentUser);
 
-	const [groupName, setGroupName] = useState('buddy');
+	const [groupName, setGroupName] = useState('College Projects');
 	const [groupDescription, setGroupDescription] = useState('');
-	const [groupImage, setGroupImage] = useState('hello.png');
+	const [groupImage, setGroupImage] = useState('');
 
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
@@ -26,12 +26,14 @@ const CreateChattingGroup = props => {
 		if (groupName.length <= 0) {
 			ToastAndroid.show('Please enter a valid group name', ToastAndroid.SHORT);
 			return;
-		} else if (!groupImage.match(/\.(jpeg|jpg|png)$/)) {
-			ToastAndroid.show(
-				'Only png, jpg, jpeg image extensions are supported, via links.',
-				ToastAndroid.SHORT
-			);
-			return;
+		} else if (groupImage.length >= 20) {
+			if (!groupImage.match(/\.(jpg|png)$/)) {
+				ToastAndroid.show(
+					'Only png and jpg image extensions (formats) are supported, via links.',
+					ToastAndroid.SHORT
+				);
+				return;
+			}
 		} else {
 			/**
 			 * All tests passed
@@ -78,44 +80,46 @@ const CreateChattingGroup = props => {
 
 						firebase
 							.database()
-							.ref('LastMessages')
-							.child(id)
+							.ref('Users')
+							.child(uid)
+							.child('groups')
 							.update({
-								msg: `${displayName} created group "${groupName}".`,
-								sender: '',
-								at: timestamps,
-								type: ChatTypes.CMD,
+								[id]: {
+									id,
+									name: groupName,
+								},
 							})
 							.then(res => {
 								firebase
 									.database()
-									.ref('Users')
-									.child(uid)
-									.child('groups')
+									.ref('Messages')
+									.child(id)
 									.update({
-										[id]: {
-											id,
-											name: groupName,
+										[timestamps]: {
+											msg: `${displayName} created group "${groupName}".`,
+											sender: 'socbyte',
+											at: timestamps,
+											type: ChatTypes.CMD,
 										},
 									})
 									.then(res => {
-										firebase
-											.database()
-											.ref('Messages')
-											.child(id)
-											.update({
-												[timestamps]: {
-													msg: `${displayName} created group "${groupName}".`,
-													sender: '',
-													at: timestamps,
-													type: ChatTypes.CMD,
-												},
-											})
-											.then(res => {
-												props.navigation.goBack();
-											});
+										props.navigation.goBack();
 									});
 							});
+
+						// firebase
+						// 	.database()
+						// 	.ref('LastMessages')
+						// 	.child(id)
+						// 	.update({
+						// 		msg: `${displayName} created group "${groupName}".`,
+						// 		sender: '',
+						// 		at: timestamps,
+						// 		type: ChatTypes.CMD,
+						// 	})
+						// 	.then(res => {
+
+						// });
 					})
 					.catch(err => {
 						console.log('ERROR WHILE CREATING NEW GROUP.', err);

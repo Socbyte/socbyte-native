@@ -145,7 +145,8 @@ const ReceivedMessage = ({ message, whatIsTheme }) => {
 									color: whatIsTheme(COLORS.BLUE_FAV, COLORS.BLUE_FAV),
 									backgroundColor: whatIsTheme(
 										'rgba(255, 255, 255, 0.08)',
-										'rgba(0, 0, 0, 0.08)'
+										// COLORS.LIGHTBACKGROUND
+										'rgba(0, 0, 0, 0.05)'
 									),
 								},
 							]}>
@@ -270,6 +271,8 @@ const ChatScreen = props => {
 
 	const sendMessage = () => {
 		if (message.length > 0) {
+			const tempMessage = message;
+			setMessage('');
 			setButtonDisabled(true);
 			const timestamp = new Date().getTime();
 			firebase
@@ -279,7 +282,7 @@ const ChatScreen = props => {
 				.child(timestamp)
 				.set({
 					at: timestamp,
-					msg: message.trim(),
+					msg: tempMessage.trim(),
 					sender: username,
 					type: 'text',
 				})
@@ -295,19 +298,18 @@ const ChatScreen = props => {
 						messageSentTone.play();
 					});
 					setButtonDisabled(false);
-					setMessage('');
 				})
 				.catch(err => {
 					setButtonDisabled(false);
 					ToastAndroid.show("Can't send meesages currently.", ToastAndroid.SHORT);
 				});
 
-			firebase.database().ref('Groups').child(id).child('lastMsg').update({
-				at: timestamp,
-				msg: message,
-				sender: username,
-				type: 'text',
-			});
+			// firebase.database().ref('Groups').child(id).child('lastMsg').update({
+			// 	at: timestamp,
+			// 	msg: message,
+			// 	sender: username,
+			// 	type: 'text',
+			// });
 
 			// firebase.database().ref('LastMessages').child(id).update({
 			// 	at: timestamp,
@@ -540,9 +542,10 @@ const ChatScreen = props => {
 				{/* <View style={styles.messageInputOver}> */}
 				<TextInput
 					value={message}
-					onChangeText={value => {
-						setMessage(value.length <= 15 ? value : message);
-					}}
+					// onChangeText={value => {
+					// 	setMessage(value.length <= 200 ? value : message);
+					// }}
+					onChangeText={setMessage}
 					style={whatIsTheme(styles.messageInputDark, styles.messageInputLight)}
 					placeholder='Type a message...'
 					placeholderTextColor={COLORS.MID}
