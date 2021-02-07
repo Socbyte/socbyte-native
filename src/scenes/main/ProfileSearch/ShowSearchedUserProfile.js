@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
 	StyleSheet,
 	View,
@@ -13,7 +13,7 @@ import {
 	ToastAndroid,
 	TouchableOpacity,
 	Image,
-} from 'react-native';
+} from "react-native";
 import {
 	TouchableRipple,
 	Avatar,
@@ -33,65 +33,69 @@ import {
 	DarkTheme,
 	DefaultTheme,
 	ActivityIndicator,
-} from 'react-native-paper';
-import { Icon, SocialIcon, Avatar as ElementAvatar } from 'react-native-elements';
-import { useSelector } from 'react-redux';
-import md5 from 'md5';
+} from "react-native-paper";
+import {
+	Icon,
+	SocialIcon,
+	Avatar as ElementAvatar,
+} from "react-native-elements";
+import { useSelector } from "react-redux";
+import md5 from "md5";
 
-import ImageColors from 'react-native-image-colors';
+import ImageColors from "react-native-image-colors";
 
-import Header from '../../../components/customs/Header/Header';
-import firebase from '../../../firebase/Firebase';
-import COLORS from '../../../val/colors/Colors';
-import { usePlayerContext } from '../music/context/PlayerContext';
-import { NotificationTypes } from '../../../val/constants/Constants';
+import Header from "../../../components/customs/Header/Header";
+import firebase from "../../../firebase/Firebase";
+import COLORS from "../../../val/colors/Colors";
+import { usePlayerContext } from "../music/context/PlayerContext";
+import { NotificationTypes } from "../../../val/constants/Constants";
 
 const imageCoverTemp =
-	'https://user-images.githubusercontent.com/50291544/104044423-4de27b80-5203-11eb-84e8-11fd627a7fc4.png';
+	"https://user-images.githubusercontent.com/50291544/104044423-4de27b80-5203-11eb-84e8-11fd627a7fc4.png";
 const textLengthLimit = 200;
 const months = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December',
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December",
 ];
 
-const ShowSearchedUserProfile = props => {
-	const { username, following } = useSelector(state => state.main.user);
-	const { theme } = useSelector(state => state.settings.settings);
+const ShowSearchedUserProfile = (props) => {
+	const { username, following } = useSelector((state) => state.main.user);
+	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
-		return !theme || theme === 'd' ? f : s;
+		return !theme || theme === "d" ? f : s;
 	};
 	const playerContext = usePlayerContext();
 	const { uid, usernameText } = props.route.params;
 
 	const [loading, setLoading] = useState(true);
 	const [userData, setUserData] = useState({
-		coverImg: '',
-		profileImg: '',
-		fullname: '',
-		username: '',
-		email: '',
-		status: '',
-		about: '',
-		location: '',
-		expertise: '',
+		coverImg: "",
+		profileImg: "",
+		fullname: "",
+		username: "",
+		email: "",
+		status: "",
+		about: "",
+		location: "",
+		expertise: "",
 		education: {},
 		social: {},
 		joinedOn: {},
-		sound: '',
+		sound: "",
 		followers: 0,
 		following: 0,
-		ratings: '',
-		facolor: '',
+		ratings: "",
+		facolor: "",
 	});
 	const [followingUser, setFollowing] = useState(false);
 	const [lengthOfAbout, setLengthOfAbout] = useState(textLengthLimit);
@@ -99,19 +103,22 @@ const ShowSearchedUserProfile = props => {
 
 	// this is the final expertise list shown to the user
 	let finalExpertise = [];
-	if (userData.expertise) finalExpertise = userData.expertise.split(',');
+	if (userData.expertise) finalExpertise = userData.expertise.split(",");
 
 	// this is the final education list shown to the user
 	let finalEducation = [];
 	if (userData.education)
-		for (let i in userData.education) finalEducation.push(userData.education[i]);
+		for (let i in userData.education)
+			finalEducation.push(userData.education[i]);
 
 	const toggleAboutLength = () => {
 		if (userData.about.length > textLengthLimit - 3)
-			setLengthOfAbout(lengthOfAbout === textLengthLimit ? -1 : textLengthLimit);
+			setLengthOfAbout(
+				lengthOfAbout === textLengthLimit ? -1 : textLengthLimit
+			);
 	};
 
-	const posLength = text => {
+	const posLength = (text) => {
 		if (!text) return false;
 		return text.length > 0;
 	};
@@ -131,7 +138,7 @@ const ShowSearchedUserProfile = props => {
 		}
 	};
 
-	const openLink = async link => {
+	const openLink = async (link) => {
 		const linkSupported = await Linking.canOpenURL(link);
 		if (linkSupported) {
 			await Linking.openURL(link);
@@ -147,7 +154,7 @@ const ShowSearchedUserProfile = props => {
 	function formatDuration(num) {
 		function numPadding(n, z) {
 			z = z || 2;
-			return ('00' + n).slice(-z);
+			return ("00" + n).slice(-z);
 		}
 
 		var ms = num % 1000;
@@ -157,7 +164,9 @@ const ShowSearchedUserProfile = props => {
 		var mins = num % 60;
 		var hrs = (num - mins) / 60;
 
-		return hrs > 0 ? numPadding(hrs) + ':' : '' + numPadding(mins) + ':' + numPadding(secs);
+		return hrs > 0
+			? numPadding(hrs) + ":"
+			: "" + numPadding(mins) + ":" + numPadding(secs);
 	}
 
 	const playProfileSong = () => {
@@ -167,7 +176,7 @@ const ShowSearchedUserProfile = props => {
 			playerContext.play({
 				id: userData.sound.id,
 				title: `${usernameText}'s Profile Music.`,
-				artist: 'This Is A Profile Music',
+				artist: "This Is A Profile Music",
 				duration: userData.sound.duration,
 				url: userData.sound.url,
 				artwork: userData.coverImg ? userData.coverImg : imageCoverTemp,
@@ -189,7 +198,7 @@ const ShowSearchedUserProfile = props => {
 		if (!followingUser) {
 			firebase
 				.database()
-				.ref('Followers')
+				.ref("Followers")
 				.child(uid)
 				.child(userId)
 				.update({
@@ -197,24 +206,24 @@ const ShowSearchedUserProfile = props => {
 					email: firebase.auth().currentUser.email,
 					username: username,
 				})
-				.then(res => {
+				.then((res) => {
 					firebase
 						.database()
-						.ref('Users')
+						.ref("Users")
 						.child(uid)
 						.update({
 							followers: userData.followers + 1,
 						})
-						.then(updated => {
+						.then((updated) => {
 							ToastAndroid.showWithGravity(
-								'You are now following ' + usernameText,
+								"You are now following " + usernameText,
 								ToastAndroid.SHORT,
 								ToastAndroid.CENTER
 							);
 						})
-						.catch(err => {
+						.catch((err) => {
 							ToastAndroid.showWithGravity(
-								'Something went wrong',
+								"Something went wrong",
 								ToastAndroid.SHORT,
 								ToastAndroid.BOTTOM
 							);
@@ -222,9 +231,9 @@ const ShowSearchedUserProfile = props => {
 
 					// firebase.database().ref('Users').child(uid).child('notifications').orderByChild()
 				})
-				.catch(err => {
+				.catch((err) => {
 					ToastAndroid.showWithGravity(
-						'Something went wrong',
+						"Something went wrong",
 						ToastAndroid.SHORT,
 						ToastAndroid.BOTTOM
 					);
@@ -232,7 +241,7 @@ const ShowSearchedUserProfile = props => {
 
 			firebase
 				.database()
-				.ref('Followings')
+				.ref("Followings")
 				.child(userId)
 				.child(uid)
 				.update({
@@ -240,51 +249,56 @@ const ShowSearchedUserProfile = props => {
 					email: userData.email,
 					username: usernameText,
 				})
-				.then(updated => {
+				.then((updated) => {
 					firebase
 						.database()
-						.ref('Users')
+						.ref("Users")
 						.child(userId)
 						.update({
 							following: following + 1,
 						})
-						.catch(err => {});
+						.catch((err) => {});
 				})
-				.catch(err => {});
+				.catch((err) => {});
 
-			firebase.database().ref('Notifications').child(uid).child(timestamp).update({
-				type: NotificationTypes.NEWFOLLOWER,
-				who: username,
-				when: timestamp,
-				uid: userId,
-			});
+			firebase
+				.database()
+				.ref("Notifications")
+				.child(uid)
+				.child(timestamp)
+				.update({
+					type: NotificationTypes.NEWFOLLOWER,
+					who: username,
+					when: timestamp,
+					uid: userId,
+				});
 		} else {
 			firebase
 				.database()
-				.ref('Followers')
+				.ref("Followers")
 				.child(uid)
 				.child(userId)
 				.remove()
-				.then(res => {
+				.then((res) => {
 					firebase
 						.database()
-						.ref('Users')
+						.ref("Users")
 						.child(uid)
 						.update({
 							followers: userData.followers - 1,
 						})
-						.then(updated => {})
-						.catch(err => {
+						.then((updated) => {})
+						.catch((err) => {
 							ToastAndroid.showWithGravity(
-								'Something went wrong',
+								"Something went wrong",
 								ToastAndroid.SHORT,
 								ToastAndroid.BOTTOM
 							);
 						});
 				})
-				.catch(err => {
+				.catch((err) => {
 					ToastAndroid.showWithGravity(
-						'Something went wrong',
+						"Something went wrong",
 						ToastAndroid.SHORT,
 						ToastAndroid.BOTTOM
 					);
@@ -292,34 +306,34 @@ const ShowSearchedUserProfile = props => {
 
 			firebase
 				.database()
-				.ref('Followings')
+				.ref("Followings")
 				.child(userId)
 				.child(uid)
 				.remove()
-				.then(updated => {
+				.then((updated) => {
 					firebase
 						.database()
-						.ref('Users')
+						.ref("Users")
 						.child(userId)
 						.update({
 							following: following - 1,
 						})
-						.catch(err => {});
+						.catch((err) => {});
 				})
-				.catch(err => {});
+				.catch((err) => {});
 		}
 	};
 
 	useEffect(() => {
 		firebase
 			.database()
-			.ref('Followings')
+			.ref("Followings")
 			.child(userId)
-			.orderByChild('username')
+			.orderByChild("username")
 			.startAt(`${usernameText.trim()}`)
-			.endAt(usernameText.trim() + '\uf8ff')
+			.endAt(usernameText.trim() + "\uf8ff")
 			.limitToFirst(1)
-			.on('value', snap => {
+			.on("value", (snap) => {
 				if (snap.val()) setFollowing(true);
 				else setFollowing(false);
 			});
@@ -332,9 +346,9 @@ const ShowSearchedUserProfile = props => {
 		setLoading(false);
 		firebase
 			.database()
-			.ref('Users')
+			.ref("Users")
 			.child(uid)
-			.on('value', snap => {
+			.on("value", (snap) => {
 				setUserData(snap.val());
 				setLoading(false);
 			});
@@ -358,8 +372,8 @@ const ShowSearchedUserProfile = props => {
 				renderRightActions={userData.sound && userData.sound.duration}
 				extraButtons={[
 					{
-						name: 'musical-note',
-						type: 'ionicon',
+						name: "musical-note",
+						type: "ionicon",
 						size: 22,
 						color: whatIsTheme(COLORS.WHITE, COLORS.BLACK),
 						onPress: playProfileSong,
@@ -369,17 +383,32 @@ const ShowSearchedUserProfile = props => {
 
 			{/* Main content of searched profile starts here */}
 			{loading ? (
-				<View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
-					<ActivityIndicator size={33} color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)} />
+				<View
+					style={{
+						height: 100,
+						justifyContent: "center",
+						alignItems: "center",
+					}}>
+					<ActivityIndicator
+						size={33}
+						color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+					/>
 				</View>
 			) : (
 				<ScrollView showsVerticalScrollIndicator={false}>
 					{/* coverImg, profileImgGravatar */}
 					<ImageBackground
 						style={styles.coverImg}
-						source={{ uri: userData.coverImg ? userData.coverImg : imageCoverTemp }}>
+						source={{
+							uri: userData.coverImg
+								? userData.coverImg
+								: imageCoverTemp,
+						}}>
 						<Avatar.Image
-							style={whatIsTheme(styles.avatarDark, styles.avatarLight)}
+							style={whatIsTheme(
+								styles.avatarDark,
+								styles.avatarLight
+							)}
 							size={111}
 							source={{
 								uri: `https://www.gravatar.com/avatar/${md5(
@@ -391,17 +420,29 @@ const ShowSearchedUserProfile = props => {
 
 					{/* fullname, username, email */}
 					<View style={styles.detailsStart}>
-						<Text style={whatIsTheme(styles.fullnameDark, styles.fullnameLight)}>
+						<Text
+							style={whatIsTheme(
+								styles.fullnameDark,
+								styles.fullnameLight
+							)}>
 							{userData.fullname}
 						</Text>
 
 						<TouchableRipple onPress={() => playProfileSong()}>
-							<Caption style={whatIsTheme(styles.usernameDark, styles.usernameLight)}>
+							<Caption
+								style={whatIsTheme(
+									styles.usernameDark,
+									styles.usernameLight
+								)}>
 								@{userData.username}
 							</Caption>
 						</TouchableRipple>
 
-						<Caption style={whatIsTheme(styles.emailDark, styles.emailLight)}>
+						<Caption
+							style={whatIsTheme(
+								styles.emailDark,
+								styles.emailLight
+							)}>
 							{userData.email}
 						</Caption>
 					</View>
@@ -409,88 +450,143 @@ const ShowSearchedUserProfile = props => {
 					{/* user follow status */}
 					<View style={styles.followSection}>
 						{/* followers */}
-						<View
-							style={[
-								styles.followTextContainer,
-								{ borderRightColor: COLORS.MID, borderRightWidth: 0.25 },
-							]}>
-							<Text
-								style={[
-									whatIsTheme(styles.paraDark, styles.paraLight),
-									styles.followTextCaption,
-								]}>
-								Followers
-							</Text>
-							<Text
-								style={[
-									whatIsTheme(styles.paraDark, styles.paraLight),
-									styles.followText,
-								]}>
-								{userData.followers}
-							</Text>
-						</View>
-						{/* followings */}
-						<View style={styles.followTextContainer}>
-							<Text
-								style={[
-									whatIsTheme(styles.paraDark, styles.paraLight),
-									styles.followTextCaption,
-								]}>
-								Following
-							</Text>
-							<Text
-								style={[
-									whatIsTheme(styles.paraDark, styles.paraLight),
-									styles.followText,
-								]}>
-								{userData.following}
-							</Text>
-						</View>
-					</View>
-
-					<View style={styles.followArea}>
-						<TouchableOpacity onPress={() => startFollowingUser()}>
-							<View style={styles.followAreaMain}>
+						<TouchableOpacity
+							onPress={() => {
+								props.navigation.push("FollowTab", {
+									usernameText,
+									userUid: uid,
+								});
+							}}
+							style={styles.followTextContainer}>
+							<View>
 								<Text
 									style={[
-										followingUser
-											? styles.unfollowAreaText
-											: styles.followAreaText,
-										followingUser
-											? whatIsTheme(
-													{
-														backgroundColor: COLORS.DARKPRIMARY,
-														color: COLORS.WHITE,
-													},
-													{
-														backgroundColor: COLORS.FINALBEFORELIGHT,
-														color: COLORS.BLACK,
-													}
-											  )
-											: null,
+										whatIsTheme(
+											styles.paraDark,
+											styles.paraLight
+										),
+										styles.followTextCaption,
 									]}>
-									{followingUser ? `Unfollow` : `Follow`}
+									Followers
+								</Text>
+								<Text
+									style={[
+										whatIsTheme(
+											styles.paraDark,
+											styles.paraLight
+										),
+										styles.followText,
+									]}>
+									{userData.followers}
+								</Text>
+							</View>
+						</TouchableOpacity>
+						<View
+							style={{
+								borderRightColor: COLORS.MID,
+								borderRightWidth: 0.25,
+								height: "100%",
+								width: 0.3,
+								backgroundColor: COLORS.RED,
+							}}></View>
+
+						{/* followings */}
+						<TouchableOpacity
+							onPress={() => {
+								props.navigation.push("FollowingTab", {
+									usernameText,
+									userUid: uid,
+								});
+							}}
+							style={styles.followTextContainer}>
+							<View>
+								<Text
+									style={[
+										whatIsTheme(
+											styles.paraDark,
+											styles.paraLight
+										),
+										styles.followTextCaption,
+									]}>
+									Following
+								</Text>
+								<Text
+									style={[
+										whatIsTheme(
+											styles.paraDark,
+											styles.paraLight
+										),
+										styles.followText,
+									]}>
+									{userData.following}
 								</Text>
 							</View>
 						</TouchableOpacity>
 					</View>
 
+					{usernameText !== username ? (
+						<View style={styles.followArea}>
+							<TouchableOpacity
+								onPress={() => startFollowingUser()}>
+								<View style={styles.followAreaMain}>
+									<Text
+										style={[
+											followingUser
+												? styles.unfollowAreaText
+												: styles.followAreaText,
+											followingUser
+												? whatIsTheme(
+														{
+															backgroundColor:
+																COLORS.DARKPRIMARY,
+															color: COLORS.WHITE,
+														},
+														{
+															backgroundColor:
+																COLORS.FINALBEFORELIGHT,
+															color: COLORS.BLACK,
+														}
+												  )
+												: null,
+										]}>
+										{followingUser ? `Unfollow` : `Follow`}
+									</Text>
+								</View>
+							</TouchableOpacity>
+						</View>
+					) : null}
+
 					{/* status */}
 					<View
 						style={[
-							whatIsTheme(styles.sectionDark, styles.sectionLight),
+							whatIsTheme(
+								styles.sectionDark,
+								styles.sectionLight
+							),
 							// { marginTop: 0 },
 						]}>
-						<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+						<Title
+							style={whatIsTheme(
+								styles.titleDark,
+								styles.titleLight
+							)}>
 							Status
 						</Title>
 
-						<Paragraph style={whatIsTheme(styles.paraDark, styles.paraLight)}>
+						<Paragraph
+							style={whatIsTheme(
+								styles.paraDark,
+								styles.paraLight
+							)}>
 							{userData.status ? (
 								userData.status
 							) : (
-								<Paragraph style={whatIsTheme(styles.paraDark, styles.paraLight)}>
-									No status provided by{' '}
+								<Paragraph
+									style={whatIsTheme(
+										styles.paraDark,
+										styles.paraLight
+									)}>
+									No status provided by{" "}
 									<Caption
 										style={whatIsTheme(
 											styles.usernameDark,
@@ -503,8 +599,16 @@ const ShowSearchedUserProfile = props => {
 						</Paragraph>
 					</View>
 
-					<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-						<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+					<View
+						style={whatIsTheme(
+							styles.sectionDark,
+							styles.sectionLight
+						)}>
+						<Title
+							style={whatIsTheme(
+								styles.titleDark,
+								styles.titleLight
+							)}>
 							About
 						</Title>
 
@@ -513,22 +617,33 @@ const ShowSearchedUserProfile = props => {
 								<Paragraph
 									// selectable={true}
 									// selectionColor={whatIsTheme(COLORS.GREEN, COLORS.PRIMARY)}
-									style={whatIsTheme(styles.paraDark, styles.paraLight)}>
+									style={whatIsTheme(
+										styles.paraDark,
+										styles.paraLight
+									)}>
 									{lengthOfAbout === textLengthLimit
-										? userData.about.substring(0, textLengthLimit - 3) + '...'
+										? userData.about.substring(
+												0,
+												textLengthLimit - 3
+										  ) + "..."
 										: userData.about}
-									{'  '}
-									{userData.about.length > textLengthLimit - 3 ? (
+									{"  "}
+									{userData.about.length >
+									textLengthLimit - 3 ? (
 										<Caption style={{ color: COLORS.MID }}>
 											{lengthOfAbout === textLengthLimit
-												? 'Read More...'
-												: '\nRead Less...'}
+												? "Read More..."
+												: "\nRead Less..."}
 										</Caption>
 									) : null}
 								</Paragraph>
 							) : (
-								<Paragraph style={whatIsTheme(styles.paraDark, styles.paraLight)}>
-									About not provided by{' '}
+								<Paragraph
+									style={whatIsTheme(
+										styles.paraDark,
+										styles.paraLight
+									)}>
+									About not provided by{" "}
 									<Caption
 										style={whatIsTheme(
 											styles.usernameDark,
@@ -543,11 +658,23 @@ const ShowSearchedUserProfile = props => {
 
 					{/* location */}
 					{userData.location ? (
-						<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-							<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+						<View
+							style={whatIsTheme(
+								styles.sectionDark,
+								styles.sectionLight
+							)}>
+							<Title
+								style={whatIsTheme(
+									styles.titleDark,
+									styles.titleLight
+								)}>
 								Lives In
 							</Title>
-							<Text style={whatIsTheme(styles.paraDark, styles.paraLight)}>
+							<Text
+								style={whatIsTheme(
+									styles.paraDark,
+									styles.paraLight
+								)}>
 								{userData.location}
 							</Text>
 						</View>
@@ -555,13 +682,21 @@ const ShowSearchedUserProfile = props => {
 
 					{/* expertise */}
 					{userData.expertise ? (
-						<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-							<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+						<View
+							style={whatIsTheme(
+								styles.sectionDark,
+								styles.sectionLight
+							)}>
+							<Title
+								style={whatIsTheme(
+									styles.titleDark,
+									styles.titleLight
+								)}>
 								Expertise
 							</Title>
 
 							<View style={[styles.expertiseHolder]}>
-								{finalExpertise.map(exp => {
+								{finalExpertise.map((exp) => {
 									return (
 										<Text
 											key={exp}
@@ -579,8 +714,16 @@ const ShowSearchedUserProfile = props => {
 
 					{/* educations */}
 					{userData.education ? (
-						<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-							<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+						<View
+							style={whatIsTheme(
+								styles.sectionDark,
+								styles.sectionLight
+							)}>
+							<Title
+								style={whatIsTheme(
+									styles.titleDark,
+									styles.titleLight
+								)}>
 								Education
 							</Title>
 
@@ -629,8 +772,16 @@ const ShowSearchedUserProfile = props => {
 
 					{/* social links */}
 					{socialAvailable ? (
-						<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-							<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+						<View
+							style={whatIsTheme(
+								styles.sectionDark,
+								styles.sectionLight
+							)}>
+							<Title
+								style={whatIsTheme(
+									styles.titleDark,
+									styles.titleLight
+								)}>
 								{`${userData.fullname}'s Social Media`}
 							</Title>
 							<View style={styles.iconContainer}>
@@ -639,7 +790,9 @@ const ShowSearchedUserProfile = props => {
 										<SocialIcon
 											type='github'
 											title='Github'
-											onPress={() => openLink(userData.social.github)}
+											onPress={() =>
+												openLink(userData.social.github)
+											}
 										/>
 									</View>
 								) : null}
@@ -649,7 +802,11 @@ const ShowSearchedUserProfile = props => {
 										<SocialIcon
 											type='linkedin'
 											title='Linkedin'
-											onPress={() => openLink(userData.social.linkedin)}
+											onPress={() =>
+												openLink(
+													userData.social.linkedin
+												)
+											}
 										/>
 									</View>
 								) : null}
@@ -659,7 +816,11 @@ const ShowSearchedUserProfile = props => {
 										<SocialIcon
 											type='twitter'
 											title='Twitter'
-											onPress={() => openLink(userData.social.twitter)}
+											onPress={() =>
+												openLink(
+													userData.social.twitter
+												)
+											}
 										/>
 									</View>
 								) : null}
@@ -669,7 +830,11 @@ const ShowSearchedUserProfile = props => {
 										<SocialIcon
 											type='facebook'
 											title='Facebook'
-											onPress={() => openLink(userData.social.facebook)}
+											onPress={() =>
+												openLink(
+													userData.social.facebook
+												)
+											}
 										/>
 									</View>
 								) : null}
@@ -679,7 +844,11 @@ const ShowSearchedUserProfile = props => {
 										<SocialIcon
 											type='instagram'
 											title='Instagram'
-											onPress={() => openLink(userData.social.instagram)}
+											onPress={() =>
+												openLink(
+													userData.social.instagram
+												)
+											}
 										/>
 									</View>
 								) : null}
@@ -687,15 +856,24 @@ const ShowSearchedUserProfile = props => {
 						</View>
 					) : null}
 
-					<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-						<Text style={whatIsTheme(styles.joinedOnDark, styles.joinedOnLight)}>
+					<View
+						style={whatIsTheme(
+							styles.sectionDark,
+							styles.sectionLight
+						)}>
+						<Text
+							style={whatIsTheme(
+								styles.joinedOnDark,
+								styles.joinedOnLight
+							)}>
 							{`Joined On: ${months[userData.joinedOn.month]} ${
 								userData.joinedOn.year
 							}`}
 						</Text>
 					</View>
 
-					<View style={styles.lastElementOfTheProfileScrollView}></View>
+					<View
+						style={styles.lastElementOfTheProfileScrollView}></View>
 				</ScrollView>
 			)}
 		</View>
@@ -708,26 +886,26 @@ const styles = StyleSheet.create({
 	},
 	coverImg: {
 		height: 235,
-		width: '100%',
-		resizeMode: 'cover',
-		justifyContent: 'flex-end',
+		width: "100%",
+		resizeMode: "cover",
+		justifyContent: "flex-end",
 		elevation: 5,
-		alignItems: 'center',
-		overflow: 'visible',
+		alignItems: "center",
+		overflow: "visible",
 	},
 	avatarLight: {
 		backgroundColor: COLORS.TRANSPARENT,
 		borderRadius: 100,
 		borderWidth: 1,
 		borderColor: COLORS.PRIMARY,
-		overflow: 'visible',
+		overflow: "visible",
 		maxWidth: 111,
 		maxHeight: 111,
 		width: 111,
 		height: 111,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#00000030',
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#00000030",
 		top: 55,
 		elevation: 3,
 	},
@@ -736,34 +914,34 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		borderWidth: 1,
 		borderColor: COLORS.GREEN,
-		overflow: 'visible',
+		overflow: "visible",
 		maxWidth: 111,
 		maxHeight: 111,
 		width: 111,
 		height: 111,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#ffffff30',
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#ffffff30",
 		top: 55,
 		elevation: 3,
 	},
 
 	detailsStart: {
 		marginTop: 60,
-		alignItems: 'center',
+		alignItems: "center",
 	},
 
 	fullnameDark: {
 		fontSize: 19,
 		color: COLORS.WHITE,
 		padding: 3,
-		textTransform: 'capitalize',
+		textTransform: "capitalize",
 	},
 	fullnameLight: {
 		fontSize: 19,
 		color: COLORS.BLACK,
 		padding: 3,
-		textTransform: 'capitalize',
+		textTransform: "capitalize",
 	},
 
 	usernameDark: {
@@ -813,7 +991,7 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		paddingTop: 3,
 		paddingLeft: 3,
-		fontFamily: 'roboto',
+		fontFamily: "roboto",
 		color: COLORS.GREEN,
 		backgroundColor: COLORS.DARKPRIMARY,
 	},
@@ -821,24 +999,24 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		paddingTop: 3,
 		paddingLeft: 3,
-		fontFamily: 'roboto',
+		fontFamily: "roboto",
 		color: COLORS.PRIMARY,
 		backgroundColor: COLORS.LIGHTBACKGROUND,
 	},
 
 	paraDark: {
 		paddingHorizontal: 5,
-		fontFamily: 'Inter',
+		fontFamily: "Inter",
 		color: COLORS.WHITE,
 		fontSize: 15,
-		fontFamily: 'roboto',
+		fontFamily: "roboto",
 	},
 	paraLight: {
 		paddingHorizontal: 5,
-		fontFamily: 'Inter',
+		fontFamily: "Inter",
 		color: COLORS.BLACK,
 		fontSize: 15,
-		fontFamily: 'roboto',
+		fontFamily: "roboto",
 	},
 
 	expertiseDark: {
@@ -857,9 +1035,9 @@ const styles = StyleSheet.create({
 	},
 	expertiseHolder: {
 		// alignItems: 'center',
-		justifyContent: 'center',
-		flexWrap: 'wrap',
-		flexDirection: 'row',
+		justifyContent: "center",
+		flexWrap: "wrap",
+		flexDirection: "row",
 		marginTop: 10,
 		paddingHorizontal: 3,
 	},
@@ -888,25 +1066,25 @@ const styles = StyleSheet.create({
 		fontSize: 15,
 		paddingVertical: 1,
 		paddingHorizontal: 4,
-		fontFamily: 'roboto',
+		fontFamily: "roboto",
 	},
 	educationBoldTextLight: {
 		color: COLORS.DARKSECONDARY,
 		fontSize: 15,
 		paddingVertical: 1,
 		paddingHorizontal: 4,
-		fontFamily: 'roboto',
+		fontFamily: "roboto",
 	},
 
 	font16Dark: {
 		fontSize: 16,
 		color: COLORS.GREEN,
-		fontFamily: 'roboto',
+		fontFamily: "roboto",
 	},
 	font16Light: {
 		fontSize: 16,
 		color: COLORS.PRIMARY,
-		fontFamily: 'roboto',
+		fontFamily: "roboto",
 	},
 
 	educationRegularTextDark: {
@@ -914,54 +1092,54 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 		paddingVertical: 1,
 		paddingHorizontal: 4,
-		fontFamily: 'roboto',
+		fontFamily: "roboto",
 	},
 	educationRegularTextLight: {
 		color: COLORS.MID,
 		fontSize: 13,
 		paddingVertical: 1,
 		paddingHorizontal: 4,
-		fontFamily: 'roboto',
+		fontFamily: "roboto",
 	},
 
 	joinedOnDark: {
 		paddingVertical: 10,
 		color: COLORS.BEFORELIGHT,
-		textAlign: 'center',
-		width: '100%',
+		textAlign: "center",
+		width: "100%",
 		marginVertical: 10,
 		fontSize: 19,
-		fontFamily: 'Inter',
-		fontFamily: 'roboto',
+		fontFamily: "Inter",
+		fontFamily: "roboto",
 	},
 	joinedOnLight: {
 		paddingVertical: 10,
 		color: COLORS.DARKGLOW,
-		textAlign: 'center',
-		width: '100%',
+		textAlign: "center",
+		width: "100%",
 		marginVertical: 10,
 		fontSize: 19,
-		fontFamily: 'Inter',
-		fontFamily: 'roboto',
+		fontFamily: "Inter",
+		fontFamily: "roboto",
 	},
 
 	iconContainer: {
-		flexDirection: 'row',
-		justifyContent: 'center',
-		alignItems: 'center',
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
 		paddingVertical: 6,
 		paddingHorizontal: 3,
-		flexWrap: 'wrap',
+		flexWrap: "wrap",
 	},
 	iconHolder: {
-		alignItems: 'center',
-		justifyContent: 'center',
+		alignItems: "center",
+		justifyContent: "center",
 	},
 
 	followSection: {
-		flexDirection: 'row',
-		justifyContent: 'space-around',
-		alignItems: 'center',
+		flexDirection: "row",
+		justifyContent: "space-around",
+		alignItems: "center",
 		// borderTopColor: COLORS.MID,
 		// borderTopWidth: 0.25,
 
@@ -971,42 +1149,42 @@ const styles = StyleSheet.create({
 	},
 	followTextContainer: {
 		flex: 1,
-		flexDirection: 'column',
-		justifyContent: 'space-around',
-		alignItems: 'center',
+		flexDirection: "column",
+		justifyContent: "space-around",
+		alignItems: "center",
 		// backgroundColor: COLORS.BLUE,
 		paddingVertical: 12,
 	},
 	followTextCaption: {
-		fontFamily: 'roboto',
-		textAlign: 'center',
+		fontFamily: "roboto",
+		textAlign: "center",
 	},
 	followText: {
 		fontSize: 19,
-		fontFamily: 'roboto',
-		fontWeight: 'bold',
-		textAlign: 'center',
+		fontFamily: "roboto",
+		fontWeight: "bold",
+		textAlign: "center",
 	},
 
 	followArea: {
-		width: '100%',
+		width: "100%",
 		paddingVertical: 7,
 		paddingHorizontal: 5,
 		marginVertical: 5,
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	followAreaMain: {
 		borderRadius: 5,
-		justifyContent: 'center',
-		alignItems: 'center',
-		overflow: 'hidden',
+		justifyContent: "center",
+		alignItems: "center",
+		overflow: "hidden",
 	},
 	followAreaText: {
 		fontSize: 17,
-		fontFamily: 'roboto',
-		textAlign: 'center',
-		textAlignVertical: 'center',
+		fontFamily: "roboto",
+		textAlign: "center",
+		textAlignVertical: "center",
 		backgroundColor: COLORS.BLUE_FAV,
 		padding: 8,
 		paddingHorizontal: 28,
@@ -1015,9 +1193,9 @@ const styles = StyleSheet.create({
 	},
 	unfollowAreaText: {
 		fontSize: 17,
-		fontFamily: 'roboto',
-		textAlign: 'center',
-		textAlignVertical: 'center',
+		fontFamily: "roboto",
+		textAlign: "center",
+		textAlignVertical: "center",
 		padding: 8,
 		paddingHorizontal: 28,
 		borderRadius: 5,
