@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
 	FlatList,
 	ScrollView,
@@ -10,44 +10,44 @@ import {
 	TouchableOpacity,
 	Animated,
 	ToastAndroid,
-} from 'react-native';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { Icon, Overlay } from 'react-native-elements';
-import { Avatar, Modal, TouchableRipple } from 'react-native-paper';
-import { useDispatch, useSelector } from 'react-redux';
+} from "react-native";
+import Swipeable from "react-native-gesture-handler/Swipeable";
+import { Icon, Overlay } from "react-native-elements";
+import { Avatar, Modal, TouchableRipple } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
 
-import Header from '../../../../../components/customs/Header/Header';
-import COLORS from '../../../../../val/colors/Colors';
+import Header from "../../../../../components/customs/Header/Header";
+import COLORS from "../../../../../val/colors/Colors";
 
-import firebase from '../../../../../firebase/Firebase';
-import { loadGroupChats } from '../../../../../store/ChatsStore';
-import { ChatTypes } from '../../../../../val/constants/Constants';
+import firebase from "../../../../../firebase/Firebase";
+import { loadGroupChats } from "../../../../../store/ChatsStore";
+import { ChatTypes } from "../../../../../val/constants/Constants";
 
 // import Sound from 'react-native-sound';
-var Sound = require('react-native-sound');
-const messageTone = require('../../../../../assets/sounds/message_tone.mp3');
-Sound.setCategory('Playback');
+var Sound = require("react-native-sound");
+const messageTone = require("../../../../../assets/sounds/message_tone.mp3");
+Sound.setCategory("Playback");
 
 const months = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December',
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December",
 ];
 
 const userChatRemoveRight = (deleteFunction, progress, dragX) => {
 	const scale = dragX.interpolate({
 		inputRange: [-100, 0],
 		outputRange: [1, 0],
-		extrapolate: 'clamp',
+		extrapolate: "clamp",
 	});
 
 	return (
@@ -60,7 +60,8 @@ const userChatRemoveRight = (deleteFunction, progress, dragX) => {
 							color: COLORS.RED,
 							transform: [{ scale }],
 						},
-					]}>
+					]}
+				>
 					Delete
 				</Animated.Text>
 			</TouchableRipple>
@@ -73,7 +74,8 @@ const userChatRemoveRight = (deleteFunction, progress, dragX) => {
 							color: COLORS.BLUE_FAV,
 							transform: [{ scale }],
 						},
-					]}>
+					]}
+				>
 					Cancel
 				</Animated.Text>
 			</TouchableRipple>
@@ -87,7 +89,8 @@ const UserMessage = ({ message, whatIsTheme, deleteMessage }) => {
 			friction={1.5}
 			renderRightActions={(progress, dragX) => {
 				userChatRemoveRight(deleteMessage, progress, dragX);
-			}}>
+			}}
+		>
 			<View style={styles.uchatContainer}>
 				<View style={styles.uchats}>
 					<View
@@ -97,24 +100,35 @@ const UserMessage = ({ message, whatIsTheme, deleteMessage }) => {
 								backgroundColor: COLORS.BLUE_FAV,
 								borderRadius: 10,
 							},
-						]}>
+						]}
+					>
 						<View>
 							<Text
 								style={[
 									styles.umsg,
-									{ color: whatIsTheme(COLORS.WHITE, COLORS.WHITE) },
-								]}>
+									{
+										color: whatIsTheme(
+											COLORS.WHITE,
+											COLORS.WHITE
+										),
+									},
+								]}
+							>
 								{message.msg}
 							</Text>
 						</View>
 						<View style={styles.uchatsSecond}>
 							<Text
 								style={{
-									color: whatIsTheme(COLORS.LIGHT_BLUE, COLORS.LIGHT_BLUE),
-									textAlign: 'right',
+									color: whatIsTheme(
+										COLORS.LIGHT_BLUE,
+										COLORS.LIGHT_BLUE
+									),
+									textAlign: "right",
 									paddingRight: 3,
 									paddingBottom: 3,
-								}}>{`${message.at.hour}:${message.at.min}`}</Text>
+								}}
+							>{`${message.at.hour}:${message.at.min}`}</Text>
 						</View>
 					</View>
 				</View>
@@ -136,20 +150,25 @@ const ReceivedMessage = ({ message, whatIsTheme }) => {
 								COLORS.FINALBEFORELIGHT
 							),
 						},
-					]}>
+					]}
+				>
 					<View>
 						<Text
 							style={[
 								styles.rusername,
 								{
-									color: whatIsTheme(COLORS.BLUE_FAV, COLORS.BLUE_FAV),
+									color: whatIsTheme(
+										COLORS.BLUE_FAV,
+										COLORS.BLUE_FAV
+									),
 									backgroundColor: whatIsTheme(
-										'rgba(255, 255, 255, 0.08)',
+										"rgba(255, 255, 255, 0.08)",
 										// COLORS.LIGHTBACKGROUND
-										'rgba(0, 0, 0, 0.05)'
+										"rgba(0, 0, 0, 0.05)"
 									),
 								},
-							]}>
+							]}
+						>
 							{message.sender}
 						</Text>
 					</View>
@@ -158,9 +177,13 @@ const ReceivedMessage = ({ message, whatIsTheme }) => {
 							style={[
 								styles.rmsg,
 								{
-									color: whatIsTheme(COLORS.WHITE, COLORS.BLACK),
+									color: whatIsTheme(
+										COLORS.WHITE,
+										COLORS.BLACK
+									),
 								},
-							]}>
+							]}
+						>
 							{message.msg}
 						</Text>
 					</View>
@@ -170,8 +193,9 @@ const ReceivedMessage = ({ message, whatIsTheme }) => {
 					<Text
 						style={{
 							color: whatIsTheme(COLORS.MID, COLORS.MID),
-							textAlign: 'right',
-						}}>{`${message.at.hour}:${message.at.min}`}</Text>
+							textAlign: "right",
+						}}
+					>{`${message.at.hour}:${message.at.min}`}</Text>
 				</View>
 			</View>
 		</View>
@@ -182,20 +206,25 @@ const DetailsCard = ({ message, whatIsTheme }) => {
 	return (
 		<View
 			style={{
-				width: '100%',
-				justifyContent: 'center',
-				alignItems: 'center',
+				width: "100%",
+				justifyContent: "center",
+				alignItems: "center",
 				marginVertical: 8,
-			}}>
+			}}
+		>
 			<Text
 				style={{
 					borderRadius: 100,
 					paddingHorizontal: 10,
 					paddingVertical: 5,
-					backgroundColor: whatIsTheme(COLORS.PRIMARY, COLORS.PRIMARY),
+					backgroundColor: whatIsTheme(
+						COLORS.PRIMARY,
+						COLORS.PRIMARY
+					),
 					color: whatIsTheme(COLORS.WHITE, COLORS.WHITE),
 					opacity: 0.9,
-				}}>
+				}}
+			>
 				{message.msg}
 			</Text>
 		</View>
@@ -206,20 +235,25 @@ const DateCard = ({ message, whatIsTheme }) => {
 	return (
 		<View
 			style={{
-				width: '100%',
-				justifyContent: 'center',
-				alignItems: 'center',
+				width: "100%",
+				justifyContent: "center",
+				alignItems: "center",
 				marginVertical: 8,
-			}}>
+			}}
+		>
 			<Text
 				style={{
 					borderRadius: 100,
 					paddingHorizontal: 10,
 					paddingVertical: 5,
-					backgroundColor: whatIsTheme(COLORS.PRIMARY, COLORS.PRIMARY),
+					backgroundColor: whatIsTheme(
+						COLORS.PRIMARY,
+						COLORS.PRIMARY
+					),
 					color: whatIsTheme(COLORS.WHITE, COLORS.WHITE),
 					opacity: 0.9,
-				}}>
+				}}
+			>
 				{`${message.at.date} ${message.at.month} ${message.at.year}`}
 			</Text>
 		</View>
@@ -234,74 +268,83 @@ class Message {
 		this.at = {
 			year,
 			month: months[month],
-			date: ('0' + date).slice(-2),
-			hour: ('0' + hour).slice(-2),
-			min: ('0' + min).slice(-2),
+			date: ("0" + date).slice(-2),
+			hour: ("0" + hour).slice(-2),
+			min: ("0" + min).slice(-2),
 			timestamp,
 		};
 	}
 }
 
-const ChatScreen = props => {
+const ChatScreen = (props) => {
 	// const { messages } = useSelector(state => state.messages);
 	const { groupName, id } = props.route.params;
 
 	const dispatch = useDispatch();
-	const { username } = useSelector(state => state.main.user);
-	const { theme } = useSelector(state => state.settings.settings);
-	const { group } = useSelector(state => state.groups);
-	const { messages } = useSelector(state => state.messages);
+	const { username } = useSelector((state) => state.main.user);
+	const { theme } = useSelector((state) => state.settings.settings);
+	const { group } = useSelector((state) => state.groups);
+	const { messages } = useSelector((state) => state.messages);
 
 	const scrollFlatList = useRef(null);
 	const isMounted = useRef(false);
 
 	const [currGroupData, setCurrGroupData] = useState({});
-	const [message, setMessage] = useState('');
+	const [message, setMessage] = useState("");
 	const [messageList, setMessageList] = useState([]);
 	const [stickyMessages, setStickyMessages] = useState([]);
 	const [buttonDisabled, setButtonDisabled] = useState(false);
 
 	const whatIsTheme = (f, s) => {
-		return !theme || theme === 'd' ? f : s;
+		return !theme || theme === "d" ? f : s;
 	};
 
-	const deleteMessage = msgId => {
-		firebase.database().ref('Messages').child(id).child(msgId).remove();
+	const deleteMessage = (msgId) => {
+		firebase.database().ref("Messages").child(id).child(msgId).remove();
 	};
 
 	const sendMessage = () => {
 		if (message.length > 0) {
 			const tempMessage = message;
-			setMessage('');
+			setMessage("");
 			setButtonDisabled(true);
 			const timestamp = new Date().getTime();
 			firebase
 				.database()
-				.ref('Messages')
+				.ref("Messages")
 				.child(id)
 				.child(timestamp)
 				.set({
 					at: timestamp,
 					msg: tempMessage.trim(),
 					sender: username,
-					type: 'text',
+					type: "text",
 				})
-				.then(res => {
+				.then((res) => {
 					// dispatch(loadGroupChats(id));
-					const messageSentTone = new Sound(messageTone, (error, sound) => {
-						if (error) {
-							console.log('FAILED TO LAOD SOUND IN MESSAGE SENT PART', error);
-							return;
-						}
+					const messageSentTone = new Sound(
+						messageTone,
+						(error, sound) => {
+							if (error) {
+								console.log(
+									"FAILED TO LAOD SOUND IN MESSAGE SENT PART",
+									error
+								);
+								return;
+							}
 
-						messageSentTone.setVolume(1);
-						messageSentTone.play();
-					});
+							messageSentTone.setVolume(1);
+							messageSentTone.play();
+						}
+					);
 					setButtonDisabled(false);
 				})
-				.catch(err => {
+				.catch((err) => {
 					setButtonDisabled(false);
-					ToastAndroid.show("Can't send meesages currently.", ToastAndroid.SHORT);
+					ToastAndroid.show(
+						"Can't send meesages currently.",
+						ToastAndroid.SHORT
+					);
 				});
 
 			// firebase.database().ref('Groups').child(id).child('lastMsg').update({
@@ -318,6 +361,10 @@ const ChatScreen = props => {
 			// 	type: 'text',
 			// });
 		}
+	};
+
+	const openGroupNotifications = () => {
+		props.navigation.navigate("GroupsNotifications", { id, groupName });
 	};
 
 	useEffect(() => {
@@ -339,15 +386,15 @@ const ChatScreen = props => {
 					new Message(
 						// tempMsg[i].msg,
 						// tempMsg[i].sender,
-						'',
-						'',
+						"",
+						"",
 						ChatTypes.DATE,
 						time.getFullYear(),
 						time.getMonth(),
 						time.getDate(),
 						time.getHours(),
 						time.getMinutes(),
-						time.getTime() + 's'
+						time.getTime() + "s"
 					),
 					new Message(
 						tempMsg[i].msg,
@@ -364,8 +411,8 @@ const ChatScreen = props => {
 
 				stickyMessageList.push(
 					new Message(
-						'',
-						'',
+						"",
+						"",
 						ChatTypes.DATE,
 						time.getFullYear(),
 						time.getMonth(),
@@ -395,15 +442,15 @@ const ChatScreen = props => {
 				} else {
 					finalMsgList.push(
 						new Message(
-							'',
-							'',
+							"",
+							"",
 							ChatTypes.DATE,
 							time.getFullYear(),
 							time.getMonth(),
 							time.getDate(),
 							time.getHours(),
 							time.getMinutes(),
-							time.getTime() + 's'
+							time.getTime() + "s"
 						),
 						new Message(
 							tempMsg[i].msg,
@@ -420,8 +467,8 @@ const ChatScreen = props => {
 
 					stickyMessageList.push(
 						new Message(
-							'',
-							'',
+							"",
+							"",
 							ChatTypes.DATE,
 							time.getFullYear(),
 							time.getMonth(),
@@ -457,10 +504,10 @@ const ChatScreen = props => {
 		 */
 		firebase
 			.database()
-			.ref('Messages')
+			.ref("Messages")
 			.child(id)
 			.limitToLast(250)
-			.on('value', snap => {
+			.on("value", (snap) => {
 				if (isMounted.current) {
 					dispatch(loadGroupChats(snap.key, snap.val()));
 				}
@@ -473,8 +520,9 @@ const ChatScreen = props => {
 		<SafeAreaView
 			style={{
 				flex: 1,
-				justifyContent: 'space-between',
-			}}>
+				justifyContent: "space-between",
+			}}
+		>
 			<Header
 				{...props}
 				leftButton={() => {
@@ -483,27 +531,38 @@ const ChatScreen = props => {
 				headerTitle={groupName}
 				back
 				renderRightActions
+				extraButtons={[
+					{
+						name: "notifications-outline",
+						type: "ionicon",
+						size: 24,
+						color: whatIsTheme(COLORS.WHITE, COLORS.BLACK),
+						onPress: openGroupNotifications,
+					},
+				]}
 				extraImageButtons={true}
 				extraImage={currGroupData.image}
 				onImagePress={() => {
-					props.navigation.navigate('GroupDetails', {
+					props.navigation.navigate("GroupDetails", {
 						groupData: currGroupData,
 					});
 				}}
-				extraImageText={'!'}
+				extraImageText={"!"}
 			/>
 
 			<View style={styles.chatArea}>
 				<FlatList
 					data={messageList}
-					keyExtractor={item => item.at.timestamp}
+					keyExtractor={(item) => item.at.timestamp}
 					renderItem={({ item, index }) => {
 						if (item.type === ChatTypes.TEXT) {
 							if (item.sender === username) {
 								return (
 									<View>
 										<UserMessage
-											deleteMessage={() => deleteMessage(item.at.timestamp)}
+											deleteMessage={() =>
+												deleteMessage(item.at.timestamp)
+											}
 											message={item}
 											whatIsTheme={whatIsTheme}
 										/>
@@ -512,20 +571,29 @@ const ChatScreen = props => {
 							} else {
 								return (
 									<View>
-										<ReceivedMessage message={item} whatIsTheme={whatIsTheme} />
+										<ReceivedMessage
+											message={item}
+											whatIsTheme={whatIsTheme}
+										/>
 									</View>
 								);
 							}
 						} else if (item.type === ChatTypes.CMD) {
 							return (
 								<View>
-									<DetailsCard message={item} whatIsTheme={whatIsTheme} />
+									<DetailsCard
+										message={item}
+										whatIsTheme={whatIsTheme}
+									/>
 								</View>
 							);
 						} else if (item.type === ChatTypes.DATE) {
 							return (
 								<View>
-									<DateCard message={item} whatIsTheme={whatIsTheme} />
+									<DateCard
+										message={item}
+										whatIsTheme={whatIsTheme}
+									/>
 								</View>
 							);
 						}
@@ -546,16 +614,19 @@ const ChatScreen = props => {
 					// 	setMessage(value.length <= 200 ? value : message);
 					// }}
 					onChangeText={setMessage}
-					style={whatIsTheme(styles.messageInputDark, styles.messageInputLight)}
-					placeholder='Type a message...'
+					style={whatIsTheme(
+						styles.messageInputDark,
+						styles.messageInputLight
+					)}
+					placeholder="Type a message..."
 					placeholderTextColor={COLORS.MID}
 					selectionColor={COLORS.MID}
 				/>
 				{/* </View> */}
 				<TouchableOpacity style={styles.sendButton}>
 					<Icon
-						type='material-icon'
-						name='attach-file'
+						type="material-icon"
+						name="attach-file"
 						size={24}
 						// style={styles.sendButton}
 						color={whatIsTheme(COLORS.BLUE_FAV, COLORS.BLUE_FAV)}
@@ -564,10 +635,11 @@ const ChatScreen = props => {
 				<TouchableOpacity
 					disabled={buttonDisabled}
 					style={styles.sendButton}
-					onPress={sendMessage}>
+					onPress={sendMessage}
+				>
 					<Icon
-						type='material-icon'
-						name='send'
+						type="material-icon"
+						name="send"
 						size={24}
 						color={whatIsTheme(COLORS.BLUE_FAV, COLORS.BLUE_FAV)}
 					/>
@@ -580,14 +652,14 @@ const ChatScreen = props => {
 const styles = StyleSheet.create({
 	chatArea: {
 		flex: 1,
-		width: '100%',
-		justifyContent: 'space-between',
+		width: "100%",
+		justifyContent: "space-between",
 		// marginBottom: 10,
 	},
 	messageInputContainer: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
 
 		paddingTop: 4,
 		paddingBottom: 2,
@@ -619,32 +691,32 @@ const styles = StyleSheet.create({
 	sendButton: {
 		borderRadius: 100,
 		padding: 12,
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 		marginHorizontal: 2,
 		// backgroundColor: COLORS.MID,
 	},
 	sendButtonDisabled: {
 		borderRadius: 100,
 		padding: 3,
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 		marginHorizontal: 2,
 	},
 
 	// Received messages...
 	rchatContainer: {
 		marginVertical: 2,
-		justifyContent: 'flex-start',
-		alignItems: 'flex-start',
+		justifyContent: "flex-start",
+		alignItems: "flex-start",
 		marginHorizontal: 7,
 		padding: 4,
 	},
 	rchats: {
-		flexDirection: 'row',
+		flexDirection: "row",
 	},
 	rchatsFirst: {
-		maxWidth: '80%',
+		maxWidth: "80%",
 		minWidth: 125,
 
 		borderTopLeftRadius: 0,
@@ -654,12 +726,12 @@ const styles = StyleSheet.create({
 	},
 	rchatsSecond: {
 		flex: 1,
-		justifyContent: 'center',
+		justifyContent: "center",
 	},
 	rusername: {
 		paddingVertical: 2.5,
 		paddingHorizontal: 10,
-		fontFamily: 'karlaBold',
+		fontFamily: "karlaBold",
 		fontSize: 15,
 		borderTopLeftRadius: 0,
 		borderTopRightRadius: 10,
@@ -672,16 +744,16 @@ const styles = StyleSheet.create({
 	// User messages...
 	uchatContainer: {
 		marginVertical: 2,
-		justifyContent: 'flex-start',
-		alignItems: 'flex-end',
+		justifyContent: "flex-start",
+		alignItems: "flex-end",
 		marginHorizontal: 7,
 		padding: 4,
 	},
 	uchats: {
-		flexDirection: 'row',
+		flexDirection: "row",
 	},
 	uchatsFirst: {
-		maxWidth: '85%',
+		maxWidth: "85%",
 		minWidth: 125,
 
 		borderTopLeftRadius: 10,
@@ -691,8 +763,8 @@ const styles = StyleSheet.create({
 	},
 	uchatsSecond: {
 		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'flex-end',
+		justifyContent: "center",
+		alignItems: "flex-end",
 	},
 	umsg: {
 		fontSize: 16,
@@ -704,22 +776,22 @@ const styles = StyleSheet.create({
 	//to delete user chats...
 	noBackRow: {
 		backgroundColor: COLORS.TRANSPARENT,
-		justifyContent: 'flex-start',
-		alignItems: 'center',
-		flexDirection: 'row',
+		justifyContent: "flex-start",
+		alignItems: "center",
+		flexDirection: "row",
 	},
 	hiddenText: {
-		fontWeight: '600',
+		fontWeight: "600",
 		fontSize: 18,
 		borderRadius: 10,
 		// paddingVertical: 5,
 		paddingHorizontal: 5,
 		marginHorizontal: 5,
-		height: '80%',
-		justifyContent: 'center',
-		alignItems: 'center',
-		textAlignVertical: 'center',
-		textAlign: 'center',
+		height: "80%",
+		justifyContent: "center",
+		alignItems: "center",
+		textAlignVertical: "center",
+		textAlign: "center",
 	},
 });
 

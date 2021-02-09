@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
+import { ScrollView } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 import Header from '../../../components/customs/Header/Header';
 import firebase from '../../../firebase/Firebase';
 import COLORS from '../../../val/colors/Colors';
 
-const ProfileNotification = props => {
-	const { theme } = useSelector(state => state.settings.settings);
+const ProfileNotification = (props) => {
+	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
 	};
@@ -20,7 +21,7 @@ const ProfileNotification = props => {
 			.ref('Notifications')
 			.child(firebase.auth().currentUser.uid)
 			.once('value')
-			.then(res => {
+			.then((res) => {
 				if (res.val()) {
 					const temp = [];
 					for (let i in res.val()) {
@@ -32,7 +33,7 @@ const ProfileNotification = props => {
 					setNotificationsAvail(false);
 				}
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.log('ERROR NOTIU', err);
 			});
 	}, []);
@@ -48,74 +49,102 @@ const ProfileNotification = props => {
 				headerTitle='Notifications'
 			/>
 
-			{notificationsAvail ? (
-				<View>
-					{notifications.map(noti => {
-						const time = new Date(noti.when);
-						return (
-							<ListItem
-								onPress={() => {
-									props.navigation.navigate('ShowSearchedUserProfile', {
-										uid: noti.uid,
-										usernameText: noti.who,
-									});
-								}}
-								bottomDivider
-								containerStyle={{
-									backgroundColor: COLORS.TRANSPARENT,
-									borderBottomColor: whatIsTheme(
-										COLORS.NEXTTODARK,
+			<ScrollView>
+				{notificationsAvail ? (
+					<View>
+						{notifications.map((noti) => {
+							const time = new Date(noti.when);
+							return (
+								<ListItem
+									onPress={() => {
+										props.navigation.navigate(
+											'ShowSearchedUserProfile',
+											{
+												uid: noti.uid,
+												usernameText: noti.who,
+											}
+										);
+									}}
+									bottomDivider
+									containerStyle={{
+										backgroundColor: COLORS.TRANSPARENT,
+										borderBottomColor: whatIsTheme(
+											COLORS.NEXTTODARK,
+											COLORS.BEFORELIGHT
+										),
+										borderBottomWidth: 1,
+									}}
+									underlayColor={whatIsTheme(
+										COLORS.DARKPRIMARY,
 										COLORS.BEFORELIGHT
-									),
-									borderBottomWidth: 1,
-								}}
-								underlayColor={whatIsTheme(COLORS.DARKPRIMARY, COLORS.BEFORELIGHT)}>
-								<ListItem.Content
-									style={{
-										justifyContent: 'space-between',
-										flexDirection: 'row',
-									}}>
-									<ListItem.Title
+									)}
+								>
+									<ListItem.Content
 										style={{
-											color: whatIsTheme(COLORS.WHITE, COLORS.BLACK),
-										}}>{`${noti.who} started following you.`}</ListItem.Title>
-									<ListItem.Subtitle style={{ color: COLORS.MID }}>
-										{time.getHours().toString().padStart(2, '0')}:
-										{time.getMinutes().toString().padStart(2, '0')}
-									</ListItem.Subtitle>
-								</ListItem.Content>
-							</ListItem>
-						);
-					})}
-				</View>
-			) : (
-				<View
-					style={{
-						height: 100,
-						width: '100%',
-						justifyContent: 'center',
-						alignItems: 'center',
-					}}>
-					<Text
+											justifyContent: 'space-between',
+											flexDirection: 'row',
+										}}
+									>
+										<ListItem.Title
+											style={{
+												color: whatIsTheme(
+													COLORS.WHITE,
+													COLORS.BLACK
+												),
+											}}
+										>{`${noti.who} started following you.`}</ListItem.Title>
+										<ListItem.Subtitle
+											style={{ color: COLORS.MID }}
+										>
+											{time
+												.getHours()
+												.toString()
+												.padStart(2, '0')}
+											:
+											{time
+												.getMinutes()
+												.toString()
+												.padStart(2, '0')}
+										</ListItem.Subtitle>
+									</ListItem.Content>
+								</ListItem>
+							);
+						})}
+					</View>
+				) : (
+					<View
 						style={{
-							textAlign: 'center',
-							fontSize: 18,
-							fontFamily: 'roboto',
-							color: COLORS.MID,
-						}}>
-						Empty Inbox
-					</Text>
-					<Text
-						style={{
-							textAlign: 'center',
-							fontSize: 18,
-							fontFamily: 'roboto',
-							color: COLORS.MID,
-						}}>
-						No Notifications Currently
-					</Text>
-				</View>
-			)}
+							height: 100,
+							width: '100%',
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
+						<Text
+							style={{
+								textAlign: 'center',
+								fontSize: 18,
+								fontFamily: 'roboto',
+								color: COLORS.MID,
+							}}
+						>
+							Empty Inbox
+						</Text>
+						<Text
+							style={{
+								textAlign: 'center',
+								fontSize: 18,
+								fontFamily: 'roboto',
+								color: COLORS.MID,
+							}}
+						>
+							No Notifications Currently
+						</Text>
+					</View>
+				)}
+
+				<View style={{ paddingBottom: 100 }} />
+			</ScrollView>
 		</View>
 	);
 };
