@@ -10,7 +10,7 @@ import COLORS from '../../../../val/colors/Colors';
 
 const IMAGE_HEIGHT = 350;
 
-const GroupDetailsScreen = props => {
+const GroupDetailsScreen = (props) => {
 	const scrollerVal = useRef(new Animated.Value(0)).current;
 
 	const { groupData } = props.route.params;
@@ -19,7 +19,7 @@ const GroupDetailsScreen = props => {
 	const [adminImage, setImage] = useState('');
 	const [membersList, setMembersList] = useState([]);
 
-	const { theme } = useSelector(state => state.settings.settings);
+	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
 	};
@@ -51,15 +51,17 @@ const GroupDetailsScreen = props => {
 
 		const emailHash = md5(admin.email);
 		fetch(`https://www.gravatar.com/${emailHash}.json`)
-			.then(res => res.json())
-			.then(res => {
+			.then((res) => res.json())
+			.then((res) => {
 				if (JSON.stringify(res).includes('User not found')) {
 					setImage('');
 				} else {
-					setImage(`https://www.gravatar.com/avatar/${emailHash}.jpg?s=200`);
+					setImage(
+						`https://www.gravatar.com/avatar/${emailHash}.jpg?s=200`
+					);
 				}
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.log('THIS ERROR OCCURED WHILE LOADING GRAVATAR', err);
 			});
 	}, []);
@@ -70,16 +72,21 @@ const GroupDetailsScreen = props => {
 		useEffect(() => {
 			const emailHash = md5(member.email);
 			fetch(`https://www.gravatar.com/${emailHash}.json`)
-				.then(res => res.json())
-				.then(res => {
+				.then((res) => res.json())
+				.then((res) => {
 					if (JSON.stringify(res).includes('User not found')) {
 						setImage('');
 					} else {
-						setImage(`https://www.gravatar.com/avatar/${emailHash}.jpg?s=200`);
+						setImage(
+							`https://www.gravatar.com/avatar/${emailHash}.jpg?s=200`
+						);
 					}
 				})
-				.catch(err => {
-					console.log('THIS ERROR OCCURED WHILE LOADING GRAVATAR', err);
+				.catch((err) => {
+					console.log(
+						'THIS ERROR OCCURED WHILE LOADING GRAVATAR',
+						err
+					);
 				});
 		}, []);
 
@@ -89,7 +96,10 @@ const GroupDetailsScreen = props => {
 					<ElementAvatar
 						source={{ uri: image }}
 						size={42}
-						avatarStyle={whatIsTheme(styles.avatarDark, styles.avatarLight)}
+						avatarStyle={whatIsTheme(
+							styles.avatarDark,
+							styles.avatarLight
+						)}
 					/>
 				) : (
 					<Avatar.Text
@@ -106,11 +116,23 @@ const GroupDetailsScreen = props => {
 								}
 							),
 						]}
-						labelStyle={whatIsTheme(styles.avatarLabelDark, styles.avatarLabelLight)}
-						label={member.username ? member.username[0].toUpperCase() : ''}
+						labelStyle={whatIsTheme(
+							styles.avatarLabelDark,
+							styles.avatarLabelLight
+						)}
+						label={
+							member.username
+								? member.username[0].toUpperCase()
+								: ''
+						}
 					/>
 				)}
-				<Text style={whatIsTheme(styles.userCardTextDark, styles.userCardTextLight)}>
+				<Text
+					style={whatIsTheme(
+						styles.userCardTextDark,
+						styles.userCardTextLight
+					)}
+				>
 					{member.username}
 				</Text>
 			</>
@@ -144,7 +166,8 @@ const GroupDetailsScreen = props => {
 						useNativeDriver: true,
 					}
 				)}
-				scrollEventThrottle={9}>
+				scrollEventThrottle={9}
+			>
 				{/* group image */}
 				<View style={styles.imageContainer}>
 					<Animated.Image
@@ -168,6 +191,17 @@ const GroupDetailsScreen = props => {
 											],
 										}),
 									},
+									{
+										scale: scrollerVal.interpolate({
+											inputRange: [
+												-IMAGE_HEIGHT,
+												0,
+												IMAGE_HEIGHT,
+												IMAGE_HEIGHT + 1,
+											],
+											outputRange: [5, 1, 1.35, 1],
+										}),
+									},
 								],
 								resizeMode: 'cover',
 							},
@@ -185,24 +219,53 @@ const GroupDetailsScreen = props => {
 					{/* GROUP DESCRIPTION */}
 					<View
 						style={[
-							whatIsTheme(styles.sectionDark, styles.sectionLight),
+							whatIsTheme(
+								styles.sectionDark,
+								styles.sectionLight
+							),
 							styles.firstSection,
-						]}>
-						<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+						]}
+					>
+						<Title
+							style={whatIsTheme(
+								styles.titleDark,
+								styles.titleLight
+							)}
+						>
 							Description
 						</Title>
 
-						<Paragraph style={whatIsTheme(styles.paraDark, styles.paraLight)}>
+						<Paragraph
+							style={whatIsTheme(
+								styles.paraDark,
+								styles.paraLight
+							)}
+						>
 							{desc ? desc : 'No description Currently.'}
 						</Paragraph>
 					</View>
 
 					{/* ADMINS AND CO-ADMINS */}
-					<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-						<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+					<View
+						style={whatIsTheme(
+							styles.sectionDark,
+							styles.sectionLight
+						)}
+					>
+						<Title
+							style={whatIsTheme(
+								styles.titleDark,
+								styles.titleLight
+							)}
+						>
 							Group's Admin
 						</Title>
-						<View style={whatIsTheme(styles.userCardDark, styles.userCardLight)}>
+						<View
+							style={whatIsTheme(
+								styles.userCardDark,
+								styles.userCardLight
+							)}
+						>
 							{adminImage ? (
 								// <Avatar.Image
 								// 	={whatIsTheme(styles.avatarDark, styles.avatarLight)}
@@ -212,12 +275,18 @@ const GroupDetailsScreen = props => {
 								<ElementAvatar
 									source={{ uri: adminImage }}
 									size={42}
-									avatarStyle={whatIsTheme(styles.avatarDark, styles.avatarLight)}
+									avatarStyle={whatIsTheme(
+										styles.avatarDark,
+										styles.avatarLight
+									)}
 								/>
 							) : (
 								<Avatar.Text
 									style={[
-										whatIsTheme(styles.avatarDark, styles.avatarLight),
+										whatIsTheme(
+											styles.avatarDark,
+											styles.avatarLight
+										),
 										whatIsTheme(
 											{
 												borderWidth: 1,
@@ -233,43 +302,82 @@ const GroupDetailsScreen = props => {
 										styles.avatarLabelDark,
 										styles.avatarLabelLight
 									)}
-									label={admin.username ? admin.username[0].toUpperCase() : ''}
+									label={
+										admin.username
+											? admin.username[0].toUpperCase()
+											: ''
+									}
 								/>
 							)}
 							<Text
 								style={whatIsTheme(
 									styles.userCardTextDark,
 									styles.userCardTextLight
-								)}>
+								)}
+							>
 								{admin.username}
 							</Text>
 						</View>
 					</View>
 
 					{/* ALL PARTICIPANT OR MEMBERS LIST */}
-					<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-						<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+					<View
+						style={whatIsTheme(
+							styles.sectionDark,
+							styles.sectionLight
+						)}
+					>
+						<Title
+							style={whatIsTheme(
+								styles.titleDark,
+								styles.titleLight
+							)}
+						>
 							Group Members
 						</Title>
-						{membersList.map(member => (
+						{membersList.map((member) => (
 							<View
 								key={member.uid}
-								style={whatIsTheme(styles.userCardDark, styles.userCardLight)}>
+								style={whatIsTheme(
+									styles.userCardDark,
+									styles.userCardLight
+								)}
+							>
 								<MembersCard member={member} />
 							</View>
 						))}
 					</View>
 
 					{/* GROUP CREATION DETAILS */}
-					<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-						<Text style={whatIsTheme(styles.createdOnDark, styles.createdOnLight)}>
+					<View
+						style={whatIsTheme(
+							styles.sectionDark,
+							styles.sectionLight
+						)}
+					>
+						<Text
+							style={whatIsTheme(
+								styles.createdOnDark,
+								styles.createdOnLight
+							)}
+						>
 							{`Created On: ${creationTime.getDate()} ${
 								months[creationTime.getMonth()]
 							} ${creationTime.getFullYear()}`}
 						</Text>
 					</View>
-					<View style={whatIsTheme(styles.sectionDark, styles.sectionLight)}>
-						<Text style={whatIsTheme(styles.createdOnDark, styles.createdOnLight)}>
+					<View
+						style={whatIsTheme(
+							styles.sectionDark,
+							styles.sectionLight
+						)}
+					>
+						<Text
+							style={whatIsTheme(
+								styles.createdOnDark,
+								styles.createdOnLight
+							)}
+						>
 							{`Created By: ${by}`}
 						</Text>
 					</View>

@@ -10,9 +10,11 @@ import IDGenerator from '../../../../val/ids/IDGenerator';
 import { ChatTypes } from '../../../../val/constants/Constants';
 import firebase from '../../../../firebase/Firebase';
 
-const CreateChattingGroup = props => {
-	const { theme } = useSelector(state => state.settings.settings);
-	const { uid, email, displayName } = useSelector(state => state.main.currentUser);
+const CreateChattingGroup = (props) => {
+	const { theme } = useSelector((state) => state.settings.settings);
+	const { uid, email, displayName } = useSelector(
+		(state) => state.main.currentUser
+	);
 
 	const [groupName, setGroupName] = useState('College Projects');
 	const [groupDescription, setGroupDescription] = useState('');
@@ -24,7 +26,10 @@ const CreateChattingGroup = props => {
 
 	const createNewGroup = () => {
 		if (groupName.length <= 0) {
-			ToastAndroid.show('Please enter a valid group name', ToastAndroid.SHORT);
+			ToastAndroid.show(
+				'Please enter a valid group name',
+				ToastAndroid.SHORT
+			);
 			return;
 		} else if (groupImage.length >= 20) {
 			if (!groupImage.match(/\.(jpg|png)$/)) {
@@ -43,6 +48,7 @@ const CreateChattingGroup = props => {
 			 */
 			if (displayName && displayName.length >= 0) {
 				const { id, timestamp } = IDGenerator.generate();
+				const lowGroupName = groupName.toLowerCase();
 
 				firebase
 					.database()
@@ -60,6 +66,7 @@ const CreateChattingGroup = props => {
 							username: displayName,
 							email: email,
 						},
+						searchTerm: lowGroupName,
 						cadmins: {},
 						members: {
 							[uid]: {
@@ -73,8 +80,11 @@ const CreateChattingGroup = props => {
 							},
 						},
 					})
-					.then(res => {
-						ToastAndroid.show('new group created successfully', ToastAndroid.SHORT);
+					.then((res) => {
+						ToastAndroid.show(
+							'new group created successfully',
+							ToastAndroid.SHORT
+						);
 
 						const timestamps = new Date().getTime();
 
@@ -89,7 +99,7 @@ const CreateChattingGroup = props => {
 									name: groupName,
 								},
 							})
-							.then(res => {
+							.then((res) => {
 								firebase
 									.database()
 									.ref('Messages')
@@ -102,7 +112,7 @@ const CreateChattingGroup = props => {
 											type: ChatTypes.CMD,
 										},
 									})
-									.then(res => {
+									.then((res) => {
 										props.navigation.goBack();
 									});
 							});
@@ -121,7 +131,7 @@ const CreateChattingGroup = props => {
 
 						// });
 					})
-					.catch(err => {
+					.catch((err) => {
 						console.log('ERROR WHILE CREATING NEW GROUP.', err);
 						ToastAndroid.showWithGravity(
 							'Cannot create new group. Sorry for your inconvenience. Please contact the developer if this occurs repeatedly.',
