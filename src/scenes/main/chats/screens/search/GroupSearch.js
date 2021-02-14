@@ -20,14 +20,13 @@ const GroupSearch = (props) => {
 		return !theme || theme === 'd' ? f : s;
 	};
 
-	const [searchText, setSearchText] = useState('coll');
+	const [searchText, setSearchText] = useState('');
 	const [searchedGroups, setSearchedGroup] = useState([]);
 	const [searchLimit, setSearchLimit] = useState(5);
 	const [error, setError] = useState({ error: '', msg: '' });
 	const [showButton, setShowButton] = useState(false);
 
 	useEffect(() => {
-		searchGroup();
 		return () => {
 			// setError({ error: '', msg: '' });
 			// setSearchText('');

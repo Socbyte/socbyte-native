@@ -4,6 +4,7 @@ const SECERT_KEYS = {
 
 const messageChatTypes = {
 	CMD: 'cmd',
+    CMD2: 'cmd2',
 	CHAT: 'chat',
 	TEXT: 'text',
 	DATE: 'date',
