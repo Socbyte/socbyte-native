@@ -231,6 +231,35 @@ const DetailsCard = ({ message, whatIsTheme }) => {
 	);
 };
 
+const DetailsCardSimple = ({ message, whatIsTheme }) => {
+	return (
+		<View
+			style={{
+				width: "100%",
+				justifyContent: "center",
+				alignItems: "center",
+				marginVertical: 8,
+			}}
+		>
+			<Text
+				style={{
+					borderRadius: 100,
+					paddingHorizontal: 10,
+					paddingVertical: 5,
+					backgroundColor: whatIsTheme(
+						COLORS.DARKSECONDARY,
+						COLORS.MID
+					),
+					color: whatIsTheme(COLORS.WHITE, COLORS.WHITE),
+					opacity: 0.9,
+				}}
+			>
+				{message.msg}
+			</Text>
+		</View>
+	);
+};
+
 const DateCard = ({ message, whatIsTheme }) => {
 	return (
 		<View
@@ -544,7 +573,7 @@ const ChatScreen = (props) => {
 				extraImage={currGroupData.image}
 				onImagePress={() => {
 					props.navigation.navigate("GroupDetails", {
-						groupData: currGroupData,
+						id,
 					});
 				}}
 				extraImageText={"!"}
@@ -582,6 +611,15 @@ const ChatScreen = (props) => {
 							return (
 								<View>
 									<DetailsCard
+										message={item}
+										whatIsTheme={whatIsTheme}
+									/>
+								</View>
+							);
+						} else if (item.type === ChatTypes.CMD2) {
+							return (
+								<View>
+									<DetailsCardSimple
 										message={item}
 										whatIsTheme={whatIsTheme}
 									/>

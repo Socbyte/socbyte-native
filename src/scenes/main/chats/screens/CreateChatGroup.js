@@ -16,7 +16,7 @@ const CreateChattingGroup = (props) => {
 		(state) => state.main.currentUser
 	);
 
-	const [groupName, setGroupName] = useState('College Projects');
+	const [groupName, setGroupName] = useState('');
 	const [groupDescription, setGroupDescription] = useState('');
 	const [groupImage, setGroupImage] = useState('');
 
@@ -188,7 +188,7 @@ const CreateChattingGroup = (props) => {
 					onChangeText={setGroupName}
 				/>
 
-				{/* 
+				{/*
 				<Input
 					value={groupDescription}
 					onChangeText={setGroupDescription}

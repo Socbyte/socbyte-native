@@ -206,6 +206,15 @@ const MainChat = (props) => {
 											groupName: item.name,
 										});
 									}}
+									delayLongPress={2000}
+									onLongPress={() => {
+										props.navigation.navigate(
+											"GroupDetails",
+											{
+												id: item.id,
+											}
+										);
+									}}
 									bottomDivider
 									containerStyle={{
 										backgroundColor: COLORS.TRANSPARENT,
@@ -341,6 +350,7 @@ const MainChat = (props) => {
 						</Text>
 					</View>
 				)}
+				<View style={{ paddingBottom: 100 }} />
 				{/* <Button title='Tap' onPress={togg} /> */}
 			</View>
 		</TouchableWithoutFeedback>

@@ -380,7 +380,7 @@ const ShowGroupDetails = (props) => {
 				</View>
 
 				{/* Request to join this group */}
-				{!canRequest ? (
+				{canRequest ? (
 					<View style={{ alignItems: "center", marginVertical: 10 }}>
 						<Button
 							contentStyle={{

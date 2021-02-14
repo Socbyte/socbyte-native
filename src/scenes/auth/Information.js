@@ -1,89 +1,250 @@
-import React from 'react';
-import { StyleSheet, View, Text, ScrollView, StatusBar, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../val/colors/Colors';
-import { useSelector } from 'react-redux';
+import React from "react";
+import {
+	StyleSheet,
+	View,
+	Text,
+	ScrollView,
+	StatusBar,
+	TouchableOpacity,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../../val/colors/Colors";
+import { useSelector } from "react-redux";
+import Header from "../../components/customs/Header/Header";
 
-const AuthInformation = props => {
-	const { theme } = useSelector(state => state.settings.settings);
-
+const AuthInformation = (props) => {
+	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (firstVal, secondVal) => {
-		return !theme || theme === 'd' ? firstVal : secondVal;
+		return !theme || theme === "d" ? firstVal : secondVal;
 	};
 
 	return (
-		<View style={styles.mainscreen}>
-			<StatusBar></StatusBar>
-			<View style={styles.backButton}>
-				<TouchableOpacity
-					onPress={() => {
-						props.navigation.goBack();
-					}}>
-					<Ionicons
-						name='arrow-back'
-						size={26}
-						color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
-						style={{
-							paddingHorizontal: 5,
-							paddingTop: 5,
-						}}
-					/>
-				</TouchableOpacity>
-				<Text style={whatIsTheme(styles.info, styles.infoLight)}>Information</Text>
-			</View>
+		<View>
+			<Header
+				{...props}
+				leftButton={() => {
+					props.navigation.toggleDrawer();
+				}}
+				headerTitle={"Authentication Informations"}
+				absolute
+				back
+				realBackgroundColor={COLORS.TRANSPARENT}
+			/>
+
 			<ScrollView>
 				<View style={styles.screen}>
-					<View style={{ ...styles.topicContainer, ...styles.removeTopMargin }}>
-						<Text style={whatIsTheme(styles.topicName, styles.topicNameLight)}>Sign Up</Text>
+					<View
+						style={{
+							...styles.topicContainer,
+							...styles.removeTopMargin,
+						}}
+					>
+						<Text
+							style={whatIsTheme(
+								styles.topicName,
+								styles.topicNameLight
+							)}
+						>
+							Sign Up
+						</Text>
 						<View style={styles.topicDescriptionContainer}>
 							<View style={styles.row}>
-								<Text style={whatIsTheme(styles.lineNumber, styles.lineNumberLight)}>1. </Text>
-								<Text style={whatIsTheme(styles.topicDescription, styles.topicDescriptionLight)}>Provide a username, email, password.</Text>
-							</View>
-
-							<View style={styles.row}>
-								<Text style={whatIsTheme(styles.lineNumber, styles.lineNumberLight)}>2. </Text>
-								<Text style={whatIsTheme(styles.topicDescription, styles.topicDescriptionLight)}>Username and Email should not belong to any existing account.</Text>
-							</View>
-
-							<View style={styles.row}>
-								<Text style={whatIsTheme(styles.lineNumber, styles.lineNumberLight)}>3. </Text>
-								<Text style={whatIsTheme(styles.topicDescription, styles.topicDescriptionLight)}>Provide a valid email id temporary mails are not allowed in the system.</Text>
-							</View>
-
-							<View style={styles.row}>
-								<Text style={whatIsTheme(styles.lineNumber, styles.lineNumberLight)}>4. </Text>
-								<Text style={whatIsTheme(styles.topicDescription, styles.topicDescriptionLight)}>Password should contain alteast 8 characters including upper-case, lower-case, numerals and special-characters. (required)</Text>
-							</View>
-							<View style={styles.row}>
-								<Text style={whatIsTheme(styles.lineNumber, styles.lineNumberLight)}>5. </Text>
-								<Text style={whatIsTheme(styles.topicDescription, styles.topicDescriptionLight)}>If you have an existing account then you can sign in with that account.</Text>
-							</View>
-
-							<View style={styles.row}>
-								<Text style={[whatIsTheme(styles.lineNumber, styles.lineNumberLight), { color: COLORS.RED }]}>NOTE:- </Text>
-								<Text style={[whatIsTheme(styles.topicDescription, styles.topicDescriptionLight), { color: COLORS.RED }]}>Username could not be changed later.</Text>
-							</View>
-						</View>
-					</View>
-					<View style={styles.topicContainer}>
-						<Text style={whatIsTheme(styles.topicName, styles.topicNameLight)}>Sign In</Text>
-						<View style={styles.topicDescriptionContainer}>
-							<View style={styles.row}>
-								<Text style={whatIsTheme(styles.lineNumber, styles.lineNumberLight)}>1. </Text>
-								<Text style={whatIsTheme(styles.topicDescription, styles.topicDescriptionLight)}>Provide valid email, password associated with your account. (required)</Text>
-							</View>
-
-							<View style={styles.row}>
-								<Text style={whatIsTheme(styles.lineNumber, styles.lineNumberLight)}>2. </Text>
-								<Text style={whatIsTheme(styles.topicDescription, styles.topicDescriptionLight)}>
-									If you forgot password your account password, then reset it by going to forgot password tab. Provide a strong password to ignore any vulnerability.
+								<Text
+									style={whatIsTheme(
+										styles.lineNumber,
+										styles.lineNumberLight
+									)}
+								>
+									1.{" "}
+								</Text>
+								<Text
+									style={whatIsTheme(
+										styles.topicDescription,
+										styles.topicDescriptionLight
+									)}
+								>
+									Provide a username, email, password.
 								</Text>
 							</View>
 
 							<View style={styles.row}>
-								<Text style={whatIsTheme(styles.lineNumber, styles.lineNumberLight)}>3. </Text>
-								<Text style={whatIsTheme(styles.topicDescription, styles.topicDescriptionLight)}>If you are not logged in you can always create a new account.</Text>
+								<Text
+									style={whatIsTheme(
+										styles.lineNumber,
+										styles.lineNumberLight
+									)}
+								>
+									2.{" "}
+								</Text>
+								<Text
+									style={whatIsTheme(
+										styles.topicDescription,
+										styles.topicDescriptionLight
+									)}
+								>
+									Username and Email should not belong to any
+									existing account.
+								</Text>
+							</View>
+
+							<View style={styles.row}>
+								<Text
+									style={whatIsTheme(
+										styles.lineNumber,
+										styles.lineNumberLight
+									)}
+								>
+									3.{" "}
+								</Text>
+								<Text
+									style={whatIsTheme(
+										styles.topicDescription,
+										styles.topicDescriptionLight
+									)}
+								>
+									Provide a valid email id temporary mails are
+									not allowed in the system.
+								</Text>
+							</View>
+
+							<View style={styles.row}>
+								<Text
+									style={whatIsTheme(
+										styles.lineNumber,
+										styles.lineNumberLight
+									)}
+								>
+									4.{" "}
+								</Text>
+								<Text
+									style={whatIsTheme(
+										styles.topicDescription,
+										styles.topicDescriptionLight
+									)}
+								>
+									Password should contain alteast 8 characters
+									including lower-case, numerals and
+									special-characters. Please don't include
+									upper-case characters in your username.
+									(required)
+								</Text>
+							</View>
+							<View style={styles.row}>
+								<Text
+									style={whatIsTheme(
+										styles.lineNumber,
+										styles.lineNumberLight
+									)}
+								>
+									5.{" "}
+								</Text>
+								<Text
+									style={whatIsTheme(
+										styles.topicDescription,
+										styles.topicDescriptionLight
+									)}
+								>
+									If you have an existing account then you can
+									sign in with that account.
+								</Text>
+							</View>
+
+							<View style={styles.row}>
+								<Text
+									style={[
+										whatIsTheme(
+											styles.lineNumber,
+											styles.lineNumberLight
+										),
+										{ color: COLORS.RED },
+									]}
+								>
+									NOTE:-{" "}
+								</Text>
+								<Text
+									style={[
+										whatIsTheme(
+											styles.topicDescription,
+											styles.topicDescriptionLight
+										),
+										{ color: COLORS.RED },
+									]}
+								>
+									Username could not be changed later.
+								</Text>
+							</View>
+						</View>
+					</View>
+					<View style={styles.topicContainer}>
+						<Text
+							style={whatIsTheme(
+								styles.topicName,
+								styles.topicNameLight
+							)}
+						>
+							Sign In
+						</Text>
+						<View style={styles.topicDescriptionContainer}>
+							<View style={styles.row}>
+								<Text
+									style={whatIsTheme(
+										styles.lineNumber,
+										styles.lineNumberLight
+									)}
+								>
+									1.{" "}
+								</Text>
+								<Text
+									style={whatIsTheme(
+										styles.topicDescription,
+										styles.topicDescriptionLight
+									)}
+								>
+									Provide valid email, password associated
+									with your account. (required)
+								</Text>
+							</View>
+
+							<View style={styles.row}>
+								<Text
+									style={whatIsTheme(
+										styles.lineNumber,
+										styles.lineNumberLight
+									)}
+								>
+									2.{" "}
+								</Text>
+								<Text
+									style={whatIsTheme(
+										styles.topicDescription,
+										styles.topicDescriptionLight
+									)}
+								>
+									If you forgot password your account
+									password, then reset it by going to forgot
+									password tab. Provide a strong password to
+									ignore any vulnerability.
+								</Text>
+							</View>
+
+							<View style={styles.row}>
+								<Text
+									style={whatIsTheme(
+										styles.lineNumber,
+										styles.lineNumberLight
+									)}
+								>
+									3.{" "}
+								</Text>
+								<Text
+									style={whatIsTheme(
+										styles.topicDescription,
+										styles.topicDescriptionLight
+									)}
+								>
+									If you are not logged in you can always
+									create a new account.
+								</Text>
 							</View>
 						</View>
 					</View>
@@ -91,22 +252,77 @@ const AuthInformation = props => {
 						style={{
 							...styles.topicContainer,
 							...styles.removeBottomBorder,
-						}}>
-						<Text style={whatIsTheme(styles.topicName, styles.topicNameLight)}>Forgot Password</Text>
+						}}
+					>
+						<Text
+							style={whatIsTheme(
+								styles.topicName,
+								styles.topicNameLight
+							)}
+						>
+							Forgot Password
+						</Text>
 						<View style={styles.topicDescriptionContainer}>
 							<View style={styles.row}>
-								<Text style={whatIsTheme(styles.lineNumber, styles.lineNumberLight)}>1. </Text>
-								<Text style={whatIsTheme(styles.topicDescription, styles.topicDescriptionLight)}>Provide valid email associated with your account to reset that account's password. (required)</Text>
+								<Text
+									style={whatIsTheme(
+										styles.lineNumber,
+										styles.lineNumberLight
+									)}
+								>
+									1.{" "}
+								</Text>
+								<Text
+									style={whatIsTheme(
+										styles.topicDescription,
+										styles.topicDescriptionLight
+									)}
+								>
+									Provide valid email associated with your
+									account to reset that account's password.
+									(required)
+								</Text>
 							</View>
 
 							<View style={styles.row}>
-								<Text style={whatIsTheme(styles.lineNumber, styles.lineNumberLight)}>2. </Text>
-								<Text style={whatIsTheme(styles.topicDescription, styles.topicDescriptionLight)}>An email will be sent to that email address. Follow the link provided in email and reset your account's password.</Text>
+								<Text
+									style={whatIsTheme(
+										styles.lineNumber,
+										styles.lineNumberLight
+									)}
+								>
+									2.{" "}
+								</Text>
+								<Text
+									style={whatIsTheme(
+										styles.topicDescription,
+										styles.topicDescriptionLight
+									)}
+								>
+									An email will be sent to that email address.
+									Follow the link provided in email and reset
+									your account's password.
+								</Text>
 							</View>
 
 							<View style={styles.row}>
-								<Text style={whatIsTheme(styles.lineNumber, styles.lineNumberLight)}>3. </Text>
-								<Text style={whatIsTheme(styles.topicDescription, styles.topicDescriptionLight)}>Now you can login with your email and new password.</Text>
+								<Text
+									style={whatIsTheme(
+										styles.lineNumber,
+										styles.lineNumberLight
+									)}
+								>
+									3.{" "}
+								</Text>
+								<Text
+									style={whatIsTheme(
+										styles.topicDescription,
+										styles.topicDescriptionLight
+									)}
+								>
+									Now you can login with your email and new
+									password.
+								</Text>
 							</View>
 						</View>
 					</View>
@@ -121,16 +337,16 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	screen: {
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 	},
 
 	backButton: {
 		paddingHorizontal: 5,
 		paddingVertical: 5,
-		backgroundColor: 'transparent',
-		flexDirection: 'row',
-		alignItems: 'center',
+		backgroundColor: "transparent",
+		flexDirection: "row",
+		alignItems: "center",
 	},
 
 	info: {
@@ -138,18 +354,18 @@ const styles = StyleSheet.create({
 		color: COLORS.GREEN,
 		fontSize: 22,
 		flex: 1,
-		textAlign: 'center',
+		textAlign: "center",
 	},
 	infoLight: {
 		marginRight: 31,
 		color: COLORS.PRIMARY,
 		fontSize: 22,
 		flex: 1,
-		textAlign: 'center',
+		textAlign: "center",
 	},
 
 	topicContainer: {
-		width: '100%',
+		width: "100%",
 		padding: 10,
 		marginVertical: 5,
 		marginHorizontal: 5,
@@ -157,7 +373,7 @@ const styles = StyleSheet.create({
 		borderBottomColor: COLORS.GREY,
 	},
 	topicContainerLight: {
-		width: '100%',
+		width: "100%",
 		padding: 10,
 		marginVertical: 5,
 		marginHorizontal: 5,
@@ -173,21 +389,21 @@ const styles = StyleSheet.create({
 	topicName: {
 		color: COLORS.WHITE,
 		fontSize: 22,
-		fontFamily: 'karlaBold',
-		textAlign: 'center',
+		fontFamily: "karlaBold",
+		textAlign: "center",
 		marginVertical: 5,
 		marginBottom: 20,
-		textDecorationLine: 'underline',
+		textDecorationLine: "underline",
 		// backgroundColor: COLORS.NEXTTODARK,
 	},
 	topicNameLight: {
 		color: COLORS.BLACK,
 		fontSize: 22,
-		fontFamily: 'karlaBold',
-		textAlign: 'center',
+		fontFamily: "karlaBold",
+		textAlign: "center",
 		marginVertical: 5,
 		marginBottom: 20,
-		textDecorationLine: 'underline',
+		textDecorationLine: "underline",
 		// backgroundColor: COLORS.NEXTTODARK,
 	},
 
@@ -195,8 +411,8 @@ const styles = StyleSheet.create({
 		marginHorizontal: 10,
 	},
 	row: {
-		flexDirection: 'row',
-		alignItems: 'flex-start',
+		flexDirection: "row",
+		alignItems: "flex-start",
 		paddingVertical: 5,
 	},
 
@@ -212,13 +428,13 @@ const styles = StyleSheet.create({
 	topicDescription: {
 		color: COLORS.WHITE,
 		fontSize: 16,
-		fontFamily: 'inter',
+		fontFamily: "inter",
 		marginLeft: 1,
 	},
 	topicDescriptionLight: {
 		color: COLORS.BLACK,
 		fontSize: 16,
-		fontFamily: 'inter',
+		fontFamily: "inter",
 		marginLeft: 1,
 	},
 
