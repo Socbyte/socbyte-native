@@ -22,22 +22,22 @@ export const PlayerContext = createContext({
 	isEmpty: false,
 	// isLoading: false,here
 	currentTrack: null,
-	addToQueue: track => null,
+	addToQueue: (track) => null,
 	resetPlayer: () => null,
-	addRecommendedSong: song => null,
+	addRecommendedSong: (song) => null,
 
-	play: track => null,
+	play: (track) => null,
 	pause: () => null,
 	// loader: () => null,here
-	seekTo: interval => null,
+	seekTo: (interval) => null,
 	seekLevel: () => null,
 
 	rate: 1,
 	getRateText: () => null,
-	setRate: level => null,
+	setRate: (level) => null,
 
 	volume: 1,
-	setVolume: level => null,
+	setVolume: (level) => null,
 
 	playPrev: () => null,
 	playNext: () => null,
@@ -46,8 +46,8 @@ export const PlayerContext = createContext({
 	recommendedSongsList: [],
 });
 
-export const PlayerContextProvider = props => {
-	const { theme } = useSelector(state => state.settings.settings);
+export const PlayerContextProvider = (props) => {
+	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
 	};
@@ -80,19 +80,28 @@ export const PlayerContextProvider = props => {
 	};
 
 	useEffect(() => {
-		const listener = TrackPlayer.addEventListener('playback-state', ({ state }) => {
-			setPlayerState(state);
-		});
+		const listener = TrackPlayer.addEventListener(
+			'playback-state',
+			({ state }) => {
+				setPlayerState(state);
+			}
+		);
 
-		const playerNext = TrackPlayer.addEventListener('remote-previous', async () => {
-			playPrev();
-		});
+		const playerNext = TrackPlayer.addEventListener(
+			'remote-previous',
+			async () => {
+				playPrev();
+			}
+		);
 
-		const playerPrev = TrackPlayer.addEventListener('remote-next', async () => {
-			playNext();
-		});
+		const playerPrev = TrackPlayer.addEventListener(
+			'remote-next',
+			async () => {
+				playNext();
+			}
+		);
 
-		TrackPlayer.addEventListener('playback-track-changed', async res => {
+		TrackPlayer.addEventListener('playback-track-changed', async (res) => {
 			if (!res.nextTrack) {
 				// || currentTrack.id === res.track) {
 				// setLoading(false);here
@@ -100,7 +109,7 @@ export const PlayerContextProvider = props => {
 			}
 
 			await TrackPlayer.getTrack(res.nextTrack)
-				.then(async result => {
+				.then(async (result) => {
 					if (result === null) {
 						// setLoading(false);here
 						// console.log(isLoading);here
@@ -108,7 +117,7 @@ export const PlayerContextProvider = props => {
 					}
 					setCurrentTrack(result);
 				})
-				.catch(err => {
+				.catch((err) => {
 					// setLoading(false);here
 				});
 		});
@@ -119,11 +128,11 @@ export const PlayerContextProvider = props => {
 		});
 
 		(async () => {
-			await TrackPlayer.getVolume().then(res => {
+			await TrackPlayer.getVolume().then((res) => {
 				setVolume(res);
 			});
 
-			await TrackPlayer.getRate().then(res => {
+			await TrackPlayer.getRate().then((res) => {
 				setRate(res);
 			});
 		})();
@@ -154,34 +163,33 @@ export const PlayerContextProvider = props => {
 	// }, []);
 
 	const addToQueue = async (track = {}) => {
-		Vibration.vibrate([50, 100, 250, 50]);
+		// Vibration.vibrate([50, 100, 250, 50]);
 
 		try {
-			await TrackPlayer.getTrack(track.id)
-				.then(async res => {
-					if (!res || res === null) {
-						await TrackPlayer.add([track]);
-						ToastAndroid.showWithGravity(
-							'Song Added To Queue',
-							ToastAndroid.SHORT,
-							ToastAndroid.CENTER
-						);
-					} else {
-						ToastAndroid.showWithGravity(
-							'Song Already Exists In Queue',
-							ToastAndroid.SHORT,
-							ToastAndroid.CENTER
-						);
-					}
-				})
-				.catch(async err => {
+			await TrackPlayer.getTrack(track.id).then(async (res) => {
+				if (!res /*|| res === null*/) {
 					await TrackPlayer.add([track]);
 					ToastAndroid.showWithGravity(
 						'Song Added To Queue',
 						ToastAndroid.SHORT,
 						ToastAndroid.CENTER
 					);
-				});
+				} else {
+					ToastAndroid.showWithGravity(
+						'Song Already Exists In Queue',
+						ToastAndroid.SHORT,
+						ToastAndroid.CENTER
+					);
+				}
+			});
+			// .catch(async (err) => {
+			// 	await TrackPlayer.add([track]);
+			// 	ToastAndroid.showWithGravity(
+			// 		"Song Added To Queue",
+			// 		ToastAndroid.SHORT,
+			// 		ToastAndroid.CENTER
+			// 	);
+			// });
 		} catch (err) {
 			await TrackPlayer.add([track]);
 			ToastAndroid.showWithGravity(
@@ -204,12 +212,12 @@ export const PlayerContextProvider = props => {
 	};
 
 	const resetPlayer = async () => {
-		await TrackPlayer.reset().then(res => {
+		await TrackPlayer.reset().then((res) => {
 			setCurrentTrack(null);
 		});
 	};
 
-	const play = async track => {
+	const play = async (track) => {
 		await pause();
 
 		if (!track) {
@@ -226,12 +234,12 @@ export const PlayerContextProvider = props => {
 		try {
 			//we are checking that the track exists or not...
 			await TrackPlayer.getTrack(track.id)
-				.then(async res => {
+				.then(async (res) => {
 					if (!res || res === null) {
 						await TrackPlayer.add([track]);
 					}
 				})
-				.catch(async err => {
+				.catch(async (err) => {
 					await TrackPlayer.add([track]);
 				});
 		} catch (err) {
@@ -243,16 +251,16 @@ export const PlayerContextProvider = props => {
 			setCurrentTrack(track);
 			// setLoading(false);here
 			await TrackPlayer.skip(track.id)
-				.then(res => {})
-				.catch(async err => {
-					console.log('SSSSSS', err);
+				.then((res) => {})
+				.catch(async (err) => {
+					// console.log('SSSSSS', err);
 					const qu = await TrackPlayer.getQueue();
-					console.log('QUQUQU', qu);
+					// console.log('QUQUQU', qu);
 				});
 			await TrackPlayer.play()
-				.then(res => {})
-				.catch(err => {
-					console.log('PPPP', err);
+				.then((res) => {})
+				.catch((err) => {
+					// console.log('PPPP', err);
 				});
 		}
 
@@ -275,7 +283,7 @@ export const PlayerContextProvider = props => {
 		await TrackPlayer.seekTo(currPos + interval);
 	};
 
-	const seekLevel = async level => {
+	const seekLevel = async (level) => {
 		// console.log('SEKE');
 		// console.log(level);
 		if (!Number.isNaN(level)) {
@@ -283,15 +291,15 @@ export const PlayerContextProvider = props => {
 		}
 	};
 
-	const setVolumeLevel = level => {
+	const setVolumeLevel = (level) => {
 		TrackPlayer.setVolume(level).then(async () => {
-			await TrackPlayer.getVolume().then(res => {
+			await TrackPlayer.getVolume().then((res) => {
 				setVolume(res);
 			});
 		});
 	};
 
-	const setRateLevel = level => {
+	const setRateLevel = (level) => {
 		TrackPlayer.setRate(level).then(async () => {
 			setRate(level);
 		});
@@ -299,17 +307,17 @@ export const PlayerContextProvider = props => {
 
 	const playPrev = async () => {
 		TrackPlayer.skipToPrevious()
-			.then(res => {})
-			.catch(err => {
-				console.log('ERRO WHILE PREVIOUS', err.code);
+			.then((res) => {})
+			.catch((err) => {
+				// console.log('ERRO WHILE PREVIOUS', err.code);
 			});
 	};
 
 	const playNext = async () => {
 		TrackPlayer.skipToNext()
-			.then(res => {})
-			.catch(err => {
-				console.log('ERRO WHILE NEXT', err.code);
+			.then((res) => {})
+			.catch((err) => {
+				// console.log('ERRO WHILE NEXT', err.code);
 			});
 	};
 
@@ -319,13 +327,16 @@ export const PlayerContextProvider = props => {
 		},
 	];
 
-	const addRecommendedSong = track => {
+	const addRecommendedSong = (track) => {
 		if (recommendedSongsList.length > 50) {
 			return;
 		}
 
 		// const recommendIsPresent = recommendedSongsList.filter(song => song.id === track.id);
-		if (recommendedSongsList.filter(song => song.id === track.id).length <= 0) {
+		if (
+			recommendedSongsList.filter((song) => song.id === track.id)
+				.length <= 0
+		) {
 			const temp = recommendedSongsList;
 			temp.push(track);
 			setRecommendedSongsList(temp);
@@ -371,36 +382,11 @@ export const PlayerContextProvider = props => {
 		recommendedSongsList,
 	};
 
-	return <PlayerContext.Provider value={value}>{props.children}</PlayerContext.Provider>;
+	return (
+		<PlayerContext.Provider value={value}>
+			{props.children}
+		</PlayerContext.Provider>
+	);
 };
 
 export const usePlayerContext = () => useContext(PlayerContext);
-
-const recommend = {
-	album: { browseId: 'UCWXJyrk1diAufFuTHCTfQ2A', name: 'Vishal & Shekhar' },
-	artist: [
-		{ browseId: 'UCWXJyrk1diAufFuTHCTfQ2A', name: 'Vishal & Shekhar' },
-		{ browseId: 'UC41L0sFqy6_Q43RGgUnJ75Q', name: 'Sunidhi Chauhan' },
-		{ browseId: 'UCfMelS8PmfNmL_PsuUS6RFQ', name: 'Benny Dayal' },
-	],
-	duration: 234000,
-	name: 'Punjabi Wedding Song (From "Hasee Toh Phasee")',
-	params: 'wAEB',
-	playlistId: 'RDAMVMHy8b8Uh9QvI',
-	thumbnails: [
-		{
-			height: 60,
-			url:
-				'https://lh3.googleusercontent.com/4ZwXVEk6RQLYtLP10MvzCLbKWJdR55fKzfQwXsZ0gqL-XWSMwmR1Q3y9DSg-VrFyfefhBAyEEDK6QaA=w60-h60-l90-rj',
-			width: 60,
-		},
-		{
-			height: 120,
-			url:
-				'https://lh3.googleusercontent.com/4ZwXVEk6RQLYtLP10MvzCLbKWJdR55fKzfQwXsZ0gqL-XWSMwmR1Q3y9DSg-VrFyfefhBAyEEDK6QaA=w120-h120-l90-rj',
-			width: 120,
-		},
-	],
-	type: 'song',
-	videoId: 'Hy8b8Uh9QvI',
-};

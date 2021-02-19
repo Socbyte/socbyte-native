@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from 'react';
 import {
 	StyleSheet,
 	View,
@@ -9,35 +9,35 @@ import {
 	TouchableOpacity,
 	Linking,
 	BackHandler,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-import COLORS from "../../val/colors/Colors";
-import ModalAlert from "../../components/customs/ModalAlert";
-import Firebase from "../../firebase/Firebase";
-import FullScreenLoading from "../../components/customs/FullScreenLoading";
-import fakeemails from "./FakeMail";
+import COLORS from '../../val/colors/Colors';
+import ModalAlert from '../../components/customs/ModalAlert';
+import Firebase from '../../firebase/Firebase';
+import FullScreenLoading from '../../components/customs/FullScreenLoading';
+import fakeemails from './FakeMail';
 import {
 	databaseInit,
 	fetchDatabase,
 	insertDatabase,
 	updateDatabase,
-} from "../../sql/SQLStarter";
-import { useDispatch, useSelector } from "react-redux";
-import { updateSettings } from "../../store/Settings";
+} from '../../sql/SQLStarter';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateSettings } from '../../store/Settings';
 
 const Register = (props) => {
 	const emailValidator = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 	const usernameValidator = /^[a-z0-9]+(?:[._-][a-z0-9]+)*$/;
 	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (firstVal, secondVal) => {
-		return !theme || theme === "d" ? firstVal : secondVal;
+		return !theme || theme === 'd' ? firstVal : secondVal;
 	};
 	const dispatch = useDispatch();
 
-	const [username, setUsername] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [username, setUsername] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(true);
 	const [disabled, setDisabled] = useState(false);
 	const [error, setError] = useState({});
@@ -52,10 +52,10 @@ const Register = (props) => {
 			setDisabled(false);
 			setLoading(false);
 			setError({
-				header: "Required!",
+				header: 'Required!',
 				desc:
 					"All email, password and username are required to create a new account.\n\nTap on the 'i' button for more info.",
-				primary: "Okay!",
+				primary: 'Okay!',
 				primaryFunction: () => setError(false),
 			});
 
@@ -65,10 +65,10 @@ const Register = (props) => {
 			setLoading(false);
 
 			setError({
-				header: "Invalid Email!",
+				header: 'Invalid Email!',
 				desc:
 					"Please enter a valid email address.\n\nTap on the 'i' button for more info.",
-				primary: "Okay!",
+				primary: 'Okay!',
 				primaryFunction: () => setError(false),
 			});
 
@@ -78,10 +78,10 @@ const Register = (props) => {
 			setLoading(false);
 
 			setError({
-				header: "Invalid Username!",
+				header: 'Invalid Username!',
 				desc:
 					"Username must have characters between 8 - 15.\n\nTap on the 'i' button for more info.",
-				primary: "Okay!",
+				primary: 'Okay!',
 				primaryFunction: () => setError(false),
 			});
 
@@ -91,10 +91,10 @@ const Register = (props) => {
 			setLoading(false);
 
 			setError({
-				header: "Invalid Username!",
+				header: 'Invalid Username!',
 				desc:
 					"Please enter a valid uesrname.\n\nTap on the 'i' button for more info.",
-				primary: "Okay!",
+				primary: 'Okay!',
 				primaryFunction: () => setError(false),
 			});
 
@@ -104,10 +104,10 @@ const Register = (props) => {
 			setLoading(false);
 
 			setError({
-				header: "Invalid Password!",
+				header: 'Invalid Password!',
 				desc:
 					"Password must contain at least 8 characters.\n\nTap on the 'i' button for more info.",
-				primary: "Okay!",
+				primary: 'Okay!',
 				primaryFunction: () => setError(false),
 			});
 
@@ -120,10 +120,10 @@ const Register = (props) => {
 				setLoading(false);
 
 				setError({
-					header: "Spam Email!",
+					header: 'Spam Email!',
 					desc:
-						"spam emails are not allowed in our system. please try using any verified email service.",
-					primary: "Okay!",
+						'spam emails are not allowed in our system. please try using any verified email service.',
+					primary: 'Okay!',
 					primaryFunction: () => setError(false),
 				});
 				return;
@@ -132,26 +132,26 @@ const Register = (props) => {
 		let time = new Date();
 
 		Firebase.database()
-			.ref("App_Details")
-			.child("auth_avail")
-			.once("value")
+			.ref('App_Details')
+			.child('auth_avail')
+			.once('value')
 			.then((snap) => {
 				if (snap.val()) {
 					if (snap.val().registrationOpened) {
 						Firebase.database()
-							.ref("Accounts")
-							.orderByChild("username")
+							.ref('Accounts')
+							.orderByChild('username')
 							.equalTo(username)
-							.once("value")
+							.once('value')
 							.then((snap) => {
 								if (snap.val()) {
 									setDisabled(false);
 									setLoading(false);
 
 									setError({
-										header: "Username Taken!",
+										header: 'Username Taken!',
 										desc: `username is already taken. please choose a different username other than (${username})`,
-										primary: "Okay!",
+										primary: 'Okay!',
 										primaryFunction: () => setError(false),
 									});
 									return;
@@ -162,9 +162,9 @@ const Register = (props) => {
 											password
 										)
 										.then((res) => {
-											console.log(res.user.uid);
+											// console.log(res.user.uid);
 											Firebase.database()
-												.ref("Users")
+												.ref('Users')
 												.child(res.user.uid)
 												.set({
 													written: {
@@ -173,12 +173,12 @@ const Register = (props) => {
 													followers: 0,
 													following: 1,
 													social: {
-														github: "",
-														linkedin: "",
-														dribbble: "",
-														instagram: "",
-														facebook: "",
-														twitter: "",
+														github: '',
+														linkedin: '',
+														dribbble: '',
+														instagram: '',
+														facebook: '',
+														twitter: '',
 													},
 													joinedOn: {
 														year: time.getFullYear(),
@@ -189,25 +189,25 @@ const Register = (props) => {
 														sec: time.getSeconds(),
 														millisec: time.getMilliseconds(),
 													},
-													verified: "",
+													verified: '',
 													sound: {
-														id: "",
-														url: "",
+														id: '',
+														url: '',
 														duration: 0,
 													},
-													profileImg: "",
+													profileImg: '',
 													education: {},
 													ratings: 1,
-													about: "",
-													expertise: "",
-													location: "",
-													coverImg: "",
-													facolor: "#0f60b6",
+													about: '',
+													expertise: '',
+													location: '',
+													coverImg: '',
+													facolor: '#0f60b6',
 													fullname: username,
-													phoneNo: "",
+													phoneNo: '',
 													profileType: true,
 													publics: true,
-													status: "",
+													status: '',
 													email: email,
 													username: username,
 												})
@@ -215,20 +215,20 @@ const Register = (props) => {
 												.catch((err) => {});
 
 											Firebase.database()
-												.ref("Accounts")
+												.ref('Accounts')
 												.child(res.user.uid)
 												.set({
 													uid: res.user.uid,
 													username: username,
 													email,
-													fullname: "",
+													fullname: '',
 												});
 
 											Firebase.auth().currentUser.updateProfile(
 												{
 													displayName: username,
-													photoURL: "",
-													phoneNo: "",
+													photoURL: '',
+													phoneNo: '',
 												}
 											);
 
@@ -236,113 +236,113 @@ const Register = (props) => {
 											databaseInit()
 												.then(() => {
 													insertDatabase(
-														"theme",
-														"d"
+														'theme',
+														'd'
 													);
 													insertDatabase(
-														"fontSize",
-														"m"
+														'fontSize',
+														'm'
 													);
 													insertDatabase(
-														"email",
+														'email',
 														email
 													);
 													insertDatabase(
-														"username",
+														'username',
 														username
 													);
 													insertDatabase(
-														"primaryColor",
+														'primaryColor',
 														COLORS.GREEN
 													);
 													insertDatabase(
-														"invertPrimaryColor",
+														'invertPrimaryColor',
 														COLORS.BLACK
 													);
 
 													updateDatabase(
-														"theme",
-														"d"
+														'theme',
+														'd'
 													);
 													updateDatabase(
-														"fontSize",
-														"m"
+														'fontSize',
+														'm'
 													);
 													updateDatabase(
-														"email",
+														'email',
 														email
 													);
 													updateDatabase(
-														"username",
+														'username',
 														username
 													);
 													updateDatabase(
-														"primaryColor",
+														'primaryColor',
 														COLORS.GREEN
 													);
 													updateDatabase(
-														"invertPrimaryColor",
+														'invertPrimaryColor',
 														COLORS.BLACK
 													);
 												})
 												.catch((err) => {
-													console.log(
-														"DATABASE CREATED"
+													// console.log(
+													// 	"DATABASE CREATED"
+													// );
+													insertDatabase(
+														'theme',
+														'd'
 													);
 													insertDatabase(
-														"theme",
-														"d"
+														'fontSize',
+														'm'
 													);
 													insertDatabase(
-														"fontSize",
-														"m"
-													);
-													insertDatabase(
-														"email",
+														'email',
 														email
 													);
 													insertDatabase(
-														"username",
+														'username',
 														username
 													);
 													insertDatabase(
-														"primaryColor",
+														'primaryColor',
 														COLORS.GREEN
 													);
 													insertDatabase(
-														"invertPrimaryColor",
+														'invertPrimaryColor',
 														COLORS.BLACK
 													);
 
 													updateDatabase(
-														"theme",
-														"d"
+														'theme',
+														'd'
 													);
 													updateDatabase(
-														"fontSize",
-														"m"
+														'fontSize',
+														'm'
 													);
 													updateDatabase(
-														"email",
+														'email',
 														email
 													);
 													updateDatabase(
-														"username",
+														'username',
 														username
 													);
 													updateDatabase(
-														"primaryColor",
+														'primaryColor',
 														COLORS.GREEN
 													);
 													updateDatabase(
-														"invertPrimaryColor",
+														'invertPrimaryColor',
 														COLORS.BLACK
 													);
 												});
 
-											setUsername("");
-											setEmail("");
-											setPassword("");
+											setUsername('');
+											setEmail('');
+											setPassword('');
 											setError(false);
 											setLoading(false);
 											setDisabled(false);
@@ -351,17 +351,17 @@ const Register = (props) => {
 										.catch((err) => {
 											if (
 												err.code.includes(
-													"auth/email-already-in-use"
+													'auth/email-already-in-use'
 												)
 											) {
 												setDisabled(false);
 												setLoading(false);
 
 												setError({
-													header: "Account Exists!",
+													header: 'Account Exists!',
 													desc:
-														"email is already registered. try using other email address.",
-													primary: "Okay!",
+														'email is already registered. try using other email address.',
+													primary: 'Okay!',
 													primaryFunction: () =>
 														setError(false),
 												});
@@ -371,10 +371,10 @@ const Register = (props) => {
 												setLoading(false);
 
 												setError({
-													header: "Error!",
+													header: 'Error!',
 													desc:
-														"some error occurred while creating your account please try again, or contact the developer so this could be fixed",
-													primary: "Okay!",
+														'some error occurred while creating your account please try again, or contact the developer so this could be fixed',
+													primary: 'Okay!',
 													primaryFunction: () =>
 														setError(false),
 												});
@@ -389,10 +389,10 @@ const Register = (props) => {
 								setLoading(false);
 
 								setError({
-									header: "Error!",
+									header: 'Error!',
 									desc:
-										"1. Cannot contact with the server currently. Servers are busy. Please try again.",
-									primary: "Okay!",
+										'1. Cannot contact with the server currently. Servers are busy. Please try again.',
+									primary: 'Okay!',
 									primaryFunction: () => setError(false),
 								});
 								return;
@@ -402,10 +402,10 @@ const Register = (props) => {
 						setLoading(false);
 
 						setError({
-							header: "Registration Closed!",
+							header: 'Registration Closed!',
 							desc:
-								"New Users Registration is not allowed currently, Since the server load has increased too much. But you can login if you have an other account. For more details please contact the developer.",
-							primary: "Okay!",
+								'New Users Registration is not allowed currently, Since the server load has increased too much. But you can login if you have an other account. For more details please contact the developer.',
+							primary: 'Okay!',
 							primaryFunction: () => setError(false),
 						});
 						return;
@@ -413,15 +413,15 @@ const Register = (props) => {
 				}
 			})
 			.catch((err) => {
-				console.log(err);
+				// console.log(err);
 				setDisabled(false);
 				setLoading(false);
 
 				setError({
-					header: "Error!",
+					header: 'Error!',
 					desc:
-						"2. Cannot contact with the server currently. Servers are busy. Please try again.",
-					primary: "Okay!",
+						'2. Cannot contact with the server currently. Servers are busy. Please try again.',
+					primary: 'Okay!',
 					primaryFunction: () => setError(false),
 				});
 				return;
@@ -429,27 +429,27 @@ const Register = (props) => {
 	}, [email, password, username]);
 
 	const loadLoginForm = () => {
-		props.navigation.replace("Login");
+		props.navigation.replace('Login');
 	};
 
 	const loadInformation = () => {
-		props.navigation.navigate("Information");
+		props.navigation.navigate('Information');
 	};
 
 	const toggleTheme = () => {
 		// console.log('TOGGLE THE CURRENT THEME...');
-		const toggledTheme = whatIsTheme("l", "d");
-		updateDatabase("theme", toggledTheme)
+		const toggledTheme = whatIsTheme('l', 'd');
+		updateDatabase('theme', toggledTheme)
 			.then((result) => {
 				// console.log('DATABASE UPDATED');
 				// console.log(result);
-				dispatch(updateSettings("theme", toggledTheme));
+				dispatch(updateSettings('theme', toggledTheme));
 			})
 			.catch((err) => {
-				console.log(
-					"ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION"
-				);
-				console.log(err);
+				// console.log(
+				// 	"ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION"
+				// );
+				// console.log(err);
 			});
 	};
 
@@ -507,7 +507,7 @@ const Register = (props) => {
 						<View>
 							<TouchableOpacity onPress={loadInformation}>
 								<Ionicons
-									name="information"
+									name='information'
 									color={whatIsTheme(
 										COLORS.WHITE,
 										COLORS.BLACK
@@ -532,19 +532,19 @@ const Register = (props) => {
 									  )
 							}
 							editable={!disabled}
-							autoCompleteType="username"
-							placeholder="Username"
+							autoCompleteType='username'
+							placeholder='Username'
 							placeholderTextColor={whatIsTheme(
 								COLORS.PLACEHOLDER,
 								COLORS.DARKPLACEHOLDER
 							)}
-							autoCapitalize="none"
+							autoCapitalize='none'
 							autoCorrect={false}
 							autoFocus
 							value={username}
 							onChangeText={setUsername}
-							keyboardType="default"
-							returnKeyType="next"
+							keyboardType='default'
+							returnKeyType='next'
 						/>
 					</View>
 
@@ -562,16 +562,16 @@ const Register = (props) => {
 									  )
 							}
 							editable={!disabled}
-							autoCompleteType="email"
-							placeholder="Email"
+							autoCompleteType='email'
+							placeholder='Email'
 							placeholderTextColor={whatIsTheme(
 								COLORS.PLACEHOLDER,
 								COLORS.DARKPLACEHOLDER
 							)}
 							value={email}
 							onChangeText={setEmail}
-							keyboardType="email-address"
-							returnKeyType="next"
+							keyboardType='email-address'
+							returnKeyType='next'
 						/>
 					</View>
 
@@ -590,7 +590,7 @@ const Register = (props) => {
 										  )
 								}
 								editable={!disabled}
-								placeholder="Password"
+								placeholder='Password'
 								placeholderTextColor={whatIsTheme(
 									COLORS.PLACEHOLDER,
 									COLORS.DARKPLACEHOLDER
@@ -607,7 +607,7 @@ const Register = (props) => {
 						>
 							<Ionicons
 								style={{ marginLeft: 8 }}
-								name={showPassword ? "eye-off" : "eye"}
+								name={showPassword ? 'eye-off' : 'eye'}
 								size={20}
 								color={whatIsTheme(
 									COLORS.WHITE,
@@ -642,7 +642,7 @@ const Register = (props) => {
 								)}
 							>
 								<Ionicons
-									name="arrow-forward"
+									name='arrow-forward'
 									color={whatIsTheme(
 										COLORS.BLACK,
 										COLORS.WHITE
@@ -679,24 +679,24 @@ const Register = (props) => {
 const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
-		justifyContent: "center",
+		justifyContent: 'center',
 	},
 	compo: {
 		flex: 1,
 		margin: 20,
-		justifyContent: "center",
+		justifyContent: 'center',
 		borderRadius: 5,
 	},
 	textSection: {
 		padding: 10,
 		marginBottom: 15,
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
 	},
 
 	authText: {
-		fontFamily: "karla",
+		fontFamily: 'karla',
 		color: COLORS.WHITE,
 		fontSize: 30,
 	},
@@ -706,9 +706,9 @@ const styles = StyleSheet.create({
 
 	input: {
 		margin: 10,
-		fontFamily: "karla",
+		fontFamily: 'karla',
 		paddingHorizontal: 8,
-		borderColor: "#909090",
+		borderColor: '#909090',
 		borderWidth: 1,
 		borderRadius: 5,
 		elevation: 2,
@@ -740,9 +740,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	passwordInput: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
 	},
 
 	registerTextContainer: {
@@ -752,9 +752,9 @@ const styles = StyleSheet.create({
 		padding: 10,
 		marginTop: 10,
 		marginBottom: 15,
-		flexDirection: "row",
-		justifyContent: "space-around",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		alignItems: 'center',
 	},
 	registerTextContainerLight: {
 		backgroundColor: COLORS.BEFORELIGHT,
@@ -763,15 +763,15 @@ const styles = StyleSheet.create({
 		padding: 10,
 		marginTop: 10,
 		marginBottom: 15,
-		flexDirection: "row",
-		justifyContent: "space-around",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		alignItems: 'center',
 	},
 
 	registerIconContainer: {
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
 		width: 55,
 		height: 55,
 		padding: 5,
@@ -780,9 +780,9 @@ const styles = StyleSheet.create({
 		elevation: 10,
 	},
 	registerIconContainerLight: {
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
 		width: 55,
 		height: 55,
 		padding: 5,
@@ -791,7 +791,7 @@ const styles = StyleSheet.create({
 		elevation: 10,
 	},
 	registerText: {
-		fontFamily: "roboto",
+		fontFamily: 'roboto',
 		color: COLORS.GREEN,
 		fontSize: 23,
 		borderTopLeftRadius: 10,
@@ -799,7 +799,7 @@ const styles = StyleSheet.create({
 		// height: 50,
 	},
 	registerTextLight: {
-		fontFamily: "roboto",
+		fontFamily: 'roboto',
 		color: COLORS.PRIMARY,
 		fontSize: 23,
 		borderTopLeftRadius: 10,
@@ -808,16 +808,16 @@ const styles = StyleSheet.create({
 	},
 
 	loginTextContainer: {
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 		marginTop: 20,
 		paddingVertical: 10,
 		paddingHorizontal: 5,
 		marginTop: 20,
 	},
 	loginTextContainerLight: {
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 		marginTop: 20,
 		paddingVertical: 10,
 		paddingHorizontal: 5,
@@ -825,19 +825,19 @@ const styles = StyleSheet.create({
 	},
 
 	loginText: {
-		fontFamily: "inter",
+		fontFamily: 'inter',
 		color: COLORS.WHITE,
 		fontSize: 14,
-		textAlign: "center",
-		textDecorationLine: "underline",
+		textAlign: 'center',
+		textDecorationLine: 'underline',
 		// backgroundColor: COLORS.PRIMARY,
 	},
 	loginTextLight: {
-		fontFamily: "inter",
+		fontFamily: 'inter',
 		color: COLORS.DARKPRIMARY,
 		fontSize: 14,
-		textAlign: "center",
-		textDecorationLine: "underline",
+		textAlign: 'center',
+		textDecorationLine: 'underline',
 		// backgroundColor: COLORS.PRIMARY,
 	},
 });

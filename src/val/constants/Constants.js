@@ -4,7 +4,7 @@ const SECERT_KEYS = {
 
 const messageChatTypes = {
 	CMD: 'cmd',
-    CMD2: 'cmd2',
+	CMD2: 'cmd2',
 	CHAT: 'chat',
 	TEXT: 'text',
 	DATE: 'date',
@@ -283,12 +283,21 @@ const RecommendedSongsList = [
 	},
 ];
 
+export const homeImageLink =
+	'https://raw.githubusercontent.com/Socbyte/src/main/images/MusicHomeImages/00';
+
+export const numbers = [1, 2, 3, 4, 5];
+
 class Suffler {
 	shuffleArray(array) {
 		for (let i = array.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
 			[array[i], array[j]] = [array[j], array[i]];
 		}
+		return array;
+	}
+
+	sameArray(array) {
 		return array;
 	}
 
@@ -303,7 +312,143 @@ class Suffler {
 
 const SufflerList = new Suffler();
 
-export { messageChatTypes as ChatTypes, notificationsType as NotificationTypes };
+export const currentFeaturesList = [
+	{
+		heading: 'Themes',
+		time: '1 Month',
+		detail:
+			'Currently two most used themes have been implemented properly. Dark mode with green color as primary color, and Light theme with blue color as primary color.\n\n Just toggle the theme as Light or Dark in settings tab -> Appearance menu through the drawer.',
+		image: 'colors',
+		color: ['#317b5d', '#c4e4d3', '#9ea544'],
+		index: '0',
+	},
+	{
+		heading: 'Music Player',
+		time: '14 Days',
+		detail:
+			'A very new modern material design based music player to play every song you need to listen anytime, anywhere. This is available in Music tab in side drawer.',
+		image: 'colors',
+		color: ['#282622', '#edd350', '#fbf7ed'],
+		index: '1',
+	},
+	{
+		heading: 'Chating',
+		time: '17 Days',
+		detail:
+			'Currently groups chat feature is implemented. Personal chating will be implemented in futures patches may be. Create your own group or search and join an existing group. Groups contains admins and co-admins who will maintain the groups properties.',
+		image: 'colors',
+		color: ['#2d1d47', '#eb4126', '#fcfcfc'],
+		index: '2',
+	},
+	{
+		heading: 'Users Profile',
+		time: '8 Days',
+		detail:
+			'Update your profile and keep it up to date. Other users could search for any users profile and follow them. Currently user will get notifications of only followings data.',
+		image: 'colors',
+		color: ['#6a5bcf', '#bca4ee', '#f1a0ba'],
+		index: '3',
+	},
+	{
+		heading: 'Follows & Followings',
+		time: '6 Days',
+		detail:
+			"User could follow anybody they like and unfollow they follow already. User could also watch diferent user's followings in there particular profiles.",
+		image: 'colors',
+		color: ['#3b7efa', '#4bd8fb', '#ffae23'],
+		index: '4',
+	},
+	{
+		heading: 'Many Hiddens',
+		time: 'Unknown Days',
+		detail:
+			"There are many-many hidden secret feature which user could get to know about by using this application. User's may post the feature's details they think it may be hidden at github repository of this project.",
+		image: 'colors',
+		color: ['#6a5bcf', '#bca4ee', '#f1a0ba'],
+		index: '5',
+	},
+	{
+		heading: 'GitHub Profile',
+		detail:
+			'This is not a feature.\n\nThis is my GitHub Profile visit and contribute if you like my project.',
+		image: 'colors',
+		color: ['#0f60b6', '#ffffff80', '#ffffff80'],
+		link: 'https://github.com/sobhanbera',
+		linkText: 'Tap Here\nGitHub Profile',
+		index: '6',
+	},
+	{
+		heading: 'Project Repo',
+		detail:
+			'This is not a feature.\n\nThis is the link to the GitHub Organization which this app belongs to made by me.\nContribute!',
+		image: 'colors',
+		color: ['#0f60b6', '#ffffff80', '#ffffff80'],
+		link: 'https://github.com/socbyte',
+		linkText: 'Tap Here\nOrganization',
+		index: '7',
+	},
+];
+export const upcomingFeaturesList = [
+	{
+		heading: 'One More Theme',
+		time: 'In A Month',
+		detail:
+			"This feature will allow the users to choose there primary color as a socbyte's primary color. It may be any color of desire may be user's favorite color or anything.",
+		image: 'colors',
+		color: ['#282622', '#edd350', '#fbf7ed'],
+		index: '0',
+	},
+	{
+		heading: 'Posts',
+		time: 'Next Update',
+		detail:
+			"Users will be able to upload posts with an title, description, image, may be codes, custom layouts, etc. Post will contain like, share, comment and other features. User's post will be shown in there particular profiles through realtime database.",
+		image: 'colors',
+		color: ['#317b5d', '#c4e4d3', '#9ea544'],
+		index: '1',
+	},
+	{
+		heading: 'Music Player',
+		time: "User's Support Needed",
+		detail:
+			"Better version of music player is comming soon. Which will contain an optimized rest-fetcher. No interuption while listening to music. Sorry for low end devices users, currently I am working for only most used devices depending on user's preferences.",
+		image: 'colors',
+		color: ['#3b7efa', '#4bd8fb', '#ffae23'],
+		index: '2',
+	},
+	{
+		heading: 'Two Step Verification',
+		time: "User's Support Needed",
+		detail:
+			"A feature for two step verification is comming soon. If you guys ('user') of this app supports this application to grow more. This feature will be implemented soon. Coding is almost done in this feature but since data fetching queries are much, so its pending.",
+		image: 'colors',
+		color: ['#3b7efa', '#4bd8fb', '#ffae23'],
+		index: '3',
+	},
+	{
+		heading: 'Font Sizes',
+		time: '"Next Update"',
+		detail:
+			"Responsive font size and font size depending on user's choice.\n\n24 pixels - Large,\n20 pixels - Medium,\n17 pixels - Small,\n14 pixels - Large",
+		image: 'colors',
+		color: ['#6a5bcf', '#bca4ee', '#f1a0ba'],
+		index: '4',
+	},
+	{
+		heading: 'Custom Layouts',
+		time: "User's Support Needed",
+		detail:
+			"In this feature you could contribute to the code at GitHub repository. And make the application more optimized. Some user's prescribed layout will also be taken as main application's layout.",
+		image: 'colors',
+		color: ['#2d1d47', '#eb4126', '#fcfcfc'],
+		index: '5',
+	},
+];
+
+export {
+	messageChatTypes as ChatTypes,
+	notificationsType as NotificationTypes,
+};
 export { SECERT_KEYS as KEY };
 export { TrendingSearchQueries };
 export { SufflerList };

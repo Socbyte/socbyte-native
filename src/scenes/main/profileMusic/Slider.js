@@ -6,7 +6,7 @@ import COLORS from '../../../val/colors/Colors';
 import { useSelector } from 'react-redux';
 
 function CustomSlider() {
-	const { theme } = useSelector(state => state.settings.settings);
+	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
 	};
@@ -20,10 +20,10 @@ function CustomSlider() {
 		// console.log(position);
 		setCurrPosition(position);
 		setTotalDuration(duration);
-		console.log(currposition, totalduration);
+		// console.log(currposition, totalduration);
 	});
 
-	const formatTime = secs => {
+	const formatTime = (secs) => {
 		let minutes = Math.floor(secs / 60);
 		let seconds = Math.ceil(secs - minutes * 60);
 
@@ -32,13 +32,13 @@ function CustomSlider() {
 		return `${minutes}:${seconds}`;
 	};
 
-	const handleChange = val => {
+	const handleChange = (val) => {
 		TrackPlayer.seekTo(val)
-			.then(res => {
-				console.log('CHANGED SUCCESS');
+			.then((res) => {
+				// console.log('CHANGED SUCCESS');
 			})
-			.catch(err => {
-				console.log('CANNOT CHANGE THE SLIDER', err, 'VAL IS THIS THIS', val);
+			.catch((err) => {
+				// console.log('CANNOT CHANGE THE SLIDER', err, 'VAL IS THIS THIS', val);
 			});
 	};
 
@@ -47,7 +47,8 @@ function CustomSlider() {
 			style={{
 				// backgroundColor: COLORS.RED,
 				width: '82%',
-			}}>
+			}}
+		>
 			<Slider
 				style={{ width: 320, height: 40 }}
 				minimumValue={0}
@@ -84,8 +85,12 @@ function CustomSlider() {
 					/> */}
 
 			<View style={styles.timeContainer}>
-				<Text style={{ color: whatIsTheme(COLORS.MID) }}>{formatTime(position)}</Text>
-				<Text style={{ color: whatIsTheme(COLORS.MID) }}>{formatTime(duration)}</Text>
+				<Text style={{ color: whatIsTheme(COLORS.MID) }}>
+					{formatTime(position)}
+				</Text>
+				<Text style={{ color: whatIsTheme(COLORS.MID) }}>
+					{formatTime(duration)}
+				</Text>
 			</View>
 		</View>
 	);

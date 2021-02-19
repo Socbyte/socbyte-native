@@ -1,53 +1,53 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from 'react';
 import {
 	Animated,
 	ScrollView,
 	StyleSheet,
 	TextInput,
 	View,
-} from "react-native";
+} from 'react-native';
 import {
 	Icon,
 	ListItem,
 	Text,
 	Avatar as ElementAvatar,
-} from "react-native-elements";
-import { Paragraph, Title, Avatar, Button } from "react-native-paper";
-import { useSelector } from "react-redux";
+} from 'react-native-elements';
+import { Paragraph, Title, Avatar, Button } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 
-import firebase from "../../../../../firebase/Firebase";
-import Header from "../../../../../components/customs/Header/Header";
-import COLORS from "../../../../../val/colors/Colors";
-import md5 from "md5";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { ToastAndroid } from "react-native";
+import firebase from '../../../../../firebase/Firebase';
+import Header from '../../../../../components/customs/Header/Header';
+import COLORS from '../../../../../val/colors/Colors';
+import md5 from 'md5';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ToastAndroid } from 'react-native';
 
 const months = [
-	"January",
-	"February",
-	"March",
-	"April",
-	"May",
-	"June",
-	"July",
-	"August",
-	"September",
-	"October",
-	"November",
-	"December",
+	'January',
+	'February',
+	'March',
+	'April',
+	'May',
+	'June',
+	'July',
+	'August',
+	'September',
+	'October',
+	'November',
+	'December',
 ];
 const IMAGE_HEIGHT = 350;
 
 const AdminPanel = ({ admin, whatIsTheme, navigation }) => {
-	const [adminImage, setAdminImage] = useState("");
+	const [adminImage, setAdminImage] = useState('');
 
 	useEffect(() => {
 		const emailHash = md5(admin.email);
 		fetch(`https://www.gravatar.com/${emailHash}.json`)
 			.then((res) => res.json())
 			.then((res) => {
-				if (JSON.stringify(res).includes("User not found")) {
-					setAdminImage("");
+				if (JSON.stringify(res).includes('User not found')) {
+					setAdminImage('');
 				} else {
 					setAdminImage(
 						`https://www.gravatar.com/avatar/${emailHash}.jpg?s=200`
@@ -55,7 +55,7 @@ const AdminPanel = ({ admin, whatIsTheme, navigation }) => {
 				}
 			})
 			.catch((err) => {
-				console.log("THIS ERROR OCCURED WHILE LOADING GRAVATAR", err);
+				// console.log("THIS ERROR OCCURED WHILE LOADING GRAVATAR", err);
 			});
 	}, []);
 
@@ -66,7 +66,7 @@ const AdminPanel = ({ admin, whatIsTheme, navigation }) => {
 			</Title>
 			<TouchableOpacity
 				onPress={() => {
-					navigation.navigate("ShowSearchedUserProfile", {
+					navigation.navigate('ShowSearchedUserProfile', {
 						uid: admin.uid,
 						usernameText: admin.username,
 					});
@@ -112,7 +112,7 @@ const AdminPanel = ({ admin, whatIsTheme, navigation }) => {
 							label={
 								admin.username
 									? admin.username[0].toUpperCase()
-									: ""
+									: ''
 							}
 						/>
 					)}
@@ -131,15 +131,15 @@ const AdminPanel = ({ admin, whatIsTheme, navigation }) => {
 };
 
 const UserCard = ({ user, whatIsTheme, navigation }) => {
-	const [image, setImage] = useState("");
+	const [image, setImage] = useState('');
 
 	useEffect(() => {
 		const emailHash = md5(user.email);
 		fetch(`https://www.gravatar.com/${emailHash}.json`)
 			.then((res) => res.json())
 			.then((res) => {
-				if (JSON.stringify(res).includes("User not found")) {
-					setImage("");
+				if (JSON.stringify(res).includes('User not found')) {
+					setImage('');
 				} else {
 					setImage(
 						`https://www.gravatar.com/avatar/${emailHash}.jpg?s=200`
@@ -147,14 +147,14 @@ const UserCard = ({ user, whatIsTheme, navigation }) => {
 				}
 			})
 			.catch((err) => {
-				console.log("THIS ERROR OCCURED WHILE LOADING GRAVATAR", err);
+				// console.log("THIS ERROR OCCURED WHILE LOADING GRAVATAR", err);
 			});
 	}, []);
 
 	return (
 		<TouchableOpacity
 			onPress={() => {
-				navigation.navigate("ShowSearchedUserProfile", {
+				navigation.navigate('ShowSearchedUserProfile', {
 					uid: user.uid,
 					usernameText: user.username,
 				});
@@ -197,7 +197,7 @@ const UserCard = ({ user, whatIsTheme, navigation }) => {
 							styles.avatarLabelLight
 						)}
 						label={
-							user.username ? user.username[0].toUpperCase() : ""
+							user.username ? user.username[0].toUpperCase() : ''
 						}
 					/>
 				)}
@@ -218,7 +218,7 @@ const ShowGroupDetails = (props) => {
 	const { theme } = useSelector((state) => state.settings.settings);
 	const { username } = useSelector((state) => state.main.user);
 	const whatIsTheme = (f, s) => {
-		return !theme || theme === "d" ? f : s;
+		return !theme || theme === 'd' ? f : s;
 	};
 	const { groupData } = props.route.params;
 	const creationTime = new Date(new Number(groupData.at));
@@ -235,7 +235,7 @@ const ShowGroupDetails = (props) => {
 			//register report against this gruop...
 			//currently does nothing...
 			ToastAndroid.showWithGravity(
-				"Group Reported",
+				'Group Reported',
 				ToastAndroid.SHORT,
 				ToastAndroid.CENTER
 			);
@@ -247,24 +247,24 @@ const ShowGroupDetails = (props) => {
 		const timestamp = new Date();
 		firebase
 			.database()
-			.ref("GroupsNotifications")
+			.ref('GroupsNotifications')
 			.child(groupData.id)
-			.orderByChild("username")
+			.orderByChild('username')
 			.startAt(username)
-			.endAt(username + "\uf8ff")
+			.endAt(username + '\uf8ff')
 			.limitToFirst(1)
-			.once("value")
+			.once('value')
 			.then((snap) => {
 				if (snap.val()) {
 					ToastAndroid.showWithGravity(
-						"Your request is already made.",
+						'Your request is already made.',
 						ToastAndroid.SHORT,
 						ToastAndroid.CENTER
 					);
 				} else {
 					firebase
 						.database()
-						.ref("GroupsNotifications")
+						.ref('GroupsNotifications')
 						.child(groupData.id)
 						.child(timestamp.getTime())
 						.update({
@@ -272,18 +272,18 @@ const ShowGroupDetails = (props) => {
 							email: currentUser.email,
 							username: currentUser.displayName,
 							time: timestamp.getTime(),
-							type: "request",
+							type: 'request',
 						})
 						.then((res) => {
 							ToastAndroid.showWithGravity(
-								"Your request has been made.",
+								'Your request has been made.',
 								ToastAndroid.SHORT,
 								ToastAndroid.CENTER
 							);
 						})
 						.catch((err) => {
 							ToastAndroid.showWithGravity(
-								"Could not make request currently. Please try again.",
+								'Could not make request currently. Please try again.',
 								ToastAndroid.SHORT,
 								ToastAndroid.CENTER
 							);
@@ -368,7 +368,7 @@ const ShowGroupDetails = (props) => {
 										}),
 									},
 								],
-								resizeMode: "cover",
+								resizeMode: 'cover',
 							},
 						]}
 						source={{
@@ -381,7 +381,7 @@ const ShowGroupDetails = (props) => {
 
 				{/* Request to join this group */}
 				{canRequest ? (
-					<View style={{ alignItems: "center", marginVertical: 10 }}>
+					<View style={{ alignItems: 'center', marginVertical: 10 }}>
 						<Button
 							contentStyle={{
 								backgroundColor: whatIsTheme(
@@ -428,7 +428,7 @@ const ShowGroupDetails = (props) => {
 						>
 							{groupData.desc
 								? groupData.desc
-								: "No description Currently."}
+								: 'No description Currently.'}
 						</Paragraph>
 					</View>
 
@@ -524,7 +524,7 @@ const ShowGroupDetails = (props) => {
 									style={{
 										color: COLORS.MID,
 										padding: 10,
-										textAlign: "center",
+										textAlign: 'center',
 									}}
 								>
 									Are you sure you want to register a report
@@ -552,14 +552,14 @@ const styles = StyleSheet.create({
 	imageContainer: {
 		marginTop: -1000,
 		paddingTop: 1000,
-		alignItems: "center",
-		overflow: "hidden",
-		width: "100%",
+		alignItems: 'center',
+		overflow: 'hidden',
+		width: '100%',
 	},
 	image: {
-		width: "100%",
+		width: '100%',
 		height: IMAGE_HEIGHT,
-		resizeMode: "cover",
+		resizeMode: 'cover',
 	},
 
 	mainContentContainer: {
@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		paddingTop: 3,
 		paddingLeft: 3,
-		fontFamily: "roboto",
+		fontFamily: 'roboto',
 		color: COLORS.BLUE_FAV,
 		backgroundColor: COLORS.DARKPRIMARY,
 	},
@@ -607,19 +607,19 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		paddingTop: 3,
 		paddingLeft: 3,
-		fontFamily: "roboto",
+		fontFamily: 'roboto',
 		color: COLORS.BLUE_FAV,
 		backgroundColor: COLORS.LIGHTBACKGROUND,
 	},
 
 	paraDark: {
 		paddingHorizontal: 5,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 		color: COLORS.WHITE,
 	},
 	paraLight: {
 		paddingHorizontal: 5,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 		color: COLORS.BLACK,
 	},
 
@@ -628,83 +628,83 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		// borderWidth: 1,
 		// borderColor: COLORS.PRIMARY,
-		overflow: "hidden",
+		overflow: 'hidden',
 		maxWidth: 42,
 		maxHeight: 42,
 		width: 42,
 		height: 42,
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 		backgroundColor: COLORS.TRANSPARENT,
-		resizeMode: "cover",
+		resizeMode: 'cover',
 	},
 	avatarDark: {
-		resizeMode: "cover",
+		resizeMode: 'cover',
 		backgroundColor: COLORS.DARKSECONDARY,
 		borderRadius: 100,
 		// borderWidth: 1,
 		// borderColor: COLORS.GREEN,
-		overflow: "hidden",
+		overflow: 'hidden',
 		maxWidth: 42,
 		maxHeight: 42,
 		width: 42,
 		height: 42,
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 		backgroundColor: COLORS.TRANSPARENT,
 	},
 
 	avatarLabelDark: {
 		color: COLORS.GREEN,
-		fontFamily: "inter",
+		fontFamily: 'inter',
 	},
 	avatarLabelLight: {
 		color: COLORS.PRIMARY,
-		fontFamily: "inter",
+		fontFamily: 'inter',
 	},
 
 	createdOnDark: {
 		paddingVertical: 10,
 		color: COLORS.BEFORELIGHT,
-		textAlign: "center",
-		width: "100%",
+		textAlign: 'center',
+		width: '100%',
 		marginVertical: 10,
 		fontSize: 19,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 	},
 	createdOnLight: {
 		paddingVertical: 10,
 		color: COLORS.DARKGLOW,
-		textAlign: "center",
-		width: "100%",
+		textAlign: 'center',
+		width: '100%',
 		marginVertical: 10,
 		fontSize: 19,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 	},
 
 	reportText: {
 		paddingVertical: 3,
 		color: COLORS.RED,
-		textAlign: "center",
-		width: "100%",
+		textAlign: 'center',
+		width: '100%',
 		marginVertical: 3,
 		fontSize: 19,
-		fontFamily: "roboto",
+		fontFamily: 'roboto',
 	},
 
 	userCardDark: {
 		paddingVertical: 7,
 		paddingHorizontal: 10,
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "flex-start",
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'flex-start',
 	},
 	userCardLight: {
 		paddingVertical: 7,
 		paddingHorizontal: 10,
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "flex-start",
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'flex-start',
 	},
 
 	userCardTextDark: {

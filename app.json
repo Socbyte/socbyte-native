@@ -1,12 +1,25 @@
 {
-  "name": "Socbyte",
-  "displayName": "Socbyte",
-  "expo": {
-    "name": "Socbyte",
-    "slug": "Socbyte",
-    "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ]
-  }
+	"name": "Socbyte",
+	"displayName": "Socbyte",
+	"expo": {
+		"name": "Socbyte",
+		"slug": "Socbyte",
+		"version": "1.0.0",
+		"assetBundlePatterns": ["**/*"],
+		"splash": {
+			"image": "./src/assets/icons/splashscreen_image.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#000000"
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./src/assets/icons/icon.png",
+				"backgroundColor": "#000000"
+			}
+		},
+		"androidStatusBar": {
+			"backgroundColor": "#000000",
+			"translucent": false
+		}
+	}
 }

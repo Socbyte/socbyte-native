@@ -4,8 +4,21 @@
  * new component is with name MusicPlayer.js in the same directory...
  */
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Image, ImageBackground, Easing, Dimensions } from 'react-native';
-import { Text, Icon, Slider, BottomSheet, ListItem } from 'react-native-elements';
+import {
+	StyleSheet,
+	View,
+	Image,
+	ImageBackground,
+	Easing,
+	Dimensions,
+} from 'react-native';
+import {
+	Text,
+	Icon,
+	Slider,
+	BottomSheet,
+	ListItem,
+} from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 
 import TrackPlayer, { ProgressComponent } from 'react-native-track-player';
@@ -19,7 +32,7 @@ import { ActivityIndicator } from 'react-native-paper';
 
 // progress bar component...
 class SongProgressBar extends ProgressComponent {
-	formatTime = secs => {
+	formatTime = (secs) => {
 		let minutes = Math.floor(secs / 60);
 		let seconds = Math.ceil(secs - minutes * 60);
 
@@ -41,7 +54,9 @@ class SongProgressBar extends ProgressComponent {
 		var mins = num % 60;
 		var hrs = (num - mins) / 60;
 
-		return hrs > 0 ? numPadding(hrs) + ':' : '' + numPadding(mins) + ':' + numPadding(secs);
+		return hrs > 0
+			? numPadding(hrs) + ':'
+			: '' + numPadding(mins) + ':' + numPadding(secs);
 	}
 
 	render() {
@@ -54,10 +69,16 @@ class SongProgressBar extends ProgressComponent {
 						style={[
 							styles.timeContainer,
 							{
-								color: this.props.whatIsTheme(COLORS.WHITE, COLORS.BLACK),
+								color: this.props.whatIsTheme(
+									COLORS.WHITE,
+									COLORS.BLACK
+								),
 							},
-						]}>
-						{this.formatDuration(this.getProgress() * this.props.duration)}
+						]}
+					>
+						{this.formatDuration(
+							this.getProgress() * this.props.duration
+						)}
 					</Text>
 				</View>
 				<Slider
@@ -78,24 +99,32 @@ class SongProgressBar extends ProgressComponent {
 						COLORS.DARKGLOW,
 						COLORS.DARKFORLIGHT
 					)}
-					minimumTrackTintColor={this.props.whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+					minimumTrackTintColor={this.props.whatIsTheme(
+						COLORS.WHITE,
+						COLORS.BLACK
+					)}
 					thumbStyle={{
 						borderRadius: 100,
 						height: 10,
 						width: 10,
-						backgroundColor: this.props.whatIsTheme(COLORS.WHITE, COLORS.BLACK),
+						backgroundColor: this.props.whatIsTheme(
+							COLORS.WHITE,
+							COLORS.BLACK
+						),
 					}}
-					onSlidingComplete={value => this.props.handleChange(value)}
+					onSlidingComplete={(value) =>
+						this.props.handleChange(value)
+					}
 				/>
 			</>
 		);
 	}
 }
 
-const PlayMusic = props => {
+const PlayMusic = (props) => {
 	const { id, duration, image, item, artistList } = props.route.params;
-	const { player, meta } = useSelector(state => state.player);
-	const { theme } = useSelector(state => state.settings.settings);
+	const { player, meta } = useSelector((state) => state.player);
+	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
 	};
@@ -109,14 +138,14 @@ const PlayMusic = props => {
 
 	useEffect(() => {
 		(async () => {
-			await TrackPlayer.getVolume().then(res => {
+			await TrackPlayer.getVolume().then((res) => {
 				setVolume(res);
 			});
 		})();
 	}, []);
 
 	useEffect(() => {
-		TrackPlayer.getRate().then(res => {
+		TrackPlayer.getRate().then((res) => {
 			setRate(res);
 		});
 	}, []);
@@ -141,15 +170,15 @@ const PlayMusic = props => {
 			: '-.-';
 	};
 
-	const changeVolume = level => {
+	const changeVolume = (level) => {
 		TrackPlayer.setVolume(level).then(async () => {
-			await TrackPlayer.getVolume().then(res => {
+			await TrackPlayer.getVolume().then((res) => {
 				setVolume(res);
 			});
 		});
 	};
 
-	const changeRateValue = level => {
+	const changeRateValue = (level) => {
 		TrackPlayer.setRate(level).then(async () => {
 			setRate(level);
 			setShowRateChanger(false);
@@ -168,14 +197,14 @@ const PlayMusic = props => {
 		return str;
 	}
 
-	const handleChange = async val => {
+	const handleChange = async (val) => {
 		setLoading(true);
 		if (!Number.isNaN(val)) {
 			TrackPlayer.seekTo((val * (await TrackPlayer.getDuration())) / 100)
-				.then(async res => {
+				.then(async (res) => {
 					setLoading(false);
 				})
-				.catch(async err => {
+				.catch(async (err) => {
 					setLoading(false);
 				});
 		} else {
@@ -199,28 +228,32 @@ const PlayMusic = props => {
 
 	async function seekBackward() {
 		setLoading(true);
-		TrackPlayer.seekTo((await TrackPlayer.getPosition()) - 5).then(res => {
-			setLoading(false);
-		});
+		TrackPlayer.seekTo((await TrackPlayer.getPosition()) - 5).then(
+			(res) => {
+				setLoading(false);
+			}
+		);
 	}
 
 	async function seekForward() {
 		setLoading(true);
-		TrackPlayer.seekTo((await TrackPlayer.getPosition()) + 10).then(res => {
-			setLoading(false);
-		});
+		TrackPlayer.seekTo((await TrackPlayer.getPosition()) + 10).then(
+			(res) => {
+				setLoading(false);
+			}
+		);
 	}
 
 	async function skipPrev() {
 		setLoading(true);
-		TrackPlayer.skipToPrevious().then(res => {
+		TrackPlayer.skipToPrevious().then((res) => {
 			setLoading(false);
 		});
 	}
 
 	async function skipNext() {
 		setLoading(true);
-		TrackPlayer.skipToNext().then(res => {
+		TrackPlayer.skipToNext().then((res) => {
 			setLoading(false);
 		});
 	}
@@ -261,7 +294,7 @@ const PlayMusic = props => {
 					setPlaying(true);
 					dispatch(setPlayerDetails({ id: item.videoId }));
 				} else {
-					TrackPlayer.play().then(res => {
+					TrackPlayer.play().then((res) => {
 						// console.log('LOADED', songList[item.videoId].url);
 						setLoading(false);
 						setPlaying(true);
@@ -288,10 +321,10 @@ const PlayMusic = props => {
 					artist: artistList,
 					artwork: image,
 				})
-					.then(res => {
+					.then((res) => {
 						// console.log('JOKER');
 
-						TrackPlayer.play().then(res => {
+						TrackPlayer.play().then((res) => {
 							// console.log(item.name);
 							// console.log('LOADED', songList[item.videoId].url);
 							dispatch(setPlayerState(true));
@@ -308,8 +341,8 @@ const PlayMusic = props => {
 							setPlaying(true);
 						});
 					})
-					.catch(err => {
-						console.log('ERROR ADDING MUSIC', err);
+					.catch((err) => {
+						// console.log('ERROR ADDING MUSIC', err);
 						dispatch(setPlayerDetails({ id: '' }));
 						dispatch(setPlayerState(false));
 						setLoading(false);
@@ -331,7 +364,8 @@ const PlayMusic = props => {
 					source={{ uri: image }}
 					blurRadius={1}
 					resizeMode='cover'
-					style={styles.backgroundImage}>
+					style={styles.backgroundImage}
+				>
 					<View style={styles.navigator}>
 						<Icon
 							onPress={() => props.navigation.goBack()}
@@ -347,7 +381,8 @@ const PlayMusic = props => {
 								justifyContent: 'flex-end',
 								alignItems: 'center',
 								flex: 1,
-							}}>
+							}}
+						>
 							<Slider
 								allowTouchTrack={true}
 								animateTransitions={true}
@@ -373,12 +408,15 @@ const PlayMusic = props => {
 									width: 6,
 									backgroundColor: COLORS.WHITE,
 								}}
-								onSlidingComplete={value => {
+								onSlidingComplete={(value) => {
 									changeVolume(value);
 									// console.log(value);
 								}}
 							/>
-							<Text onPress={() => setShowRateChanger(true)} style={styles.rateText}>
+							<Text
+								onPress={() => setShowRateChanger(true)}
+								style={styles.rateText}
+							>
 								{getRate()}
 							</Text>
 						</View>
@@ -390,7 +428,10 @@ const PlayMusic = props => {
 
 				{/* SONGS NAME */}
 				<Marquee
-					style={whatIsTheme(styles.songTitleDark, styles.songTitleLight)}
+					style={whatIsTheme(
+						styles.songTitleDark,
+						styles.songTitleLight
+					)}
 					duration={6500}
 					marqueeDelay={4500}
 					useNativeDriver={true}
@@ -398,14 +439,21 @@ const PlayMusic = props => {
 					isRTL={false}
 					isInteraction={false}
 					bounce
-					easing={Easing.ease}>
+					easing={Easing.ease}
+				>
 					{item.name}
 				</Marquee>
 
 				<View>
 					<Text
-						style={{ color: whatIsTheme(COLORS.DARKFORLIGHT, COLORS.DARKSECONDARY) }}
-						numberOfLines={1}>
+						style={{
+							color: whatIsTheme(
+								COLORS.DARKFORLIGHT,
+								COLORS.DARKSECONDARY
+							),
+						}}
+						numberOfLines={1}
+					>
 						{formatArtistsList(item.artist)}
 					</Text>
 				</View>
@@ -416,7 +464,8 @@ const PlayMusic = props => {
 						flexDirection: 'row',
 						justifyContent: 'space-around',
 						alignItems: 'center',
-					}}>
+					}}
+				>
 					<SongProgressBar
 						duration={item.duration}
 						whatIsTheme={whatIsTheme}
@@ -427,9 +476,13 @@ const PlayMusic = props => {
 							style={[
 								styles.timeContainer,
 								{
-									color: whatIsTheme(COLORS.WHITE, COLORS.BLACK),
+									color: whatIsTheme(
+										COLORS.WHITE,
+										COLORS.BLACK
+									),
 								},
-							]}>
+							]}
+						>
 							{duration}
 						</Text>
 					</View>
@@ -446,7 +499,12 @@ const PlayMusic = props => {
 							color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
 						/>
 					</View>
-					<View style={whatIsTheme(styles.iconContainerDark, styles.iconContainerLight)}>
+					<View
+						style={whatIsTheme(
+							styles.iconContainerDark,
+							styles.iconContainerLight
+						)}
+					>
 						{loading ? (
 							<ActivityIndicator
 								size={48}
@@ -455,8 +513,16 @@ const PlayMusic = props => {
 						) : (
 							<Icon
 								onPress={pausePlayer}
-								name={playing || meta.playing ? 'pause' : 'play-arrow'}
-								type={playing || meta.playing ? 'ionicons' : 'material-icons'}
+								name={
+									playing || meta.playing
+										? 'pause'
+										: 'play-arrow'
+								}
+								type={
+									playing || meta.playing
+										? 'ionicons'
+										: 'material-icons'
+								}
 								size={48}
 								color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
 							/>
@@ -474,7 +540,9 @@ const PlayMusic = props => {
 				</View>
 
 				<View style={styles.allIconContainer}>
-					<View style={[styles.iconContainerSimple, styles.marginHori]}>
+					<View
+						style={[styles.iconContainerSimple, styles.marginHori]}
+					>
 						<Icon
 							onPress={seekBackward}
 							name='skip-backward'
@@ -483,7 +551,12 @@ const PlayMusic = props => {
 							color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
 						/>
 					</View>
-					<View style={whatIsTheme(styles.iconContainerDark, styles.iconContainerLight)}>
+					<View
+						style={whatIsTheme(
+							styles.iconContainerDark,
+							styles.iconContainerLight
+						)}
+					>
 						{loading ? (
 							<ActivityIndicator
 								size={48}
@@ -492,14 +565,24 @@ const PlayMusic = props => {
 						) : (
 							<Icon
 								onPress={pausePlayer}
-								name={playing || meta.playing ? 'pause' : 'play-arrow'}
-								type={playing || meta.playing ? 'ionicons' : 'material-icons'}
+								name={
+									playing || meta.playing
+										? 'pause'
+										: 'play-arrow'
+								}
+								type={
+									playing || meta.playing
+										? 'ionicons'
+										: 'material-icons'
+								}
 								size={48}
 								color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
 							/>
 						)}
 					</View>
-					<View style={[styles.iconContainerSimple, styles.marginHori]}>
+					<View
+						style={[styles.iconContainerSimple, styles.marginHori]}
+					>
 						<Icon
 							onPress={seekForward}
 							name='skip-forward'
@@ -518,18 +601,34 @@ const PlayMusic = props => {
 					}}
 					isVisible={showRateChanger}
 					containerStyle={{
-						backgroundColor: whatIsTheme(COLORS.DARKSECONDARY, COLORS.DARKFORLIGHT),
-					}}>
+						backgroundColor: whatIsTheme(
+							COLORS.DARKSECONDARY,
+							COLORS.DARKFORLIGHT
+						),
+					}}
+				>
 					<ListItem
 						onPress={() => changeRateValue(0.25)}
 						containerStyle={{
 							backgroundColor:
 								rate === 0.25
-									? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
-									: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-						}}>
+									? whatIsTheme(
+											COLORS.BLACK,
+											COLORS.BEFORELIGHT
+									  )
+									: whatIsTheme(
+											COLORS.DARKPRIMARY,
+											COLORS.WHITE
+									  ),
+						}}
+					>
 						<ListItem.Content>
-							<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+							<ListItem.Title
+								style={whatIsTheme(
+									styles.textDark,
+									styles.textLight
+								)}
+							>
 								0.25x
 							</ListItem.Title>
 						</ListItem.Content>
@@ -539,11 +638,23 @@ const PlayMusic = props => {
 						containerStyle={{
 							backgroundColor:
 								rate === 0.5
-									? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
-									: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-						}}>
+									? whatIsTheme(
+											COLORS.BLACK,
+											COLORS.BEFORELIGHT
+									  )
+									: whatIsTheme(
+											COLORS.DARKPRIMARY,
+											COLORS.WHITE
+									  ),
+						}}
+					>
 						<ListItem.Content>
-							<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+							<ListItem.Title
+								style={whatIsTheme(
+									styles.textDark,
+									styles.textLight
+								)}
+							>
 								0.50x
 							</ListItem.Title>
 						</ListItem.Content>
@@ -553,11 +664,23 @@ const PlayMusic = props => {
 						containerStyle={{
 							backgroundColor:
 								rate === 0.75
-									? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
-									: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-						}}>
+									? whatIsTheme(
+											COLORS.BLACK,
+											COLORS.BEFORELIGHT
+									  )
+									: whatIsTheme(
+											COLORS.DARKPRIMARY,
+											COLORS.WHITE
+									  ),
+						}}
+					>
 						<ListItem.Content>
-							<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+							<ListItem.Title
+								style={whatIsTheme(
+									styles.textDark,
+									styles.textLight
+								)}
+							>
 								0.75x
 							</ListItem.Title>
 						</ListItem.Content>
@@ -567,11 +690,23 @@ const PlayMusic = props => {
 						containerStyle={{
 							backgroundColor:
 								rate === 1
-									? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
-									: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-						}}>
+									? whatIsTheme(
+											COLORS.BLACK,
+											COLORS.BEFORELIGHT
+									  )
+									: whatIsTheme(
+											COLORS.DARKPRIMARY,
+											COLORS.WHITE
+									  ),
+						}}
+					>
 						<ListItem.Content>
-							<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+							<ListItem.Title
+								style={whatIsTheme(
+									styles.textDark,
+									styles.textLight
+								)}
+							>
 								Normal
 							</ListItem.Title>
 						</ListItem.Content>
@@ -582,11 +717,23 @@ const PlayMusic = props => {
 						containerStyle={{
 							backgroundColor:
 								rate === 1.25
-									? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
-									: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-						}}>
+									? whatIsTheme(
+											COLORS.BLACK,
+											COLORS.BEFORELIGHT
+									  )
+									: whatIsTheme(
+											COLORS.DARKPRIMARY,
+											COLORS.WHITE
+									  ),
+						}}
+					>
 						<ListItem.Content>
-							<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+							<ListItem.Title
+								style={whatIsTheme(
+									styles.textDark,
+									styles.textLight
+								)}
+							>
 								1.25x
 							</ListItem.Title>
 						</ListItem.Content>
@@ -597,11 +744,23 @@ const PlayMusic = props => {
 						containerStyle={{
 							backgroundColor:
 								rate === 1.5
-									? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
-									: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-						}}>
+									? whatIsTheme(
+											COLORS.BLACK,
+											COLORS.BEFORELIGHT
+									  )
+									: whatIsTheme(
+											COLORS.DARKPRIMARY,
+											COLORS.WHITE
+									  ),
+						}}
+					>
 						<ListItem.Content>
-							<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+							<ListItem.Title
+								style={whatIsTheme(
+									styles.textDark,
+									styles.textLight
+								)}
+							>
 								1.50x
 							</ListItem.Title>
 						</ListItem.Content>
@@ -612,11 +771,23 @@ const PlayMusic = props => {
 						containerStyle={{
 							backgroundColor:
 								rate === 1.75
-									? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
-									: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-						}}>
+									? whatIsTheme(
+											COLORS.BLACK,
+											COLORS.BEFORELIGHT
+									  )
+									: whatIsTheme(
+											COLORS.DARKPRIMARY,
+											COLORS.WHITE
+									  ),
+						}}
+					>
 						<ListItem.Content>
-							<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+							<ListItem.Title
+								style={whatIsTheme(
+									styles.textDark,
+									styles.textLight
+								)}
+							>
 								1.75x
 							</ListItem.Title>
 						</ListItem.Content>
@@ -627,11 +798,23 @@ const PlayMusic = props => {
 						containerStyle={{
 							backgroundColor:
 								rate === 2
-									? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
-									: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-						}}>
+									? whatIsTheme(
+											COLORS.BLACK,
+											COLORS.BEFORELIGHT
+									  )
+									: whatIsTheme(
+											COLORS.DARKPRIMARY,
+											COLORS.WHITE
+									  ),
+						}}
+					>
 						<ListItem.Content>
-							<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+							<ListItem.Title
+								style={whatIsTheme(
+									styles.textDark,
+									styles.textLight
+								)}
+							>
 								2.0x
 							</ListItem.Title>
 						</ListItem.Content>
@@ -642,10 +825,16 @@ const PlayMusic = props => {
 							setShowRateChanger(false);
 						}}
 						containerStyle={{
-							backgroundColor: whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT),
-						}}>
+							backgroundColor: whatIsTheme(
+								COLORS.BLACK,
+								COLORS.BEFORELIGHT
+							),
+						}}
+					>
 						<ListItem.Content>
-							<ListItem.Title style={styles.cancelButton}>Cancel</ListItem.Title>
+							<ListItem.Title style={styles.cancelButton}>
+								Cancel
+							</ListItem.Title>
 						</ListItem.Content>
 					</ListItem>
 				</BottomSheet>

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Text, Switch, Title, Caption, TouchableRipple } from 'react-native-paper';
+import {
+	Text,
+	Switch,
+	Title,
+	Caption,
+	TouchableRipple,
+} from 'react-native-paper';
 import { BottomSheet, CheckBox, List, ListItem } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,8 +17,8 @@ import COLORS from '../../../val/colors/Colors';
 import { ToastAndroid } from 'react-native';
 import ThemeToggler from '../../../scenes/main/animations/ThemeToggler';
 
-const AppearanceSetting = props => {
-	const { theme } = useSelector(state => state.settings.settings);
+const AppearanceSetting = (props) => {
+	const { theme } = useSelector((state) => state.settings.settings);
 	const dispatch = useDispatch();
 
 	const [showThemeChanger, setShowThemeChanger] = useState(false);
@@ -23,8 +29,8 @@ const AppearanceSetting = props => {
 		return !theme || theme === 'd' ? f : s;
 	};
 
-	const setFontSize = size => {
-		console.log(size);
+	const setFontSize = (size) => {
+		// console.log(size);
 		setShowFontChooser(false);
 		ToastAndroid.show(
 			'This feature is in development. May come in later versions.',
@@ -32,21 +38,21 @@ const AppearanceSetting = props => {
 		);
 	};
 
-	const toggleTheme = toggledTheme => {
+	const toggleTheme = (toggledTheme) => {
 		// console.log('TOGGLE THE CURRENT THEME...');
 		// const toggledTheme = whatIsTheme('l', 'd');
 
 		if (toggledTheme !== theme) {
 			setThemeAnimation(true);
 			updateDatabase('theme', toggledTheme)
-				.then(result => {
+				.then((result) => {
 					dispatch(updateSettings('theme', toggledTheme));
 					setShowThemeChanger(false);
 					// setThemeAnimation(false);
 				})
-				.catch(err => {
-					console.log('ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION');
-					console.log(err);
+				.catch((err) => {
+					// console.log('ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION');
+					// console.log(err);
 
 					setShowThemeChanger(false);
 					// setThemeAnimation(false);
@@ -72,14 +78,20 @@ const AppearanceSetting = props => {
 				back
 			/>
 
-			{themeAnim ? <ThemeToggler theme={theme} setValueFalse={setThemeAnimation} /> : null}
+			{themeAnim ? (
+				<ThemeToggler theme={theme} setValueFalse={setThemeAnimation} />
+			) : null}
 
 			<TouchableRipple
 				onPress={() => setShowThemeChanger(true)}
-				rippleColor={whatIsTheme(COLORS.DARKGLOW, COLORS.DARKFORLIGHT)}>
+				rippleColor={whatIsTheme(COLORS.DARKGLOW, COLORS.DARKFORLIGHT)}
+			>
 				<View
 					style={[
-						whatIsTheme(styles.settingCardDark, styles.settingCardLight),
+						whatIsTheme(
+							styles.settingCardDark,
+							styles.settingCardLight
+						),
 						{
 							borderBottomColor: whatIsTheme(
 								COLORS.DARKSECONDARY,
@@ -87,12 +99,23 @@ const AppearanceSetting = props => {
 							),
 							borderBottomWidth: 1,
 						},
-					]}>
+					]}
+				>
 					<View style={styles.leftSideOfCard}>
-						<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+						<Title
+							style={whatIsTheme(
+								styles.titleDark,
+								styles.titleLight
+							)}
+						>
 							Toggle Theme
 						</Title>
-						<Caption style={whatIsTheme(styles.captiondark, styles.captionlight)}>
+						<Caption
+							style={whatIsTheme(
+								styles.captiondark,
+								styles.captionlight
+							)}
+						>
 							{whatIsTheme('Dark Theme', 'Light Theme')}
 						</Caption>
 					</View>
@@ -119,17 +142,26 @@ const AppearanceSetting = props => {
 								`${COLORS.DARKPRIMARY}6f`,
 								`${COLORS.DARKFORLIGHT}6f`
 							),
-						}}>
+						}}
+					>
 						<ListItem
 							onPress={() => {
 								toggleTheme('d');
 							}}
 							containerStyle={{
-								backgroundColor: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-							}}>
+								backgroundColor: whatIsTheme(
+									COLORS.DARKPRIMARY,
+									COLORS.WHITE
+								),
+							}}
+						>
 							<ListItem.Content>
 								<ListItem.Title
-									style={whatIsTheme(styles.textDark, styles.textLight)}>
+									style={whatIsTheme(
+										styles.textDark,
+										styles.textLight
+									)}
+								>
 									Dark Theme
 								</ListItem.Title>
 							</ListItem.Content>
@@ -140,11 +172,19 @@ const AppearanceSetting = props => {
 								toggleTheme('l');
 							}}
 							containerStyle={{
-								backgroundColor: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-							}}>
+								backgroundColor: whatIsTheme(
+									COLORS.DARKPRIMARY,
+									COLORS.WHITE
+								),
+							}}
+						>
 							<ListItem.Content>
 								<ListItem.Title
-									style={whatIsTheme(styles.textDark, styles.textLight)}>
+									style={whatIsTheme(
+										styles.textDark,
+										styles.textLight
+									)}
+								>
 									Light Theme
 								</ListItem.Title>
 							</ListItem.Content>
@@ -155,10 +195,16 @@ const AppearanceSetting = props => {
 								setShowThemeChanger(false);
 							}}
 							containerStyle={{
-								backgroundColor: whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT),
-							}}>
+								backgroundColor: whatIsTheme(
+									COLORS.BLACK,
+									COLORS.BEFORELIGHT
+								),
+							}}
+						>
 							<ListItem.Content>
-								<ListItem.Title style={styles.cancelButton}>Cancel</ListItem.Title>
+								<ListItem.Title style={styles.cancelButton}>
+									Cancel
+								</ListItem.Title>
 							</ListItem.Content>
 						</ListItem>
 					</BottomSheet>
@@ -167,10 +213,14 @@ const AppearanceSetting = props => {
 
 			<TouchableRipple
 				onPress={() => setShowFontChooser(true)}
-				rippleColor={whatIsTheme(COLORS.DARKGLOW, COLORS.DARKFORLIGHT)}>
+				rippleColor={whatIsTheme(COLORS.DARKGLOW, COLORS.DARKFORLIGHT)}
+			>
 				<View
 					style={[
-						whatIsTheme(styles.settingCardDark, styles.settingCardLight),
+						whatIsTheme(
+							styles.settingCardDark,
+							styles.settingCardLight
+						),
 						{
 							borderBottomColor: whatIsTheme(
 								COLORS.DARKSECONDARY,
@@ -178,12 +228,23 @@ const AppearanceSetting = props => {
 							),
 							borderBottomWidth: 1,
 						},
-					]}>
+					]}
+				>
 					<View style={styles.leftSideOfCard}>
-						<Title style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+						<Title
+							style={whatIsTheme(
+								styles.titleDark,
+								styles.titleLight
+							)}
+						>
 							Font Size
 						</Title>
-						<Caption style={whatIsTheme(styles.captiondark, styles.captionlight)}>
+						<Caption
+							style={whatIsTheme(
+								styles.captiondark,
+								styles.captionlight
+							)}
+						>
 							Regular
 						</Caption>
 					</View>
@@ -196,18 +257,30 @@ const AppearanceSetting = props => {
 						}}
 						isVisible={showFontChooser}
 						containerStyle={{
-							backgroundColor: whatIsTheme(COLORS.DARKSECONDARY, COLORS.DARKFORLIGHT),
-						}}>
+							backgroundColor: whatIsTheme(
+								COLORS.DARKSECONDARY,
+								COLORS.DARKFORLIGHT
+							),
+						}}
+					>
 						<ListItem
 							onPress={() => {
 								setFontSize('vs');
 							}}
 							containerStyle={{
-								backgroundColor: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-							}}>
+								backgroundColor: whatIsTheme(
+									COLORS.DARKPRIMARY,
+									COLORS.WHITE
+								),
+							}}
+						>
 							<ListItem.Content>
 								<ListItem.Title
-									style={whatIsTheme(styles.textDark, styles.textLight)}>
+									style={whatIsTheme(
+										styles.textDark,
+										styles.textLight
+									)}
+								>
 									Very Small
 								</ListItem.Title>
 							</ListItem.Content>
@@ -218,11 +291,19 @@ const AppearanceSetting = props => {
 								setFontSize('s');
 							}}
 							containerStyle={{
-								backgroundColor: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-							}}>
+								backgroundColor: whatIsTheme(
+									COLORS.DARKPRIMARY,
+									COLORS.WHITE
+								),
+							}}
+						>
 							<ListItem.Content>
 								<ListItem.Title
-									style={whatIsTheme(styles.textDark, styles.textLight)}>
+									style={whatIsTheme(
+										styles.textDark,
+										styles.textLight
+									)}
+								>
 									Small
 								</ListItem.Title>
 							</ListItem.Content>
@@ -233,11 +314,19 @@ const AppearanceSetting = props => {
 								setFontSize('r');
 							}}
 							containerStyle={{
-								backgroundColor: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-							}}>
+								backgroundColor: whatIsTheme(
+									COLORS.DARKPRIMARY,
+									COLORS.WHITE
+								),
+							}}
+						>
 							<ListItem.Content>
 								<ListItem.Title
-									style={whatIsTheme(styles.textDark, styles.textLight)}>
+									style={whatIsTheme(
+										styles.textDark,
+										styles.textLight
+									)}
+								>
 									Regular
 								</ListItem.Title>
 							</ListItem.Content>
@@ -248,11 +337,19 @@ const AppearanceSetting = props => {
 								setFontSize('l');
 							}}
 							containerStyle={{
-								backgroundColor: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-							}}>
+								backgroundColor: whatIsTheme(
+									COLORS.DARKPRIMARY,
+									COLORS.WHITE
+								),
+							}}
+						>
 							<ListItem.Content>
 								<ListItem.Title
-									style={whatIsTheme(styles.textDark, styles.textLight)}>
+									style={whatIsTheme(
+										styles.textDark,
+										styles.textLight
+									)}
+								>
 									Large
 								</ListItem.Title>
 							</ListItem.Content>
@@ -263,11 +360,19 @@ const AppearanceSetting = props => {
 								setFontSize('vl');
 							}}
 							containerStyle={{
-								backgroundColor: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-							}}>
+								backgroundColor: whatIsTheme(
+									COLORS.DARKPRIMARY,
+									COLORS.WHITE
+								),
+							}}
+						>
 							<ListItem.Content>
 								<ListItem.Title
-									style={whatIsTheme(styles.textDark, styles.textLight)}>
+									style={whatIsTheme(
+										styles.textDark,
+										styles.textLight
+									)}
+								>
 									Very Large
 								</ListItem.Title>
 							</ListItem.Content>
@@ -278,10 +383,16 @@ const AppearanceSetting = props => {
 								setShowFontChooser(false);
 							}}
 							containerStyle={{
-								backgroundColor: whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT),
-							}}>
+								backgroundColor: whatIsTheme(
+									COLORS.BLACK,
+									COLORS.BEFORELIGHT
+								),
+							}}
+						>
 							<ListItem.Content>
-								<ListItem.Title style={styles.cancelButton}>Cancel</ListItem.Title>
+								<ListItem.Title style={styles.cancelButton}>
+									Cancel
+								</ListItem.Title>
 							</ListItem.Content>
 						</ListItem>
 					</BottomSheet>

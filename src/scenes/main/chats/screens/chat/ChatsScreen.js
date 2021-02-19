@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react';
 import {
 	FlatList,
 	ScrollView,
@@ -10,45 +10,47 @@ import {
 	TouchableOpacity,
 	Animated,
 	ToastAndroid,
-} from "react-native";
-import Swipeable from "react-native-gesture-handler/Swipeable";
-import { Icon, Overlay } from "react-native-elements";
-import { Avatar, Modal, TouchableRipple } from "react-native-paper";
-import { useDispatch, useSelector } from "react-redux";
+} from 'react-native';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { Icon, Overlay } from 'react-native-elements';
+import { Avatar, Modal, TouchableRipple } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
 
-import Header from "../../../../../components/customs/Header/Header";
-import COLORS from "../../../../../val/colors/Colors";
+import Header from '../../../../../components/customs/Header/Header';
+import COLORS from '../../../../../val/colors/Colors';
 
-import firebase from "../../../../../firebase/Firebase";
-import { loadGroupChats } from "../../../../../store/ChatsStore";
-import { ChatTypes } from "../../../../../val/constants/Constants";
+import firebase from '../../../../../firebase/Firebase';
+import { loadGroupChats } from '../../../../../store/ChatsStore';
+import { ChatTypes } from '../../../../../val/constants/Constants';
 
 // import Sound from 'react-native-sound';
-var Sound = require("react-native-sound");
-const messageTone = require("../../../../../assets/sounds/message_tone.mp3");
-Sound.setCategory("Playback");
+var Sound = require('react-native-sound');
+const messageTone = require('../../../../../assets/sounds/message_tone.mp3');
+Sound.setCategory('Playback');
 
 const months = [
-	"January",
-	"February",
-	"March",
-	"April",
-	"May",
-	"June",
-	"July",
-	"August",
-	"September",
-	"October",
-	"November",
-	"December",
+	'January',
+	'February',
+	'March',
+	'April',
+	'May',
+	'June',
+	'July',
+	'August',
+	'September',
+	'October',
+	'November',
+	'December',
 ];
 
+const emojiTester = /(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|\ud83c[\ude32-\ude3a]|\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])/g;
+
 const userChatRemoveRight = (deleteFunction, progress, dragX) => {
-	const scale = dragX.interpolate({
-		inputRange: [-100, 0],
-		outputRange: [1, 0],
-		extrapolate: "clamp",
-	});
+	// const scale = dragX.interpolate({
+	// 	inputRange: [-100, 0],
+	// 	outputRange: [1, 0],
+	// 	extrapolate: 'clamp',
+	// });
 
 	return (
 		<View style={styles.noBackRow}>
@@ -58,7 +60,7 @@ const userChatRemoveRight = (deleteFunction, progress, dragX) => {
 						styles.hiddenText,
 						{
 							color: COLORS.RED,
-							transform: [{ scale }],
+							// transform: [{ scale }],
 						},
 					]}
 				>
@@ -72,7 +74,7 @@ const userChatRemoveRight = (deleteFunction, progress, dragX) => {
 						styles.hiddenText,
 						{
 							color: COLORS.BLUE_FAV,
-							transform: [{ scale }],
+							// transform: [{ scale }],
 						},
 					]}
 				>
@@ -85,19 +87,20 @@ const userChatRemoveRight = (deleteFunction, progress, dragX) => {
 
 const UserMessage = ({ message, whatIsTheme, deleteMessage }) => {
 	return (
-		<Swipeable
-			friction={1.5}
-			renderRightActions={(progress, dragX) => {
-				userChatRemoveRight(deleteMessage, progress, dragX);
-			}}
-		>
-			<View style={styles.uchatContainer}>
-				<View style={styles.uchats}>
+		// <Swipeable
+		// 	// friction={1.5}
+		// 	renderRightActions={(progress, dragX) => {
+		// 		userChatRemoveRight(deleteMessage, progress, dragX);
+		// 	}}
+		// >
+		<View style={styles.uchatContainer}>
+			<View style={styles.uchats}>
+				{message.msg.match(emojiTester) && message.msg.length <= 3 ? (
 					<View
 						style={[
-							styles.uchatsFirst,
+							styles.uchatsFirstEmojis,
 							{
-								backgroundColor: COLORS.BLUE_FAV,
+								backgroundColor: COLORS.TRANSPARENT,
 								borderRadius: 10,
 							},
 						]}
@@ -111,33 +114,65 @@ const UserMessage = ({ message, whatIsTheme, deleteMessage }) => {
 											COLORS.WHITE,
 											COLORS.WHITE
 										),
+										fontSize: 35,
 									},
 								]}
 							>
 								{message.msg}
 							</Text>
 						</View>
-						<View style={styles.uchatsSecond}>
-							<Text
-								style={{
-									color: whatIsTheme(
-										COLORS.LIGHT_BLUE,
-										COLORS.LIGHT_BLUE
-									),
-									textAlign: "right",
-									paddingRight: 3,
-									paddingBottom: 3,
-								}}
-							>{`${message.at.hour}:${message.at.min}`}</Text>
+					</View>
+				) : (
+					<View
+						style={[
+							styles.uchatsFirst,
+							{
+								backgroundColor: COLORS.BLUE_FAV,
+								borderRadius: 10,
+							},
+						]}
+					>
+						<View>
+							<View>
+								<Text
+									style={[
+										styles.umsg,
+										{
+											color: whatIsTheme(
+												COLORS.WHITE,
+												COLORS.WHITE
+											),
+										},
+									]}
+								>
+									{message.msg}
+								</Text>
+							</View>
+							<View style={styles.uchatsSecond}>
+								<Text
+									style={{
+										color: whatIsTheme(
+											COLORS.LIGHT_BLUE,
+											COLORS.LIGHT_BLUE
+										),
+										textAlign: 'right',
+										paddingRight: 1,
+										paddingBottom: 1,
+										fontSize: 14,
+									}}
+								>{`${message.at.hour}:${message.at.min}`}</Text>
+							</View>
 						</View>
 					</View>
-				</View>
+				)}
 			</View>
-		</Swipeable>
+		</View>
+		// </Swipeable>
 	);
 };
 
 const ReceivedMessage = ({ message, whatIsTheme }) => {
+	const emoji = message.msg.match(emojiTester) && message.msg.length <= 3;
 	return (
 		<View style={styles.rchatContainer}>
 			<View style={styles.rchats}>
@@ -145,10 +180,12 @@ const ReceivedMessage = ({ message, whatIsTheme }) => {
 					style={[
 						styles.rchatsFirst,
 						{
-							backgroundColor: whatIsTheme(
-								COLORS.DARKPRIMARY,
-								COLORS.FINALBEFORELIGHT
-							),
+							backgroundColor: emoji
+								? COLORS.TRANSPARENT
+								: whatIsTheme(
+										COLORS.DARKPRIMARY,
+										COLORS.BEFORELIGHT
+								  ),
 						},
 					]}
 				>
@@ -162,9 +199,9 @@ const ReceivedMessage = ({ message, whatIsTheme }) => {
 										COLORS.BLUE_FAV
 									),
 									backgroundColor: whatIsTheme(
-										"rgba(255, 255, 255, 0.08)",
+										'rgba(255, 255, 255, 0.08)',
 										// COLORS.LIGHTBACKGROUND
-										"rgba(0, 0, 0, 0.05)"
+										'rgba(0, 0, 0, 0.05)'
 									),
 								},
 							]}
@@ -181,6 +218,7 @@ const ReceivedMessage = ({ message, whatIsTheme }) => {
 										COLORS.WHITE,
 										COLORS.BLACK
 									),
+									fontSize: emoji ? 35 : 16,
 								},
 							]}
 						>
@@ -193,7 +231,7 @@ const ReceivedMessage = ({ message, whatIsTheme }) => {
 					<Text
 						style={{
 							color: whatIsTheme(COLORS.MID, COLORS.MID),
-							textAlign: "right",
+							textAlign: 'right',
 						}}
 					>{`${message.at.hour}:${message.at.min}`}</Text>
 				</View>
@@ -206,23 +244,38 @@ const DetailsCard = ({ message, whatIsTheme }) => {
 	return (
 		<View
 			style={{
-				width: "100%",
-				justifyContent: "center",
-				alignItems: "center",
+				width: '100%',
+				justifyContent: 'center',
+				alignItems: 'center',
 				marginVertical: 8,
 			}}
 		>
 			<Text
 				style={{
-					borderRadius: 100,
-					paddingHorizontal: 10,
-					paddingVertical: 5,
+					// borderRadius: 100,
+					// paddingHorizontal: 10,
+					// paddingVertical: 5,
+					// backgroundColor: whatIsTheme(
+					// 	COLORS.PRIMARY,
+					// 	COLORS.PRIMARY
+					// ),
+					// color: whatIsTheme(COLORS.WHITE, COLORS.WHITE),
+					// opacity: 0.9,
+					width: '100%',
+					borderRadius: 0,
+					paddingHorizontal: 20,
+					paddingVertical: 7,
 					backgroundColor: whatIsTheme(
-						COLORS.PRIMARY,
-						COLORS.PRIMARY
+						COLORS.BLUEINDARK,
+						COLORS.BLUEINLIGHT
 					),
-					color: whatIsTheme(COLORS.WHITE, COLORS.WHITE),
+					color: whatIsTheme(
+						COLORS.TEXTIN_BLUEINDARK,
+						COLORS.TEXTIN_BLUEINLIGHT
+					),
 					opacity: 0.9,
+					textAlign: 'center',
+					textAlignVertical: 'center',
 				}}
 			>
 				{message.msg}
@@ -235,23 +288,29 @@ const DetailsCardSimple = ({ message, whatIsTheme }) => {
 	return (
 		<View
 			style={{
-				width: "100%",
-				justifyContent: "center",
-				alignItems: "center",
+				width: '100%',
+				justifyContent: 'center',
+				alignItems: 'center',
 				marginVertical: 8,
 			}}
 		>
 			<Text
 				style={{
-					borderRadius: 100,
-					paddingHorizontal: 10,
-					paddingVertical: 5,
+					width: '100%',
+					borderRadius: 0,
+					paddingHorizontal: 20,
+					paddingVertical: 7,
 					backgroundColor: whatIsTheme(
-						COLORS.DARKSECONDARY,
-						COLORS.MID
+						COLORS.BLUEINDARK,
+						COLORS.BLUEINLIGHT
 					),
-					color: whatIsTheme(COLORS.WHITE, COLORS.WHITE),
+					color: whatIsTheme(
+						COLORS.TEXTIN_BLUEINDARK,
+						COLORS.TEXTIN_BLUEINLIGHT
+					),
 					opacity: 0.9,
+					textAlign: 'center',
+					textAlignVertical: 'center',
 				}}
 			>
 				{message.msg}
@@ -264,9 +323,9 @@ const DateCard = ({ message, whatIsTheme }) => {
 	return (
 		<View
 			style={{
-				width: "100%",
-				justifyContent: "center",
-				alignItems: "center",
+				width: '100%',
+				justifyContent: 'center',
+				alignItems: 'center',
 				marginVertical: 8,
 			}}
 		>
@@ -297,9 +356,9 @@ class Message {
 		this.at = {
 			year,
 			month: months[month],
-			date: ("0" + date).slice(-2),
-			hour: ("0" + hour).slice(-2),
-			min: ("0" + min).slice(-2),
+			date: ('0' + date).slice(-2),
+			hour: ('0' + hour).slice(-2),
+			min: ('0' + min).slice(-2),
 			timestamp,
 		};
 	}
@@ -319,35 +378,35 @@ const ChatScreen = (props) => {
 	const isMounted = useRef(false);
 
 	const [currGroupData, setCurrGroupData] = useState({});
-	const [message, setMessage] = useState("");
+	const [message, setMessage] = useState('');
 	const [messageList, setMessageList] = useState([]);
 	const [stickyMessages, setStickyMessages] = useState([]);
 	const [buttonDisabled, setButtonDisabled] = useState(false);
 
 	const whatIsTheme = (f, s) => {
-		return !theme || theme === "d" ? f : s;
+		return !theme || theme === 'd' ? f : s;
 	};
 
 	const deleteMessage = (msgId) => {
-		firebase.database().ref("Messages").child(id).child(msgId).remove();
+		firebase.database().ref('Messages').child(id).child(msgId).remove();
 	};
 
 	const sendMessage = () => {
 		if (message.length > 0) {
 			const tempMessage = message;
-			setMessage("");
+			setMessage('');
 			setButtonDisabled(true);
 			const timestamp = new Date().getTime();
 			firebase
 				.database()
-				.ref("Messages")
+				.ref('Messages')
 				.child(id)
 				.child(timestamp)
 				.set({
 					at: timestamp,
 					msg: tempMessage.trim(),
 					sender: username,
-					type: "text",
+					type: 'text',
 				})
 				.then((res) => {
 					// dispatch(loadGroupChats(id));
@@ -355,10 +414,10 @@ const ChatScreen = (props) => {
 						messageTone,
 						(error, sound) => {
 							if (error) {
-								console.log(
-									"FAILED TO LAOD SOUND IN MESSAGE SENT PART",
-									error
-								);
+								// console.log(
+								// 	'FAILED TO LAOD SOUND IN MESSAGE SENT PART',
+								// 	error
+								// );
 								return;
 							}
 
@@ -393,7 +452,7 @@ const ChatScreen = (props) => {
 	};
 
 	const openGroupNotifications = () => {
-		props.navigation.navigate("GroupsNotifications", { id, groupName });
+		props.navigation.navigate('GroupsNotifications', { id, groupName });
 	};
 
 	useEffect(() => {
@@ -415,15 +474,15 @@ const ChatScreen = (props) => {
 					new Message(
 						// tempMsg[i].msg,
 						// tempMsg[i].sender,
-						"",
-						"",
+						'',
+						'',
 						ChatTypes.DATE,
 						time.getFullYear(),
 						time.getMonth(),
 						time.getDate(),
 						time.getHours(),
 						time.getMinutes(),
-						time.getTime() + "s"
+						time.getTime() + 's'
 					),
 					new Message(
 						tempMsg[i].msg,
@@ -440,8 +499,8 @@ const ChatScreen = (props) => {
 
 				stickyMessageList.push(
 					new Message(
-						"",
-						"",
+						'',
+						'',
 						ChatTypes.DATE,
 						time.getFullYear(),
 						time.getMonth(),
@@ -471,15 +530,15 @@ const ChatScreen = (props) => {
 				} else {
 					finalMsgList.push(
 						new Message(
-							"",
-							"",
+							'',
+							'',
 							ChatTypes.DATE,
 							time.getFullYear(),
 							time.getMonth(),
 							time.getDate(),
 							time.getHours(),
 							time.getMinutes(),
-							time.getTime() + "s"
+							time.getTime() + 's'
 						),
 						new Message(
 							tempMsg[i].msg,
@@ -496,8 +555,8 @@ const ChatScreen = (props) => {
 
 					stickyMessageList.push(
 						new Message(
-							"",
-							"",
+							'',
+							'',
 							ChatTypes.DATE,
 							time.getFullYear(),
 							time.getMonth(),
@@ -533,10 +592,10 @@ const ChatScreen = (props) => {
 		 */
 		firebase
 			.database()
-			.ref("Messages")
+			.ref('Messages')
 			.child(id)
 			.limitToLast(250)
-			.on("value", (snap) => {
+			.on('value', (snap) => {
 				if (isMounted.current) {
 					dispatch(loadGroupChats(snap.key, snap.val()));
 				}
@@ -549,7 +608,7 @@ const ChatScreen = (props) => {
 		<SafeAreaView
 			style={{
 				flex: 1,
-				justifyContent: "space-between",
+				justifyContent: 'space-between',
 			}}
 		>
 			<Header
@@ -562,21 +621,21 @@ const ChatScreen = (props) => {
 				renderRightActions
 				extraButtons={[
 					{
-						name: "notifications-outline",
-						type: "ionicon",
+						name: 'notifications-outline',
+						type: 'ionicon',
 						size: 24,
 						color: whatIsTheme(COLORS.WHITE, COLORS.BLACK),
 						onPress: openGroupNotifications,
 					},
 				]}
 				extraImageButtons={true}
-				extraImage={currGroupData.image}
+				extraImage={currGroupData.image ? currGroupData.image : ''}
 				onImagePress={() => {
-					props.navigation.navigate("GroupDetails", {
+					props.navigation.navigate('GroupDetails', {
 						id,
 					});
 				}}
-				extraImageText={"!"}
+				extraImageText={'!'}
 			/>
 
 			<View style={styles.chatArea}>
@@ -656,15 +715,15 @@ const ChatScreen = (props) => {
 						styles.messageInputDark,
 						styles.messageInputLight
 					)}
-					placeholder="Type a message..."
+					placeholder='Type a message...'
 					placeholderTextColor={COLORS.MID}
 					selectionColor={COLORS.MID}
 				/>
 				{/* </View> */}
 				<TouchableOpacity style={styles.sendButton}>
 					<Icon
-						type="material-icon"
-						name="attach-file"
+						type='material-icon'
+						name='attach-file'
 						size={24}
 						// style={styles.sendButton}
 						color={whatIsTheme(COLORS.BLUE_FAV, COLORS.BLUE_FAV)}
@@ -676,8 +735,8 @@ const ChatScreen = (props) => {
 					onPress={sendMessage}
 				>
 					<Icon
-						type="material-icon"
-						name="send"
+						type='material-icon'
+						name='send'
 						size={24}
 						color={whatIsTheme(COLORS.BLUE_FAV, COLORS.BLUE_FAV)}
 					/>
@@ -690,14 +749,14 @@ const ChatScreen = (props) => {
 const styles = StyleSheet.create({
 	chatArea: {
 		flex: 1,
-		width: "100%",
-		justifyContent: "space-between",
+		width: '100%',
+		justifyContent: 'space-between',
 		// marginBottom: 10,
 	},
 	messageInputContainer: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
 
 		paddingTop: 4,
 		paddingBottom: 2,
@@ -729,32 +788,32 @@ const styles = StyleSheet.create({
 	sendButton: {
 		borderRadius: 100,
 		padding: 12,
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 		marginHorizontal: 2,
 		// backgroundColor: COLORS.MID,
 	},
 	sendButtonDisabled: {
 		borderRadius: 100,
 		padding: 3,
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 		marginHorizontal: 2,
 	},
 
 	// Received messages...
 	rchatContainer: {
 		marginVertical: 2,
-		justifyContent: "flex-start",
-		alignItems: "flex-start",
+		justifyContent: 'flex-start',
+		alignItems: 'flex-start',
 		marginHorizontal: 7,
 		padding: 4,
 	},
 	rchats: {
-		flexDirection: "row",
+		flexDirection: 'row',
 	},
 	rchatsFirst: {
-		maxWidth: "80%",
+		maxWidth: '80%',
 		minWidth: 125,
 
 		borderTopLeftRadius: 0,
@@ -764,12 +823,12 @@ const styles = StyleSheet.create({
 	},
 	rchatsSecond: {
 		flex: 1,
-		justifyContent: "center",
+		justifyContent: 'center',
 	},
 	rusername: {
 		paddingVertical: 2.5,
 		paddingHorizontal: 10,
-		fontFamily: "karlaBold",
+		fontFamily: 'karlaBold',
 		fontSize: 15,
 		borderTopLeftRadius: 0,
 		borderTopRightRadius: 10,
@@ -782,17 +841,26 @@ const styles = StyleSheet.create({
 	// User messages...
 	uchatContainer: {
 		marginVertical: 2,
-		justifyContent: "flex-start",
-		alignItems: "flex-end",
+		justifyContent: 'flex-start',
+		alignItems: 'flex-end',
 		marginHorizontal: 7,
 		padding: 4,
 	},
 	uchats: {
-		flexDirection: "row",
+		flexDirection: 'row',
 	},
 	uchatsFirst: {
-		maxWidth: "85%",
+		maxWidth: '85%',
 		minWidth: 125,
+
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+		borderBottomLeftRadius: 10,
+		borderBottomRightRadius: 0,
+	},
+	uchatsFirstEmojis: {
+		// maxWidth: '15%',
+		// minWidth: 0,
 
 		borderTopLeftRadius: 10,
 		borderTopRightRadius: 10,
@@ -801,35 +869,35 @@ const styles = StyleSheet.create({
 	},
 	uchatsSecond: {
 		flex: 1,
-		justifyContent: "center",
-		alignItems: "flex-end",
+		justifyContent: 'center',
+		alignItems: 'flex-end',
 	},
 	umsg: {
 		fontSize: 16,
 		color: COLORS.WHITE,
-		paddingVertical: 7,
-		paddingHorizontal: 10,
+		paddingVertical: 6,
+		paddingHorizontal: 8,
 	},
 
 	//to delete user chats...
 	noBackRow: {
 		backgroundColor: COLORS.TRANSPARENT,
-		justifyContent: "flex-start",
-		alignItems: "center",
-		flexDirection: "row",
+		justifyContent: 'flex-start',
+		alignItems: 'center',
+		flexDirection: 'row',
 	},
 	hiddenText: {
-		fontWeight: "600",
+		fontWeight: '600',
 		fontSize: 18,
 		borderRadius: 10,
 		// paddingVertical: 5,
 		paddingHorizontal: 5,
 		marginHorizontal: 5,
-		height: "80%",
-		justifyContent: "center",
-		alignItems: "center",
-		textAlignVertical: "center",
-		textAlign: "center",
+		height: '80%',
+		justifyContent: 'center',
+		alignItems: 'center',
+		textAlignVertical: 'center',
+		textAlign: 'center',
 	},
 });
 

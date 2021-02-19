@@ -2,7 +2,11 @@ import React, { useEffect, useCallback, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { connect, useDispatch, useSelector } from 'react-redux';
 
-import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native';
+import {
+	NavigationContainer,
+	DarkTheme,
+	DefaultTheme,
+} from '@react-navigation/native';
 import {
 	Avatar,
 	Text as PaperText,
@@ -29,7 +33,10 @@ import { Avatar as ElementAvatar } from 'react-native-elements';
 
 import md5 from 'md5';
 
-import { setProfileImageURL, setDefaultsValuesLogOUt } from '../store/MainStore';
+import {
+	setProfileImageURL,
+	setDefaultsValuesLogOUt,
+} from '../store/MainStore';
 import firebase from '../firebase/Firebase';
 
 import COLORS from '../val/colors/Colors';
@@ -47,10 +54,19 @@ import ChatNavigation from '../scenes/main/chats/ChatNavigation';
 import MusicNavigation from './content/MusicNavigator';
 import { PlayerContextProvider } from '../scenes/main/music/context/PlayerContext';
 
-function PureDrawerItem({ onPress, theme, extraStyles, identity, selected, iconName, customIcon }) {
+function PureDrawerItem({
+	onPress,
+	theme,
+	extraStyles,
+	identity,
+	selected,
+	iconName,
+	customIcon,
+	size,
+}) {
 	return (
 		<DrawerItem
-			icon={({ color, size }) => {
+			icon={({ color }) => {
 				return (
 					<View>
 						{customIcon ? (
@@ -58,7 +74,7 @@ function PureDrawerItem({ onPress, theme, extraStyles, identity, selected, iconN
 						) : (
 							<MaterialCommunityIcons
 								name={iconName}
-								size={size}
+								size={size || 24}
 								color={
 									selected === identity[0]
 										? theme === 'd'
@@ -83,9 +99,13 @@ function PureDrawerItem({ onPress, theme, extraStyles, identity, selected, iconN
 			}
 			focused={selected === identity[0]}
 			activeTintColor={theme === 'd' ? COLORS.WHITE : COLORS.DARKGLOW}
-			activeBackgroundColor={theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT}
+			activeBackgroundColor={
+				theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT
+			}
 			style={[
-				theme === 'd' ? styles.drawerOptionsDark : styles.drawerOptionsLight,
+				theme === 'd'
+					? styles.drawerOptionsDark
+					: styles.drawerOptionsLight,
 				extraStyles ? extraStyles : styles.NONE,
 			]}
 			onPress={onPress}
@@ -93,9 +113,9 @@ function PureDrawerItem({ onPress, theme, extraStyles, identity, selected, iconN
 	);
 }
 
-const MainDrawerNavigation = props => {
-	const { theme } = useSelector(state => state.settings.settings);
-	const userData = useSelector(state => state.main.user);
+const MainDrawerNavigation = (props) => {
+	const { theme } = useSelector((state) => state.settings.settings);
+	const userData = useSelector((state) => state.main.user);
 
 	const paperTheme = useTheme();
 	const dispatch = useDispatch();
@@ -111,14 +131,16 @@ const MainDrawerNavigation = props => {
 		// console.log('TOGGLE THE CURRENT THEME...');
 		const toggledTheme = theme === 'd' ? 'l' : 'd';
 		updateDatabase('theme', toggledTheme)
-			.then(result => {
+			.then((result) => {
 				// console.log('DATABASE UPDATED');
 				// console.log(result);
 				dispatch(updateSettings('theme', toggledTheme));
 			})
-			.catch(err => {
-				console.log('ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION');
-				console.log(err);
+			.catch((err) => {
+				// console.log(
+				// 	'ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION'
+				// );
+				// console.log(err);
 			});
 	};
 
@@ -130,7 +152,7 @@ const MainDrawerNavigation = props => {
 			.catch();
 	};
 
-	const setSelectedTabText = text => {
+	const setSelectedTabText = (text) => {
 		setSelectedTab(text);
 	};
 
@@ -138,8 +160,8 @@ const MainDrawerNavigation = props => {
 		if (userData.email) {
 			const emailHash = md5(userData.email);
 			fetch(`https://www.gravatar.com/${emailHash}.json`)
-				.then(res => res.json())
-				.then(res => {
+				.then((res) => res.json())
+				.then((res) => {
 					if (JSON.stringify(res).includes('User not found')) {
 						setUserProfileImageFound(false);
 						props.setProfileImg(false);
@@ -150,8 +172,11 @@ const MainDrawerNavigation = props => {
 						);
 					}
 				})
-				.catch(err => {
-					console.log('THIS ERROR OCCURED WHILE LOADING GRAVATAR', err);
+				.catch((err) => {
+					// console.log(
+					// 	'THIS ERROR OCCURED WHILE LOADING GRAVATAR',
+					// 	err
+					// );
 				});
 		}
 	}, [userData.email]);
@@ -165,81 +190,182 @@ const MainDrawerNavigation = props => {
 							onPress={() => {
 								setSelectedTabText('profile');
 								props.navigation.navigate('Profile');
-							}}>
-							<View
-								style={
-									theme === 'd' ? styles.usersectionDark : styles.usersectionLight
-								}>
-								{userProfileImageFound ? (
-									// <Avatar.Image
-									// 	style={
-									// 		theme === 'd' ? styles.avatarDark : styles.avatarLight
-									// 	}
-									// 	size={57}
-									// 	source={{ uri: userData.profileImg }}
-									// />
-									<ElementAvatar
-										source={{ uri: userData.profileImg }}
-										size={57}
-										avatarStyle={whatIsTheme(
-											styles.avatarDark,
-											styles.avatarLight
-										)}
-									/>
-								) : (
-									<Avatar.Text
-										style={[
-											whatIsTheme(styles.avatarDark, styles.avatarLight),
-											whatIsTheme(
-												{
-													borderWidth: 1,
-													borderColor: COLORS.GREEN,
-												},
-												{
-													borderWidth: 1,
-													borderColor: COLORS.PRIMARY,
-												}
-											),
-										]}
-										labelStyle={
-											theme === 'd'
-												? styles.avatarLabelDark
-												: styles.avatarLabelLight
-										}
-										label={
-											userData.username
-												? userData.username[0].toUpperCase()
-												: ''
-										}
-									/>
-								)}
+							}}
+						>
+							<>
 								<View
 									style={
 										theme === 'd'
-											? styles.usersectiontextDark
-											: styles.usersectiontextLight
-									}>
-									<PaperText
-										style={theme === 'd' ? styles.textDark : styles.textLight}>
-										{userData.fullname}
-									</PaperText>
-									<Caption
+											? styles.usersectionDark
+											: styles.usersectionLight
+									}
+								>
+									{userProfileImageFound ? (
+										// <Avatar.Image
+										// 	style={
+										// 		theme === 'd' ? styles.avatarDark : styles.avatarLight
+										// 	}
+										// 	size={57}
+										// 	source={{ uri: userData.profileImg }}
+										// />
+										<ElementAvatar
+											source={{
+												uri: userData.profileImg,
+											}}
+											size={57}
+											avatarStyle={whatIsTheme(
+												styles.avatarDark,
+												styles.avatarLight
+											)}
+										/>
+									) : (
+										<Avatar.Text
+											style={[
+												whatIsTheme(
+													styles.avatarDark,
+													styles.avatarLight
+												),
+												whatIsTheme(
+													{
+														borderWidth: 1,
+														borderColor:
+															COLORS.GREEN,
+													},
+													{
+														borderWidth: 1,
+														borderColor:
+															COLORS.PRIMARY,
+													}
+												),
+											]}
+											labelStyle={
+												theme === 'd'
+													? styles.avatarLabelDark
+													: styles.avatarLabelLight
+											}
+											label={
+												userData.username
+													? userData.username[0].toUpperCase()
+													: ''
+											}
+										/>
+									)}
+									<View
 										style={
 											theme === 'd'
-												? styles.mainTextDark
-												: styles.mainTextLight
+												? styles.usersectiontextDark
+												: styles.usersectiontextLight
 										}
-										numberOfLines={1}>
-										@{userData.username}
-									</Caption>
+									>
+										<PaperText
+											style={
+												theme === 'd'
+													? styles.textDark
+													: styles.textLight
+											}
+										>
+											{userData.fullname}
+										</PaperText>
+										<Caption
+											style={
+												theme === 'd'
+													? styles.mainTextDark
+													: styles.mainTextLight
+											}
+											numberOfLines={1}
+										>
+											@{userData.username}
+										</Caption>
+									</View>
 								</View>
-							</View>
+
+								{/* FOLLOW STATUS */}
+								{userData.followers > 0 &&
+								userData.following > 0 ? (
+									<Drawer.Section
+										theme={paperTheme.dark}
+										style={styles.followSection}
+									>
+										{/* followers */}
+										<View
+											style={styles.followTextContainer}
+										>
+											<Text
+												style={[
+													whatIsTheme(
+														styles.paraDark,
+														styles.paraLight
+													),
+													styles.followTextCaption,
+												]}
+											>
+												Followers
+											</Text>
+											<Text
+												style={[
+													whatIsTheme(
+														styles.paraDark,
+														styles.paraLight
+													),
+													styles.followText,
+												]}
+											>
+												{userData.followers}
+											</Text>
+										</View>
+
+										<View
+											style={{
+												borderRightColor: COLORS.MID,
+												borderRightWidth: 0.25,
+												height: '100%',
+												width: 0.3,
+												backgroundColor: COLORS.RED,
+											}}
+										></View>
+
+										{/* followings */}
+										<View
+											style={styles.followTextContainer}
+										>
+											<Text
+												style={[
+													whatIsTheme(
+														styles.paraDark,
+														styles.paraLight
+													),
+													styles.followTextCaption,
+												]}
+											>
+												Following
+											</Text>
+											<Text
+												style={[
+													whatIsTheme(
+														styles.paraDark,
+														styles.paraLight
+													),
+													styles.followText,
+												]}
+											>
+												{userData.following}
+											</Text>
+										</View>
+										{/* </View> */}
+									</Drawer.Section>
+								) : null}
+							</>
 						</TouchableRipple>
 					</View>
 
 					<Drawer.Section
 						theme={paperTheme.dark}
-						style={theme === 'd' ? styles.mainDrawerDark : styles.mainDrawerLight}>
+						style={
+							theme === 'd'
+								? styles.mainDrawerDark
+								: styles.mainDrawerLight
+						}
+					>
 						<PureDrawerItem
 							onPress={() => {
 								setSelectedTabText('home');
@@ -274,6 +400,7 @@ const MainDrawerNavigation = props => {
 							identity={['chats', 'Chats']}
 							selected={selectedTab}
 							iconName='message'
+							size={22}
 						/>
 						<PureDrawerItem
 							onPress={() => {
@@ -316,20 +443,40 @@ const MainDrawerNavigation = props => {
 				</View>
 			</DrawerContentScrollView>
 
-			<Drawer.Section style={styles.row}>
+			<Drawer.Section style={styles.drawerBottomSection}>
+				<View style={styles.appNameContainer}>
+					<Text
+						style={[
+							styles.appName,
+							{
+								color:
+									!theme || theme === 'd'
+										? COLORS.WHITE
+										: COLORS.BLACK,
+							},
+						]}
+					>
+						Socbyte
+					</Text>
+				</View>
+			</Drawer.Section>
+
+			{/* <Drawer.Section style={styles.row}>
 				<View style={styles.leftToToggleButton}>
 					<Text
 						style={[
 							styles.fontLarge,
 							theme === 'd' ? styles.textDark : styles.textLight,
-						]}>
+						]}
+					>
 						Toggle Theme
 					</Text>
 					<Caption
 						style={[
 							styles.fontSmall,
 							theme === 'd' ? styles.textDark : styles.textLight,
-						]}>
+						]}
+					>
 						{theme === 'd' ? 'Dark Theme' : 'Light Theme'}
 					</Caption>
 				</View>
@@ -340,13 +487,21 @@ const MainDrawerNavigation = props => {
 								<Ionicons
 									name='md-sunny-outline'
 									size={25}
-									color={theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY}
+									color={
+										theme === 'd'
+											? COLORS.GREEN
+											: COLORS.PRIMARY
+									}
 								/>
 							) : (
 								<Ionicons
 									name='moon-sharp'
 									size={25}
-									color={theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY}
+									color={
+										theme === 'd'
+											? COLORS.GREEN
+											: COLORS.PRIMARY
+									}
 								/>
 							)
 						}
@@ -362,40 +517,52 @@ const MainDrawerNavigation = props => {
 					icon={({ color, size }) => (
 						<MaterialCommunityIcons
 							name='exit-to-app'
-							color={theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY}
+							color={
+								theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY
+							}
 							size={size}
 						/>
 					)}
 					label='Sign Out'
-					labelStyle={theme === 'd' ? styles.labelDark : styles.labelLight}
+					labelStyle={
+						theme === 'd' ? styles.labelDark : styles.labelLight
+					}
 					onPress={logOutUser}
 				/>
-			</Drawer.Section>
+			</Drawer.Section> */}
 		</View>
 	);
 };
 
 const DrawerNavigator = createDrawerNavigator();
-const DrawerNavigation = props => {
-	const settings = useSelector(state => state.settings.settings);
+const DrawerNavigation = (props) => {
+	const settings = useSelector((state) => state.settings.settings);
 
 	const setProfileImg = props.setProfileImg;
 
 	return (
 		// <PlayerContextProvider>
-		<NavigationContainer theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}>
+		<NavigationContainer
+			theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}
+		>
 			<DrawerNavigator.Navigator
 				backBehavior='initialRoute'
-				screenOptions={props => {
+				screenOptions={(props) => {
 					return {
 						headerShown: false,
 						headerLeft: () => {
 							return (
-								<TouchableRipple onPress={() => props.navigation.toggleDrawer()}>
+								<TouchableRipple
+									onPress={() =>
+										props.navigation.toggleDrawer()
+									}
+								>
 									<Ionicons
 										name='menu'
 										color={
-											settings.theme === 'd' ? COLORS.GREEN : COLORS.PRIMARY
+											settings.theme === 'd'
+												? COLORS.GREEN
+												: COLORS.PRIMARY
 										}
 										size={25}
 										style={{ margin: 10 }}
@@ -416,18 +583,34 @@ const DrawerNavigation = props => {
 						},
 					};
 				}}
-				drawerContent={props => (
-					<MainDrawerNavigation setProfileImg={setProfileImg} {...props} />
-				)}>
+				drawerContent={(props) => (
+					<MainDrawerNavigation
+						setProfileImg={setProfileImg}
+						{...props}
+					/>
+				)}
+			>
 				<DrawerNavigator.Screen name='Home' component={Home} />
 
-				<DrawerNavigator.Screen name='Profile' component={ProfileNavigator} />
+				<DrawerNavigator.Screen
+					name='Profile'
+					component={ProfileNavigator}
+				/>
 
-				<DrawerNavigator.Screen name='Chats' component={ChatNavigation} />
+				<DrawerNavigator.Screen
+					name='Chats'
+					component={ChatNavigation}
+				/>
 
-				<DrawerNavigator.Screen name='Settings' component={SettingStack} />
+				<DrawerNavigator.Screen
+					name='Settings'
+					component={SettingStack}
+				/>
 
-				<DrawerNavigator.Screen name='Music' component={MusicNavigation} />
+				<DrawerNavigator.Screen
+					name='Music'
+					component={MusicNavigation}
+				/>
 			</DrawerNavigator.Navigator>
 		</NavigationContainer>
 		// </PlayerContextProvider>
@@ -626,17 +809,80 @@ const styles = StyleSheet.create({
 	NONE: {
 		// this style provides nothing
 	},
+
+	followSection: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		alignItems: 'center',
+		// borderTopColor: COLORS.MID,
+		// borderTopWidth: 0.25,
+
+		// borderBottomColor: COLORS.MID,
+		// borderBottomWidth: 0.25,
+		// backgroundColor: COLORS.RED,
+	},
+	followTextContainer: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'space-around',
+		alignItems: 'center',
+		// backgroundColor: COLORS.BLUE,
+		paddingVertical: 12,
+	},
+	followTextCaption: {
+		fontFamily: 'roboto',
+		textAlign: 'center',
+	},
+	followText: {
+		fontSize: 19,
+		fontFamily: 'roboto',
+		fontWeight: 'bold',
+		textAlign: 'center',
+	},
+
+	paraDark: {
+		paddingHorizontal: 5,
+		fontFamily: 'Inter',
+		color: COLORS.WHITE,
+	},
+	paraLight: {
+		paddingHorizontal: 5,
+		fontFamily: 'Inter',
+		color: COLORS.BLACK,
+	},
+
+	userStatus: {
+		fontSize: 14,
+		paddingHorizontal: 8,
+		paddingVertical: 10,
+		paddingTop: 7,
+	},
+	statusText: {
+		fontSize: 17,
+		paddingHorizontal: 8,
+		paddingTop: 7,
+	},
+
+	appNameContainer: {
+		paddingVertical: 10,
+		paddingHorizontal: 15,
+	},
+	appName: {
+		fontSize: 22,
+		fontFamily: 'robotoBold',
+		padding: 6,
+	},
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		user: state.main.user,
 	};
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
 	return {
-		setProfileImg: profileImg => {
+		setProfileImg: (profileImg) => {
 			dispatch(setProfileImageURL(profileImg));
 		},
 	};

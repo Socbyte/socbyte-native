@@ -9,46 +9,66 @@ import { useSelector } from 'react-redux';
 import Firebase from '../../../firebase/Firebase';
 import COLORS from '../../../val/colors/Colors';
 import Header from '../../../components/customs/Header/Header';
-import CustomModalAlert, { Alert } from '../../../components/customs/CustomModalAlert';
+import CustomModalAlert, {
+	Alert,
+} from '../../../components/customs/CustomModalAlert';
 import { ScrollView } from 'react-native';
 
-const UpdatedTextInput = props => {
+const UpdatedTextInput = (props) => {
 	return (
 		<TextInput
-			style={props.whatIsTheme(styles.inputItselfDark, styles.inputItselfLight)}
+			style={props.whatIsTheme(
+				styles.inputItselfDark,
+				styles.inputItselfLight
+			)}
 			placeholder={props.placeholder}
 			placeholderTextColor={COLORS.PLACEHOLDER}
 			// multiline={true}
-			underlineColorAndroid={props.whatIsTheme(COLORS.GREEN, COLORS.PRIMARY)}
+			underlineColorAndroid={props.whatIsTheme(
+				COLORS.GREEN,
+				COLORS.PRIMARY
+			)}
 			value={props.value}
 			keyboardType={props.keyboardType ? props.keyboardType : 'default'}
-			onChangeText={value => {
+			onChangeText={(value) => {
 				if (value.length <= props.limit) props.onChangeText(value);
 			}}
 		/>
 	);
 };
 
-const LimitText = props => {
+const LimitText = (props) => {
 	return (
 		<Text
 			style={[
 				props.context.length >= props.limit
 					? styles.redText
-					: props.whatIsTheme(styles.limitTextDark, styles.limitTextLight),
+					: props.whatIsTheme(
+							styles.limitTextDark,
+							styles.limitTextLight
+					  ),
 				styles.smallFontSize,
-			]}>
-			{props.context.length <= props.limit - 1 ? 'Allowed Length' : 'Length Exceeded'}:{' '}
-			{props.context ? props.context.length : 0} / {props.limit}
+			]}
+		>
+			{props.context.length <= props.limit - 1
+				? 'Allowed Length'
+				: 'Length Exceeded'}
+			: {props.context ? props.context.length : 0} / {props.limit}
 		</Text>
 	);
 };
 
-const EditProfileByPart = props => {
-	const { username, status, about, social, location, expertise, education } = useSelector(
-		state => state.main.user
-	);
-	const { theme } = useSelector(state => state.settings.settings);
+const EditProfileByPart = (props) => {
+	const {
+		username,
+		status,
+		about,
+		social,
+		location,
+		expertise,
+		education,
+	} = useSelector((state) => state.main.user);
+	const { theme } = useSelector((state) => state.settings.settings);
 	const { part, edit } = props.route.params;
 
 	let finalExpertise = [];
@@ -61,31 +81,48 @@ const EditProfileByPart = props => {
 	const [newStatus, setNewStatus] = useState(status);
 	const [newAbout, setNewAbout] = useState(about);
 	const [newLocation, setNewLocation] = useState(location);
-	const [newExpertise, setNewExpertise] = useState(finalExpertise ? finalExpertise : []);
+	const [newExpertise, setNewExpertise] = useState(
+		finalExpertise ? finalExpertise : []
+	);
 	const [addExpertise, setAddExpertise] = useState('');
 
-	const [updatedEducation, setUpdatedEducation] = useState(education ? education : {});
+	const [updatedEducation, setUpdatedEducation] = useState(
+		education ? education : {}
+	);
 	const [newEducation, setNewEducation] = useState([]);
 	const [degree, setDegree] = useState('');
 	const [school, setSchool] = useState('');
 	const [yearFrom, setYearFrom] = useState('');
 	const [yearTo, setYearTo] = useState('');
 
-	const [alert, setAlert] = useState(new Alert(false, 'Error', 'Error', 'Okay'));
+	const [alert, setAlert] = useState(
+		new Alert(false, 'Error', 'Error', 'Okay')
+	);
 	const [disabled, setDisabled] = useState(false);
 
 	const [github, setGithub] = useState(social.github ? social.github : '');
-	const [linkedin, setLinkedin] = useState(social.linkedin ? social.linkedin : '');
-	const [twitter, setTwitter] = useState(social.twitter ? social.twitter : '');
-	const [facebook, setFacebook] = useState(social.facebook ? social.facebook : '');
-	const [instagram, setInstagram] = useState(social.instagram ? social.instagram : '');
-	const [dribbble, setDribble] = useState(social.dribble ? social.dribble : '');
+	const [linkedin, setLinkedin] = useState(
+		social.linkedin ? social.linkedin : ''
+	);
+	const [twitter, setTwitter] = useState(
+		social.twitter ? social.twitter : ''
+	);
+	const [facebook, setFacebook] = useState(
+		social.facebook ? social.facebook : ''
+	);
+	const [instagram, setInstagram] = useState(
+		social.instagram ? social.instagram : ''
+	);
+	const [dribbble, setDribble] = useState(
+		social.dribble ? social.dribble : ''
+	);
 	const [red, setRed] = useState(false);
 
 	useEffect(() => {
 		const tempEducation = [];
 		if (updatedEducation)
-			for (let i in updatedEducation) tempEducation.push(updatedEducation[i]);
+			for (let i in updatedEducation)
+				tempEducation.push(updatedEducation[i]);
 		setNewEducation(tempEducation);
 	}, [updatedEducation]);
 
@@ -141,7 +178,7 @@ const EditProfileByPart = props => {
 				.update({
 					status: '',
 				})
-				.then(res => {
+				.then((res) => {
 					setDisabled(false);
 					// setAlert(
 					// 	new Alert(
@@ -158,7 +195,7 @@ const EditProfileByPart = props => {
 					);
 					props.navigation.goBack();
 				})
-				.catch(err => {
+				.catch((err) => {
 					setDisabled(false);
 				});
 		} else if (newStatus !== status) {
@@ -169,7 +206,7 @@ const EditProfileByPart = props => {
 				.update({
 					status: edit ? newStatus : '',
 				})
-				.then(res => {
+				.then((res) => {
 					setDisabled(false);
 					// setAlert(
 					// 	new Alert(
@@ -186,7 +223,7 @@ const EditProfileByPart = props => {
 					);
 					props.navigation.goBack();
 				})
-				.catch(err => {
+				.catch((err) => {
 					setDisabled(false);
 				});
 		} else {
@@ -210,7 +247,7 @@ const EditProfileByPart = props => {
 				.update({
 					about: '',
 				})
-				.then(res => {
+				.then((res) => {
 					setDisabled(false);
 					// setAlert(
 					// 	new Alert(
@@ -227,7 +264,7 @@ const EditProfileByPart = props => {
 					);
 					props.navigation.goBack();
 				})
-				.catch(err => {
+				.catch((err) => {
 					setDisabled(false);
 				});
 		} else if (newAbout.length >= 100) {
@@ -239,7 +276,7 @@ const EditProfileByPart = props => {
 					.update({
 						about: edit ? newAbout : '',
 					})
-					.then(res => {
+					.then((res) => {
 						setDisabled(false);
 						// setAlert(
 						// 	new Alert(
@@ -256,7 +293,7 @@ const EditProfileByPart = props => {
 						);
 						props.navigation.goBack();
 					})
-					.catch(err => {
+					.catch((err) => {
 						setDisabled(false);
 					});
 			} else {
@@ -290,7 +327,7 @@ const EditProfileByPart = props => {
 				.update({
 					location: '',
 				})
-				.then(res => {
+				.then((res) => {
 					setDisabled(false);
 					// setAlert(
 					// 	new Alert(
@@ -307,7 +344,7 @@ const EditProfileByPart = props => {
 					);
 					props.navigation.goBack();
 				})
-				.catch(err => {
+				.catch((err) => {
 					setDisabled(false);
 				});
 		} else {
@@ -319,7 +356,7 @@ const EditProfileByPart = props => {
 					.update({
 						location: edit ? newLocation : '',
 					})
-					.then(res => {
+					.then((res) => {
 						setDisabled(false);
 						// setAlert(
 						// 	new Alert(
@@ -336,7 +373,7 @@ const EditProfileByPart = props => {
 						);
 						props.navigation.goBack();
 					})
-					.catch(err => {
+					.catch((err) => {
 						setDisabled(false);
 					});
 			} else {
@@ -368,7 +405,7 @@ const EditProfileByPart = props => {
 						dribbble: dribbble,
 					},
 				})
-				.then(res => {
+				.then((res) => {
 					setDisabled(false);
 					// setAlert(
 					// 	new Alert(
@@ -385,7 +422,7 @@ const EditProfileByPart = props => {
 					);
 					props.navigation.goBack();
 				})
-				.catch(err => {
+				.catch((err) => {
 					setDisabled(false);
 				});
 		} else {
@@ -400,8 +437,8 @@ const EditProfileByPart = props => {
 		}
 	};
 
-	const removeExpertiseItem = item => {
-		const tempExpertise = newExpertise.filter(i => i !== item);
+	const removeExpertiseItem = (item) => {
+		const tempExpertise = newExpertise.filter((i) => i !== item);
 
 		if (tempExpertise.length < 1) {
 			setAlert(
@@ -416,7 +453,10 @@ const EditProfileByPart = props => {
 		}
 
 		setNewExpertise(tempExpertise);
-		ToastAndroid.show(`${item} removed from expertise list`, ToastAndroid.SHORT);
+		ToastAndroid.show(
+			`${item} removed from expertise list`,
+			ToastAndroid.SHORT
+		);
 	};
 
 	const addExpertiseItem = () => {
@@ -445,7 +485,10 @@ const EditProfileByPart = props => {
 		}
 
 		setNewExpertise(tempExpertise);
-		ToastAndroid.show(`${addExpertise} added to expertise list`, ToastAndroid.SHORT);
+		ToastAndroid.show(
+			`${addExpertise} added to expertise list`,
+			ToastAndroid.SHORT
+		);
 		setAddExpertise('');
 	};
 
@@ -465,7 +508,7 @@ const EditProfileByPart = props => {
 				.update({
 					expertise: updatedExpertise,
 				})
-				.then(res => {
+				.then((res) => {
 					setDisabled(false);
 					ToastAndroid.showWithGravity(
 						'Your expertise list has been updated successfully.',
@@ -474,7 +517,7 @@ const EditProfileByPart = props => {
 					);
 					props.navigation.goBack();
 				})
-				.catch(err => {
+				.catch((err) => {
 					setDisabled(false);
 				});
 		} else {
@@ -489,9 +532,9 @@ const EditProfileByPart = props => {
 		}
 	};
 
-	const removeEducationItem = item => {
+	const removeEducationItem = (item) => {
 		let currItem = 0;
-		Object.keys(updatedEducation).map(it => {
+		Object.keys(updatedEducation).map((it) => {
 			if (
 				updatedEducation[it].degree === item.degree &&
 				updatedEducation[it].school === item.school &&
@@ -565,8 +608,11 @@ const EditProfileByPart = props => {
 		//
 
 		let toContinueAddinItem = true;
-		Object.keys(updatedEducation).map(item => {
-			if (updatedEducation[item].degree.toLowerCase() === degree.toLowerCase()) {
+		Object.keys(updatedEducation).map((item) => {
+			if (
+				updatedEducation[item].degree.toLowerCase() ===
+				degree.toLowerCase()
+			) {
 				toContinueAddinItem = false;
 			}
 		});
@@ -591,7 +637,7 @@ const EditProfileByPart = props => {
 		};
 
 		setUpdatedEducation(tempEducation);
-		console.log(tempEducation);
+		// console.log(tempEducation);
 
 		setDegree('');
 		setSchool('');
@@ -629,7 +675,7 @@ const EditProfileByPart = props => {
 				.update({
 					education: updatedEducation,
 				})
-				.then(res => {
+				.then((res) => {
 					setDisabled(false);
 					ToastAndroid.showWithGravity(
 						'Your education list has been updated successfully.',
@@ -638,7 +684,7 @@ const EditProfileByPart = props => {
 					);
 					props.navigation.goBack();
 				})
-				.catch(err => {
+				.catch((err) => {
 					setDisabled(false);
 				});
 		} else {
@@ -700,7 +746,12 @@ const EditProfileByPart = props => {
 				<View style={styles.mainArea}>
 					{part === 'status' ? (
 						<View style={styles.mainAreaStarting}>
-							<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+							<Text
+								style={whatIsTheme(
+									styles.titleDark,
+									styles.titleLight
+								)}
+							>
 								{edit ? 'Enter New Status' : 'Remove Status'}
 							</Text>
 
@@ -718,8 +769,9 @@ const EditProfileByPart = props => {
 										COLORS.PRIMARY
 									)}
 									value={newStatus}
-									onChangeText={value => {
-										if (value.length <= 100) setNewStatus(value);
+									onChangeText={(value) => {
+										if (value.length <= 100)
+											setNewStatus(value);
 									}}
 								/>
 							</View>
@@ -728,10 +780,16 @@ const EditProfileByPart = props => {
 								style={
 									newStatus.length >= 100
 										? styles.redText
-										: whatIsTheme(styles.limitTextDark, styles.limitTextLight)
-								}>
-								{newStatus.length <= 99 ? 'Allowed Length' : 'Length Exceeded'}:{' '}
-								{newStatus ? newStatus.length : 0} / 100
+										: whatIsTheme(
+												styles.limitTextDark,
+												styles.limitTextLight
+										  )
+								}
+							>
+								{newStatus.length <= 99
+									? 'Allowed Length'
+									: 'Length Exceeded'}
+								: {newStatus ? newStatus.length : 0} / 100
 							</Text>
 
 							<Button
@@ -740,21 +798,31 @@ const EditProfileByPart = props => {
 								style={
 									!edit
 										? styles.deleteButton
-										: whatIsTheme(styles.darkButton, styles.lightButton)
+										: whatIsTheme(
+												styles.darkButton,
+												styles.lightButton
+										  )
 								}
-								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}>
+								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}
+							>
 								{edit ? 'Update Status' : 'Remove Status'}
 							</Button>
 
 							{!edit ? (
 								<Text style={styles.redText}>
-									Note: Your status will be removed permanently.
+									Note: Your status will be removed
+									permanently.
 								</Text>
 							) : null}
 						</View>
 					) : part === 'about' ? (
 						<View style={styles.mainAreaStarting}>
-							<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+							<Text
+								style={whatIsTheme(
+									styles.titleDark,
+									styles.titleLight
+								)}
+							>
 								{edit ? 'Enter About Yourself' : 'Remove About'}
 							</Text>
 
@@ -772,8 +840,9 @@ const EditProfileByPart = props => {
 										COLORS.PRIMARY
 									)}
 									value={newAbout}
-									onChangeText={value => {
-										if (value.length <= 500) setNewAbout(value);
+									onChangeText={(value) => {
+										if (value.length <= 500)
+											setNewAbout(value);
 									}}
 								/>
 							</View>
@@ -782,15 +851,26 @@ const EditProfileByPart = props => {
 								style={
 									newAbout.length >= 500
 										? styles.redText
-										: whatIsTheme(styles.limitTextDark, styles.limitTextLight)
-								}>
-								{newAbout.length <= 499 ? 'Allowed Length' : 'Length Exceeded'}:{' '}
+										: whatIsTheme(
+												styles.limitTextDark,
+												styles.limitTextLight
+										  )
+								}
+							>
+								{newAbout.length <= 499
+									? 'Allowed Length'
+									: 'Length Exceeded'}
+								:{' '}
 								<Text
 									style={
 										newAbout.length >= 100
-											? whatIsTheme(styles.greenColor, styles.primaryColor)
+											? whatIsTheme(
+													styles.greenColor,
+													styles.primaryColor
+											  )
 											: styles.normalColor
-									}>
+									}
+								>
 									{newAbout ? newAbout.length : 0}
 								</Text>
 								{' / 500'}
@@ -802,22 +882,34 @@ const EditProfileByPart = props => {
 								style={
 									!edit
 										? styles.deleteButton
-										: whatIsTheme(styles.darkButton, styles.lightButton)
+										: whatIsTheme(
+												styles.darkButton,
+												styles.lightButton
+										  )
 								}
-								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}>
+								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}
+							>
 								{edit ? 'Update About' : 'Remove About'}
 							</Button>
 
 							{!edit ? (
 								<Text style={styles.redText}>
-									Note: Your about section will be removed permanently.
+									Note: Your about section will be removed
+									permanently.
 								</Text>
 							) : null}
 						</View>
 					) : part === 'location' ? (
 						<View style={styles.mainAreaStarting}>
-							<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
-								{edit ? 'Enter New Location' : 'Remove Location'}
+							<Text
+								style={whatIsTheme(
+									styles.titleDark,
+									styles.titleLight
+								)}
+							>
+								{edit
+									? 'Enter New Location'
+									: 'Remove Location'}
 							</Text>
 
 							<View style={styles.input}>
@@ -834,8 +926,9 @@ const EditProfileByPart = props => {
 										COLORS.PRIMARY
 									)}
 									value={newLocation}
-									onChangeText={value => {
-										if (value.length <= 100) setNewLocation(value);
+									onChangeText={(value) => {
+										if (value.length <= 100)
+											setNewLocation(value);
 									}}
 								/>
 							</View>
@@ -844,10 +937,16 @@ const EditProfileByPart = props => {
 								style={
 									newLocation.length >= 100
 										? styles.redText
-										: whatIsTheme(styles.limitTextDark, styles.limitTextLight)
-								}>
-								{newLocation.length <= 99 ? 'Allowed Length' : 'Length Exceeded'}:{' '}
-								{newLocation ? newLocation.length : 0} / 100
+										: whatIsTheme(
+												styles.limitTextDark,
+												styles.limitTextLight
+										  )
+								}
+							>
+								{newLocation.length <= 99
+									? 'Allowed Length'
+									: 'Length Exceeded'}
+								: {newLocation ? newLocation.length : 0} / 100
 							</Text>
 
 							<Button
@@ -856,21 +955,31 @@ const EditProfileByPart = props => {
 								style={
 									!edit
 										? styles.deleteButton
-										: whatIsTheme(styles.darkButton, styles.lightButton)
+										: whatIsTheme(
+												styles.darkButton,
+												styles.lightButton
+										  )
 								}
-								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}>
+								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}
+							>
 								{edit ? 'Update Status' : 'Remove Status'}
 							</Button>
 
 							{!edit ? (
 								<Text style={styles.redText}>
-									Note: Your location will be removed permanently.
+									Note: Your location will be removed
+									permanently.
 								</Text>
 							) : null}
 						</View>
 					) : part === 'expertise' ? (
 						<View style={styles.mainAreaStarting}>
-							<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+							<Text
+								style={whatIsTheme(
+									styles.titleDark,
+									styles.titleLight
+								)}
+							>
 								{'Update you expertises'}
 							</Text>
 
@@ -887,9 +996,13 @@ const EditProfileByPart = props => {
 										COLORS.PRIMARY
 									)}
 									value={addExpertise}
-									onChangeText={value => {
+									onChangeText={(value) => {
 										if (value.length <= 20) {
-											if (value.includes(',') || value.includes(' ')) return;
+											if (
+												value.includes(',') ||
+												value.includes(' ')
+											)
+												return;
 											setAddExpertise(value);
 										}
 									}}
@@ -897,32 +1010,45 @@ const EditProfileByPart = props => {
 							</View>
 
 							<Button
-								disabled={!addExpertise || addExpertise.length <= 0}
+								disabled={
+									!addExpertise || addExpertise.length <= 0
+								}
 								onPress={addExpertiseItem}
-								style={whatIsTheme(styles.darkButton, styles.lightButton)}
-								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}>
+								style={whatIsTheme(
+									styles.darkButton,
+									styles.lightButton
+								)}
+								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}
+							>
 								{'Add'}
 							</Button>
 
-							{newExpertise.map(item => {
+							{newExpertise.map((item) => {
 								return (
 									<View
 										style={whatIsTheme(
 											styles.expertiseCardDark,
 											styles.expertiseCardLight
-										)}>
+										)}
+									>
 										<Text
 											style={whatIsTheme(
 												styles.expertiseTextDark,
 												styles.expertiseTextLight
-											)}>
+											)}
+										>
 											{item}
 										</Text>
 										<Entypo
 											name='cross'
-											onPress={() => removeExpertiseItem(item)}
+											onPress={() =>
+												removeExpertiseItem(item)
+											}
 											size={25}
-											color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}
+											color={whatIsTheme(
+												COLORS.BLACK,
+												COLORS.WHITE
+											)}
 										/>
 									</View>
 								);
@@ -930,17 +1056,28 @@ const EditProfileByPart = props => {
 
 							<Button
 								disabled={
-									disabled === true ? disabled : newExpertise === finalExpertise
+									disabled === true
+										? disabled
+										: newExpertise === finalExpertise
 								}
 								onPress={updateExpertiseList}
-								style={whatIsTheme(styles.darkButton, styles.lightButton)}
-								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}>
+								style={whatIsTheme(
+									styles.darkButton,
+									styles.lightButton
+								)}
+								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}
+							>
 								{'Update'}
 							</Button>
 						</View>
 					) : part === 'edu' ? (
 						<View style={styles.mainAreaStarting}>
-							<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+							<Text
+								style={whatIsTheme(
+									styles.titleDark,
+									styles.titleLight
+								)}
+							>
 								{'Update you educations'}
 							</Text>
 
@@ -985,18 +1122,27 @@ const EditProfileByPart = props => {
 									style={whatIsTheme(
 										styles.limitTextDark,
 										styles.limitTextLight
-									)}>
-									{'Leave Empty if you are currently studying here'}
+									)}
+								>
+									{
+										'Leave Empty if you are currently studying here'
+									}
 								</Text>
 							</View>
 
 							<Button
 								disabled={
-									degree.length <= 0 || school.length <= 0 || yearFrom.length <= 0
+									degree.length <= 0 ||
+									school.length <= 0 ||
+									yearFrom.length <= 0
 								}
 								onPress={addEducationItem}
-								style={whatIsTheme(styles.darkButton, styles.lightButton)}
-								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}>
+								style={whatIsTheme(
+									styles.darkButton,
+									styles.lightButton
+								)}
+								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}
+							>
 								{'Add'}
 							</Button>
 
@@ -1008,8 +1154,13 @@ const EditProfileByPart = props => {
 											style={whatIsTheme(
 												styles.educationSectionCardDark,
 												styles.educationSectionCardLight
-											)}>
-											<View style={styles.rowButSpaceBetween}>
+											)}
+										>
+											<View
+												style={
+													styles.rowButSpaceBetween
+												}
+											>
 												<Text
 													style={[
 														whatIsTheme(
@@ -1020,29 +1171,39 @@ const EditProfileByPart = props => {
 															styles.font16Dark,
 															styles.font16Light
 														),
-													]}>
+													]}
+												>
 													{item.degree}
 												</Text>
 
 												<Entypo
 													name='cross'
-													onPress={() => removeEducationItem(item)}
+													onPress={() =>
+														removeEducationItem(
+															item
+														)
+													}
 													size={25}
-													color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+													color={whatIsTheme(
+														COLORS.WHITE,
+														COLORS.BLACK
+													)}
 												/>
 											</View>
 											<Text
 												style={whatIsTheme(
 													styles.educationBoldTextDark,
 													styles.educationBoldTextLight
-												)}>
+												)}
+											>
 												{item.school}
 											</Text>
 											<Caption
 												style={whatIsTheme(
 													styles.educationRegularTextDark,
 													styles.educationRegularTextLight
-												)}>
+												)}
+											>
 												{`${item.yearFrom} - ${item.yearTo}`}
 											</Caption>
 										</View>
@@ -1052,28 +1213,43 @@ const EditProfileByPart = props => {
 
 							<Button
 								disabled={
-									disabled === true ? disabled : updatedEducation === education
+									disabled === true
+										? disabled
+										: updatedEducation === education
 								}
 								onPress={updateEducationList}
 								style={
 									newEducation.length <= 0
 										? styles.deleteButton
-										: whatIsTheme(styles.darkButton, styles.lightButton)
+										: whatIsTheme(
+												styles.darkButton,
+												styles.lightButton
+										  )
 								}
-								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}>
+								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}
+							>
 								{newEducation.length <= 0 ? 'Remove' : 'Update'}
 							</Button>
 						</View>
 					) : part === 'social' ? (
 						<View style={styles.mainAreaStarting}>
-							<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+							<Text
+								style={whatIsTheme(
+									styles.titleDark,
+									styles.titleLight
+								)}
+							>
 								Edit Your Social Media Profiles
 							</Text>
 
 							<View style={styles.oneHolder}>
 								<View style={styles.input}>
 									<View style={styles.row}>
-										<SocialIcon type='github' disabled raised />
+										<SocialIcon
+											type='github'
+											disabled
+											raised
+										/>
 										<LimitText
 											context={github}
 											limit={100}
@@ -1092,7 +1268,11 @@ const EditProfileByPart = props => {
 
 								<View style={styles.input}>
 									<View style={styles.row}>
-										<SocialIcon type='linkedin' disabled raised />
+										<SocialIcon
+											type='linkedin'
+											disabled
+											raised
+										/>
 										<LimitText
 											context={linkedin}
 											limit={100}
@@ -1110,7 +1290,11 @@ const EditProfileByPart = props => {
 
 								<View style={styles.input}>
 									<View style={styles.row}>
-										<SocialIcon type='twitter' disabled raised />
+										<SocialIcon
+											type='twitter'
+											disabled
+											raised
+										/>
 										<LimitText
 											context={twitter}
 											limit={100}
@@ -1128,7 +1312,11 @@ const EditProfileByPart = props => {
 
 								<View style={styles.input}>
 									<View style={styles.row}>
-										<SocialIcon type='facebook' disabled raised />
+										<SocialIcon
+											type='facebook'
+											disabled
+											raised
+										/>
 										<LimitText
 											context={facebook}
 											limit={100}
@@ -1146,7 +1334,11 @@ const EditProfileByPart = props => {
 
 								<View style={styles.input}>
 									<View style={styles.row}>
-										<SocialIcon type='instagram' disabled raised />
+										<SocialIcon
+											type='instagram'
+											disabled
+											raised
+										/>
 										<LimitText
 											context={instagram}
 											limit={100}
@@ -1169,18 +1361,26 @@ const EditProfileByPart = props => {
 								style={
 									red
 										? styles.deleteButton
-										: whatIsTheme(styles.darkButton, styles.lightButton)
+										: whatIsTheme(
+												styles.darkButton,
+												styles.lightButton
+										  )
 								}
-								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}>
+								color={whatIsTheme(COLORS.BLACK, COLORS.WHITE)}
+							>
 								{red ? 'Remove' : 'Update'}
 							</Button>
 
 							<Text
 								style={[
-									whatIsTheme(styles.greenColor, styles.primaryColor),
+									whatIsTheme(
+										styles.greenColor,
+										styles.primaryColor
+									),
 									styles.centerText,
 									styles.lastElement,
-								]}>
+								]}
+							>
 								{
 									'Note: \nPlease paste/provide the correct links to these profile. If the link exceed the limit then please provide a shorted link.'
 								}
