@@ -50,6 +50,11 @@ const COLORS = {
 	WHITEINDARKVIDIBLE: '#00000070',
 	DARKINLIGHTVIDIBLE: '#ffffff70',
 	ANTIQUE_BLUE: '#2089DC',
+
+	BLUEINDARK: '#101D2D',
+	BLUEINLIGHT: '#dbedff',
+	TEXTIN_BLUEINDARK: '#79c0ff',
+	TEXTIN_BLUEINLIGHT: '#0366d6',
 };
 
 class DarkLight {
@@ -63,21 +68,28 @@ class DarkLight {
 			return this.array[Math.floor(Math.random() * this.array.length)];
 		};
 
-		this.colorIsLight = color => {
+		this.colorIsLight = (color) => {
 			let r, g, b, hsp;
 			if (color.match(/^rgb/)) {
-				color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+				color = color.match(
+					/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/
+				);
 				r = color[1];
 				g = color[2];
 				b = color[3];
 			} else {
-				color = +('0x' + color.slice(1).replace(color.length < 5 && /./g, '$&$&'));
+				color = +(
+					'0x' +
+					color.slice(1).replace(color.length < 5 && /./g, '$&$&')
+				);
 				r = color >> 16;
 				g = (color >> 8) & 255;
 				b = color & 255;
 			}
 
-			hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+			hsp = Math.sqrt(
+				0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b)
+			);
 			//return true if the givne colro in the argument is light...
 			// console.log(hsp, hsp > 127.5);
 			return hsp > 127.5;
