@@ -28,11 +28,9 @@ const Login = (props) => {
 	const dispatch = useDispatch();
 
 	const [email, setEmail] = useState(
-		props.route.params?.email
-			? props.route.params?.email
-			: 'sobhanbera260@gmail.com'
+		props.route.params?.email ? props.route.params?.email : ''
 	);
-	const [password, setPassword] = useState('SOBHANbera1');
+	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(true);
 	const [disabled, setDisabled] = useState(false);
 	const [error, setError] = useState({});
