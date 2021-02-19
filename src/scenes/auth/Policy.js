@@ -135,7 +135,7 @@ const TermsAndConditionPrivacyPolicy = (props) => {
 					</View>
 				</TouchableOpacity>
 				<TouchableOpacity
-					onPress={() => props.navigation.navigate('Register')}
+					onPress={() => props.navigation.replace('Register')}
 				>
 					<View style={styles.buttonContainerLast}>
 						<Text
