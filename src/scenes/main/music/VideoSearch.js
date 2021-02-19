@@ -13,14 +13,136 @@ import { Icon, ListItem, Text } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import LottieView from 'lottie-react-native';
 
-import { KEY, TrendingVideoSearchQueries, SufflerList } from '../../../val/constants/Constants';
+import {
+	KEY,
+	TrendingVideoSearchQueries,
+	SufflerList,
+} from '../../../val/constants/Constants';
 import COLORS from '../../../val/colors/Colors';
 import { ActivityIndicator } from 'react-native-paper';
 import { usePlayerContext } from './context/PlayerContext';
 import ytdl from 'react-native-ytdl';
 
-const SearchVideo = props => {
-	const { theme } = useSelector(state => state.settings.settings);
+const MusicItem = ({
+	item,
+	index,
+	formatArtistsList,
+	formatDuration,
+	findThumbnail,
+	loadSong,
+	addSongToQueue,
+	whatIsTheme,
+	playerContext,
+	searchResults,
+}) => {
+	const authors = formatArtistsList(item.author);
+	const formatedDuration = formatDuration(item.duration / 1000);
+	const foundThumbnail = findThumbnail(item.thumbnails?.url);
+
+	const [added, setAdded] = useState(false);
+
+	return (
+		<ListItem
+			onPress={() => {
+				loadSong(item, authors, foundThumbnail, formatedDuration);
+				setAdded(true);
+			}}
+			showsVerticalScrollIndicator={false}
+			style={{
+				paddingBottom: 20,
+			}}
+			key={item.videoId + item.playlistId + index}
+			underlayColor={whatIsTheme(COLORS.DARKPRIMARY, COLORS.BEFORELIGHT)}
+			bottomDivider
+			containerStyle={{
+				backgroundColor: COLORS.TRANSPARENT,
+				borderBottomColor: whatIsTheme(
+					COLORS.NEXTTODARK,
+					COLORS.BEFORELIGHT
+				),
+				borderBottomWidth: 1,
+				paddingVertical: 5,
+				marginBottom: index === searchResults.length - 1 ? 90 : 0,
+			}}
+		>
+			<ImageBackground
+				source={{
+					uri: foundThumbnail,
+				}}
+				style={styles.songImage}
+			>
+				{playerContext.isPlaying && playerContext.currentTrack?.id ? (
+					playerContext.currentTrack?.id === item.videoId
+				) : false ? (
+					<LottieView
+						source={require('../../../assets/animations/waves.json')}
+						style={{
+							width: 80,
+							height: 80,
+							padding: 0,
+							margin: 0,
+							backgroundColor: `${COLORS.BLACK}30`,
+							position: 'absolute',
+						}}
+						autoPlay={true}
+						loop={true}
+						autoSize={true}
+						resizeMode='cover'
+					/>
+				) : null}
+				<Text style={styles.durationText}>{formatedDuration}</Text>
+			</ImageBackground>
+
+			<ListItem.Content style={styles.fullContainer}>
+				<ListItem.Title
+					numberOfLines={2}
+					style={whatIsTheme(styles.textDark, styles.textLight)}
+				>
+					{item.name}
+				</ListItem.Title>
+				<ListItem.Subtitle
+					numberOfLines={1}
+					style={{ color: COLORS.MID }}
+				>
+					{authors}
+				</ListItem.Subtitle>
+				<ListItem.Subtitle
+					numberOfLines={1}
+					style={{ color: COLORS.MID }}
+				>
+					Duration: {formatedDuration}
+				</ListItem.Subtitle>
+				<ListItem.Subtitle
+					numberOfLines={1}
+					style={{ color: COLORS.MID }}
+				>
+					{item.views}
+				</ListItem.Subtitle>
+			</ListItem.Content>
+
+			{!added ? (
+				<Icon
+					onPress={() => {
+						addSongToQueue(
+							item,
+							authors,
+							formatedDuration,
+							foundThumbnail
+						);
+						setAdded(true);
+					}}
+					name='add'
+					type='ionicons'
+					size={25}
+					color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+				/>
+			) : null}
+		</ListItem>
+	);
+};
+
+const SearchVideo = (props) => {
+	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
 	};
@@ -45,9 +167,10 @@ const SearchVideo = props => {
 		return `${minsStr}:${sec}`;
 	}
 
-	const formatArtistsList = author => (author.length > 30 ? author.substring(0, 25) : author);
+	const formatArtistsList = (author) =>
+		author.length > 30 ? author.substring(0, 25) : author;
 
-	const findThumbnail = thumbnail => `${thumbnail}=w260-h260-l90-rj`;
+	const findThumbnail = (thumbnail) => `${thumbnail}=w260-h260-l90-rj`;
 
 	async function loadSong(item, authors = '', thumbnail, dur) {
 		// console.log(thumbnail, dur);
@@ -88,7 +211,12 @@ const SearchVideo = props => {
 		// }
 	}
 
-	async function addSongToQueue(item, authors = '', formatedDuration, imageFormated) {
+	async function addSongToQueue(
+		item,
+		authors = '',
+		formatedDuration,
+		imageFormated
+	) {
 		const youtubeURL = `http://www.youtube.com/watch?v=${item.videoId}`;
 		const urls = await ytdl(youtubeURL, { quality: 'highestaudio' });
 
@@ -103,7 +231,8 @@ const SearchVideo = props => {
 		});
 
 		for (let i = 0; i < 3; ++i) {
-			let ranListItem = searchResults[Math.floor(Math.random() * searchResults.length)];
+			let ranListItem =
+				searchResults[Math.floor(Math.random() * searchResults.length)];
 			playerContext.addRecommendedSong({
 				id: ranListItem.videoId,
 				title: ranListItem.name,
@@ -122,19 +251,23 @@ const SearchVideo = props => {
 			fetch(
 				`https://socbyte-backend${
 					Math.floor(Math.random() * 10) < 5 ? '-2' : ''
-				}.herokuapp.com/searchq/?query=${value.trim()}&key=${KEY.API_KEY}`
+				}.herokuapp.com/searchq/?query=${value.trim()}&key=${
+					KEY.API_KEY
+				}`
 			)
-				.then(res => res.json())
-				.then(res => {
+				.then((res) => res.json())
+				.then((res) => {
 					setSearchHelperResults(res);
 					// console.log(res);
 				})
-				.catch(err => console.log('ERROR FETCHING THE SEARCHRESULTS', err));
+				.catch((err) => {
+					// console.log('ERROR FETCHING THE SEARCHRESULTS', err)
+				});
 		}
 		setSearchText(value);
 	}
 
-	const showResults = text => {
+	const showResults = (text) => {
 		setLoading(true);
 		setAvaliability(false);
 		setSearchResult([]);
@@ -145,15 +278,15 @@ const SearchVideo = props => {
 				Math.floor(Math.random() * 10) < 5 ? '-2' : ''
 			}.herokuapp.com/video/?query=${text.trim()}&key=${KEY.API_KEY}`
 		)
-			.then(res => res.json())
-			.then(res => {
+			.then((res) => res.json())
+			.then((res) => {
 				setSearchResult(res);
 				// console.log(res);
 				setLoading(false);
 				setAvaliability(true);
 			})
-			.catch(err => {
-				console.log('ERROR IN ERR', err);
+			.catch((err) => {
+				// console.log('ERROR IN ERR', err);
 				setLoading(false);
 				setAvaliability(false);
 			});
@@ -169,7 +302,8 @@ const SearchVideo = props => {
 					borderBottomColor: COLORS.MID,
 					height: 50,
 					backgroundColor: COLORS.BLACK,
-				}}>
+				}}
+			>
 				<View style={styles.iconContainer}>
 					<Icon
 						onPress={() => {
@@ -225,99 +359,21 @@ const SearchVideo = props => {
 			) : avaliable ? (
 				<FlatList
 					data={searchResults}
-					keyExtractor={item => item.videoId}
-					renderItem={({ item, index }) => {
-						const authors = formatArtistsList(item.author);
-						const formatedDuration = formatDuration(item.duration / 1000);
-						const foundThumbnail = findThumbnail(item.thumbnails?.url);
-
-						return (
-							<ListItem
-								onPress={() =>
-									loadSong(item, authors, foundThumbnail, formatedDuration)
-								}
-								showsVerticalScrollIndicator={false}
-								style={{
-									paddingBottom: 20,
-								}}
-								key={item.videoId + item.playlistId + index}
-								underlayColor={whatIsTheme(COLORS.DARKPRIMARY, COLORS.BEFORELIGHT)}
-								bottomDivider
-								containerStyle={{
-									backgroundColor: COLORS.TRANSPARENT,
-									borderBottomColor: whatIsTheme(
-										COLORS.NEXTTODARK,
-										COLORS.BEFORELIGHT
-									),
-									borderBottomWidth: 1,
-									paddingVertical: 5,
-									marginBottom: index === searchResults.length - 1 ? 90 : 0,
-								}}>
-								<ImageBackground
-									source={{
-										uri: foundThumbnail,
-									}}
-									style={styles.songImage}>
-									{playerContext.isPlaying &&
-									item.videoId === playerContext.currentTrack.id ? (
-										<LottieView
-											source={require('../../../assets/animations/waves.json')}
-											style={{
-												width: 80,
-												height: 80,
-												padding: 0,
-												margin: 0,
-												backgroundColor: `${COLORS.BLACK}30`,
-												position: 'absolute',
-											}}
-											autoPlay={true}
-											loop={true}
-											autoSize={true}
-											resizeMode='cover'
-										/>
-									) : null}
-									<Text style={styles.durationText}>{formatedDuration}</Text>
-								</ImageBackground>
-
-								<ListItem.Content style={styles.fullContainer}>
-									<ListItem.Title
-										numberOfLines={2}
-										style={whatIsTheme(styles.textDark, styles.textLight)}>
-										{item.name}
-									</ListItem.Title>
-									<ListItem.Subtitle
-										numberOfLines={1}
-										style={{ color: COLORS.MID }}>
-										{authors}
-									</ListItem.Subtitle>
-									<ListItem.Subtitle
-										numberOfLines={1}
-										style={{ color: COLORS.MID }}>
-										Duration: {formatedDuration}
-									</ListItem.Subtitle>
-									<ListItem.Subtitle
-										numberOfLines={1}
-										style={{ color: COLORS.MID }}>
-										{item.views}
-									</ListItem.Subtitle>
-								</ListItem.Content>
-								<Icon
-									onPress={() =>
-										addSongToQueue(
-											item,
-											authors,
-											formatedDuration,
-											foundThumbnail
-										)
-									}
-									name='add'
-									type='ionicons'
-									size={25}
-									color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
-								/>
-							</ListItem>
-						);
-					}}
+					keyExtractor={(item) => item.videoId}
+					renderItem={({ item, index }) => (
+						<MusicItem
+							item={item}
+							index={index}
+							formatArtistsList={formatArtistsList}
+							formatDuration={formatDuration}
+							findThumbnail={findThumbnail}
+							loadSong={loadSong}
+							addSongToQueue={addSongToQueue}
+							whatIsTheme={whatIsTheme}
+							playerContext={playerContext}
+							searchResults={searchResults}
+						/>
+					)}
 				/>
 			) : (
 				<ScrollView>
@@ -325,15 +381,25 @@ const SearchVideo = props => {
 						<ListItem
 							// bottomDivider
 							onPress={() => showResults(searchText)}
-							underlayColor={whatIsTheme(COLORS.DARKPRIMARY, COLORS.BEFORELIGHT)}
+							underlayColor={whatIsTheme(
+								COLORS.DARKPRIMARY,
+								COLORS.BEFORELIGHT
+							)}
 							containerStyle={{
 								backgroundColor: COLORS.TRANSPARENT,
 								paddingVertical: 14,
-							}}>
-							<ListItem.Content style={styles.searchHintConatiner}>
+							}}
+						>
+							<ListItem.Content
+								style={styles.searchHintConatiner}
+							>
 								<ListItem.Title
 									numberOfLines={1}
-									style={whatIsTheme(styles.textDark, styles.textLight)}>
+									style={whatIsTheme(
+										styles.textDark,
+										styles.textLight
+									)}
+								>
 									{searchText}
 								</ListItem.Title>
 							</ListItem.Content>
@@ -347,7 +413,10 @@ const SearchVideo = props => {
 								// bottomDivider
 								onPress={() => showResults(result)}
 								key={result + index}
-								underlayColor={whatIsTheme(COLORS.DARKPRIMARY, COLORS.BEFORELIGHT)}
+								underlayColor={whatIsTheme(
+									COLORS.DARKPRIMARY,
+									COLORS.BEFORELIGHT
+								)}
 								// bottomDivider
 								containerStyle={[
 									// index === searchResults.length - 1 ? styles.lastElement : null,
@@ -355,11 +424,18 @@ const SearchVideo = props => {
 										backgroundColor: COLORS.TRANSPARENT,
 										paddingVertical: 14,
 									},
-								]}>
-								<ListItem.Content style={styles.searchHintConatiner}>
+								]}
+							>
+								<ListItem.Content
+									style={styles.searchHintConatiner}
+								>
 									<ListItem.Title
 										numberOfLines={1}
-										style={whatIsTheme(styles.textDark, styles.textLight)}>
+										style={whatIsTheme(
+											styles.textDark,
+											styles.textLight
+										)}
+									>
 										{`${result}`}
 									</ListItem.Title>
 								</ListItem.Content>
@@ -380,18 +456,26 @@ const SearchVideo = props => {
 									)}
 									// bottomDivider
 									containerStyle={[
-										index === TrendingVideoSearchQueries.length - 1
+										index ===
+										TrendingVideoSearchQueries.length - 1
 											? styles.lastElement
 											: null,
 										{
 											backgroundColor: COLORS.TRANSPARENT,
 											paddingVertical: 14,
 										},
-									]}>
-									<ListItem.Content style={styles.searchHintConatiner}>
+									]}
+								>
+									<ListItem.Content
+										style={styles.searchHintConatiner}
+									>
 										<ListItem.Title
 											numberOfLines={1}
-											style={whatIsTheme(styles.textDark, styles.textLight)}>
+											style={whatIsTheme(
+												styles.textDark,
+												styles.textLight
+											)}
+										>
 											{`${result}`}
 										</ListItem.Title>
 									</ListItem.Content>

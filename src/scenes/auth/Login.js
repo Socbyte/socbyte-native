@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState } from 'react';
 import {
 	StyleSheet,
 	View,
@@ -7,20 +7,20 @@ import {
 	TouchableOpacity,
 	TextInput,
 	Keyboard,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import COLORS from "../../val/colors/Colors";
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import COLORS from '../../val/colors/Colors';
 
-import Firebase from "../../firebase/Firebase";
-import ModalAlert from "../../components/customs/ModalAlert";
-import FullScreenLoading from "../../components/customs/FullScreenLoading";
+import Firebase from '../../firebase/Firebase';
+import ModalAlert from '../../components/customs/ModalAlert';
+import FullScreenLoading from '../../components/customs/FullScreenLoading';
 import {
 	databaseInit,
 	insertDatabase,
 	updateDatabase,
-} from "../../sql/SQLStarter";
-import { useDispatch, useSelector } from "react-redux";
-import { updateSettings } from "../../store/Settings";
+} from '../../sql/SQLStarter';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateSettings } from '../../store/Settings';
 
 const Login = (props) => {
 	const emailValidator = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -30,9 +30,9 @@ const Login = (props) => {
 	const [email, setEmail] = useState(
 		props.route.params?.email
 			? props.route.params?.email
-			: "sobhanbera260@gmail.com"
+			: 'sobhanbera260@gmail.com'
 	);
-	const [password, setPassword] = useState("SOBHANbera1");
+	const [password, setPassword] = useState('SOBHANbera1');
 	const [showPassword, setShowPassword] = useState(true);
 	const [disabled, setDisabled] = useState(false);
 	const [error, setError] = useState({});
@@ -47,10 +47,10 @@ const Login = (props) => {
 			setDisabled(false);
 			setLoading(false);
 			setError({
-				header: "Required!",
+				header: 'Required!',
 				desc:
-					"Both email and password are required to login into your account.",
-				primary: "Okay!",
+					'Both email and password are required to login into your account.',
+				primary: 'Okay!',
 				primaryFunction: () => setError(false),
 			});
 
@@ -60,9 +60,9 @@ const Login = (props) => {
 			setLoading(false);
 
 			setError({
-				header: "Invalid Email!",
-				desc: "Please enter a valid email address.",
-				primary: "Okay!",
+				header: 'Invalid Email!',
+				desc: 'Please enter a valid email address.',
+				primary: 'Okay!',
 				primaryFunction: () => setError(false),
 			});
 
@@ -76,36 +76,36 @@ const Login = (props) => {
 				//create local database
 				databaseInit()
 					.then(() => {
-						console.log("DATABASE CREATED");
-						insertDatabase("theme", "d");
-						insertDatabase("fontSize", "m");
-						insertDatabase("email", email);
-						insertDatabase("username", "");
-						insertDatabase("primaryColor", COLORS.GREEN);
-						insertDatabase("invertPrimaryColor", COLORS.BLACK);
+						// console.log("DATABASE CREATED");
+						insertDatabase('theme', 'd');
+						insertDatabase('fontSize', 'm');
+						insertDatabase('email', email);
+						insertDatabase('username', '');
+						insertDatabase('primaryColor', COLORS.GREEN);
+						insertDatabase('invertPrimaryColor', COLORS.BLACK);
 
-						updateDatabase("theme", "d");
-						updateDatabase("fontSize", "m");
-						updateDatabase("email", email);
-						updateDatabase("username", "");
-						updateDatabase("primaryColor", COLORS.GREEN);
-						updateDatabase("invertPrimaryColor", COLORS.BLACK);
+						updateDatabase('theme', 'd');
+						updateDatabase('fontSize', 'm');
+						updateDatabase('email', email);
+						updateDatabase('username', '');
+						updateDatabase('primaryColor', COLORS.GREEN);
+						updateDatabase('invertPrimaryColor', COLORS.BLACK);
 					})
 					.catch((err) => {
-						console.log("DATABASE CREATED");
-						insertDatabase("theme", "d");
-						insertDatabase("fontSize", "m");
-						insertDatabase("email", email);
-						insertDatabase("username", "");
-						insertDatabase("primaryColor", COLORS.GREEN);
-						insertDatabase("invertPrimaryColor", COLORS.BLACK);
+						// console.log("DATABASE CREATED");
+						insertDatabase('theme', 'd');
+						insertDatabase('fontSize', 'm');
+						insertDatabase('email', email);
+						insertDatabase('username', '');
+						insertDatabase('primaryColor', COLORS.GREEN);
+						insertDatabase('invertPrimaryColor', COLORS.BLACK);
 
-						updateDatabase("theme", "d");
-						updateDatabase("fontSize", "m");
-						updateDatabase("email", email);
-						updateDatabase("username", "");
-						updateDatabase("primaryColor", COLORS.GREEN);
-						updateDatabase("invertPrimaryColor", COLORS.BLACK);
+						updateDatabase('theme', 'd');
+						updateDatabase('fontSize', 'm');
+						updateDatabase('email', email);
+						updateDatabase('username', '');
+						updateDatabase('primaryColor', COLORS.GREEN);
+						updateDatabase('invertPrimaryColor', COLORS.BLACK);
 					});
 
 				setDisabled(false);
@@ -115,27 +115,27 @@ const Login = (props) => {
 			.catch((err) => {
 				setDisabled(false);
 				setLoading(false);
-				if (err.code.includes("auth/user-not-found")) {
+				if (err.code.includes('auth/user-not-found')) {
 					setError({
-						header: "User Not Found!",
+						header: 'User Not Found!',
 						desc:
-							"There is no user record corresponding to this details. The user may have been deleted, banned or disabled. If you think the details are correct then contact the developer.",
-						primary: "Okay!",
+							'There is no user record corresponding to this details. The user may have been deleted, banned or disabled. If you think the details are correct then contact the developer.',
+						primary: 'Okay!',
 						primaryFunction: () => setError(false),
 					});
-				} else if (err.code.includes("auth/wrong-password")) {
+				} else if (err.code.includes('auth/wrong-password')) {
 					setError({
-						header: "Incorrect Password!",
+						header: 'Incorrect Password!',
 						desc:
-							"Entered password in wrong. Please enter the correct password.",
-						primary: "Okay!",
+							'Entered password in wrong. Please enter the correct password.',
+						primary: 'Okay!',
 						primaryFunction: () => setError(false),
 					});
 				} else {
 					setError({
-						header: "Error!",
-						desc: "Something Went Wrong! Try Again.",
-						primary: "Okay!",
+						header: 'Error!',
+						desc: 'Something Went Wrong! Try Again.',
+						primary: 'Okay!',
 						primaryFunction: () => setError(false),
 					});
 				}
@@ -143,30 +143,30 @@ const Login = (props) => {
 	}, [email, password]);
 
 	const loadRegisterForm = () => {
-		props.navigation.replace("Register");
+		props.navigation.replace('Register');
 	};
 	const loadForgotPasswordForm = () => {
-		props.navigation.replace("ForgotPassword", { email });
+		props.navigation.replace('ForgotPassword', { email });
 	};
 
 	const whatIsTheme = (firstVal, secondVal) => {
-		return !theme || theme === "d" ? firstVal : secondVal;
+		return !theme || theme === 'd' ? firstVal : secondVal;
 	};
 
 	const toggleTheme = () => {
 		// console.log('TOGGLE THE CURRENT THEME...');
-		const toggledTheme = whatIsTheme("l", "d");
-		updateDatabase("theme", toggledTheme)
+		const toggledTheme = whatIsTheme('l', 'd');
+		updateDatabase('theme', toggledTheme)
 			.then((result) => {
 				// console.log('DATABASE UPDATED');
 				// console.log(result);
-				dispatch(updateSettings("theme", toggledTheme));
+				dispatch(updateSettings('theme', toggledTheme));
 			})
 			.catch((err) => {
-				console.log(
-					"ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION"
-				);
-				console.log(err);
+				// console.log(
+				// 	"ERROR WHILE UPDATING DATABASE FROM PROFILE SECTION"
+				// );
+				// console.log(err);
 			});
 	};
 
@@ -220,11 +220,11 @@ const Login = (props) => {
 						<View>
 							<TouchableOpacity
 								onPress={() => {
-									props.navigation.navigate("Information");
+									props.navigation.navigate('Information');
 								}}
 							>
 								<Ionicons
-									name="information"
+									name='information'
 									color={whatIsTheme(
 										COLORS.WHITE,
 										COLORS.BLACK
@@ -237,7 +237,7 @@ const Login = (props) => {
 
 					<View style={{ ...styles.input }}>
 						<TextInput
-							autoCompleteType="email"
+							autoCompleteType='email'
 							style={
 								disabled
 									? whatIsTheme(
@@ -250,12 +250,12 @@ const Login = (props) => {
 									  )
 							}
 							editable={!disabled}
-							placeholder="Email"
+							placeholder='Email'
 							placeholderTextColor={COLORS.PLACEHOLDER}
 							value={email}
 							onChangeText={setEmail}
-							keyboardType="email-address"
-							returnKeyType="next"
+							keyboardType='email-address'
+							returnKeyType='next'
 						/>
 					</View>
 
@@ -274,7 +274,7 @@ const Login = (props) => {
 										  )
 								}
 								editable={!disabled}
-								placeholder="Password"
+								placeholder='Password'
 								placeholderTextColor={COLORS.PLACEHOLDER}
 								value={password}
 								onChangeText={setPassword}
@@ -286,7 +286,7 @@ const Login = (props) => {
 						>
 							<Ionicons
 								style={{ marginLeft: 8 }}
-								name={showPassword ? "eye-off" : "eye"}
+								name={showPassword ? 'eye-off' : 'eye'}
 								size={20}
 								color={whatIsTheme(
 									COLORS.WHITE,
@@ -321,7 +321,7 @@ const Login = (props) => {
 								)}
 							>
 								<Ionicons
-									name="arrow-forward"
+									name='arrow-forward'
 									color={whatIsTheme(
 										COLORS.BLACK,
 										COLORS.WHITE
@@ -377,24 +377,24 @@ const Login = (props) => {
 const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
-		justifyContent: "center",
+		justifyContent: 'center',
 	},
 	compo: {
 		flex: 1,
 		margin: 20,
-		justifyContent: "center",
+		justifyContent: 'center',
 		borderRadius: 5,
 	},
 	textSection: {
 		padding: 10,
 		marginBottom: 15,
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
 	},
 
 	authText: {
-		fontFamily: "karla",
+		fontFamily: 'karla',
 		color: COLORS.WHITE,
 		fontSize: 30,
 	},
@@ -404,9 +404,9 @@ const styles = StyleSheet.create({
 
 	input: {
 		margin: 10,
-		fontFamily: "karla",
+		fontFamily: 'karla',
 		paddingHorizontal: 8,
-		borderColor: "#909090",
+		borderColor: '#909090',
 		borderWidth: 1,
 		borderRadius: 5,
 	},
@@ -437,9 +437,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	passwordInput: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
 	},
 
 	registerTextContainer: {
@@ -449,9 +449,9 @@ const styles = StyleSheet.create({
 		padding: 10,
 		marginTop: 10,
 		marginBottom: 15,
-		flexDirection: "row",
-		justifyContent: "space-around",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		alignItems: 'center',
 	},
 	registerTextContainerLight: {
 		backgroundColor: COLORS.BEFORELIGHT,
@@ -460,12 +460,12 @@ const styles = StyleSheet.create({
 		padding: 10,
 		marginTop: 10,
 		marginBottom: 15,
-		flexDirection: "row",
-		justifyContent: "space-around",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		alignItems: 'center',
 	},
 	registerText: {
-		fontFamily: "roboto",
+		fontFamily: 'roboto',
 		color: COLORS.GREEN,
 		fontSize: 23,
 		borderTopLeftRadius: 10,
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
 		// height: 50,
 	},
 	registerTextLight: {
-		fontFamily: "roboto",
+		fontFamily: 'roboto',
 		color: COLORS.PRIMARY,
 		fontSize: 23,
 		borderTopLeftRadius: 10,
@@ -482,9 +482,9 @@ const styles = StyleSheet.create({
 	},
 
 	registerIconContainer: {
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
 		width: 55,
 		height: 55,
 		padding: 5,
@@ -493,9 +493,9 @@ const styles = StyleSheet.create({
 		elevation: 10,
 	},
 	registerIconContainerLight: {
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
 		width: 55,
 		height: 55,
 		padding: 5,
@@ -505,18 +505,18 @@ const styles = StyleSheet.create({
 	},
 
 	otherContainer: {
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 		marginTop: 20,
 		paddingVertical: 10,
 		paddingHorizontal: 5,
 		marginTop: 20,
-		flexDirection: "row",
+		flexDirection: 'row',
 	},
 	otherContainerLight: {
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
 		marginTop: 20,
 		paddingVertical: 10,
 		paddingHorizontal: 5,
@@ -524,21 +524,21 @@ const styles = StyleSheet.create({
 	},
 
 	other: {
-		flexDirection: "row",
-		fontFamily: "inter",
+		flexDirection: 'row',
+		fontFamily: 'inter',
 		color: COLORS.WHITE,
 		fontSize: 14,
-		textAlign: "center",
-		textDecorationLine: "underline",
+		textAlign: 'center',
+		textDecorationLine: 'underline',
 		// backgroundColor: COLORS.PRIMARY,
 	},
 	otherLight: {
-		flexDirection: "row",
-		fontFamily: "inter",
+		flexDirection: 'row',
+		fontFamily: 'inter',
 		color: COLORS.DARKPRIMARY,
 		fontSize: 14,
-		textAlign: "center",
-		textDecorationLine: "underline",
+		textAlign: 'center',
+		textDecorationLine: 'underline',
 		// backgroundColor: COLORS.PRIMARY,
 	},
 });

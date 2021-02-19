@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from 'react';
 import {
 	StyleSheet,
 	View,
@@ -7,32 +7,32 @@ import {
 	ToastAndroid,
 	ScrollView,
 	FlatList,
-} from "react-native";
-import { Icon, ListItem, Text } from "react-native-elements";
-import { Avatar, Button } from "react-native-paper";
-import { useSelector } from "react-redux";
-import md5 from "md5";
+} from 'react-native';
+import { Icon, ListItem, Text } from 'react-native-elements';
+import { Avatar, Button } from 'react-native-paper';
+import { useSelector } from 'react-redux';
+import md5 from 'md5';
 
-import firebase from "../../../firebase/Firebase";
-import COLORS from "../../../val/colors/Colors";
+import firebase from '../../../firebase/Firebase';
+import COLORS from '../../../val/colors/Colors';
 
 const ProfileSearch = (props) => {
 	const { username } = useSelector((state) => state.main.user);
 	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
-		return !theme || theme === "d" ? f : s;
+		return !theme || theme === 'd' ? f : s;
 	};
 
-	const [searchText, setSearchText] = useState("");
+	const [searchText, setSearchText] = useState('');
 	const [searchedUsers, setSearchedUsers] = useState([]);
 	const [searchLimit, setSearchLimit] = useState(10);
-	const [error, setError] = useState({ error: "", msg: "" });
+	const [error, setError] = useState({ error: '', msg: '' });
 	const [showButton, setShowButton] = useState(false);
 
 	useEffect(() => {
 		return () => {
-			setError({ error: "", msg: "" });
-			setSearchText("");
+			setError({ error: '', msg: '' });
+			setSearchText('');
 			setSearchedUsers([]);
 			setSearchLimit(10);
 		};
@@ -44,14 +44,14 @@ const ProfileSearch = (props) => {
 		if (searchText.trim().length >= 6) {
 			firebase
 				.database()
-				.ref("Accounts")
-				.orderByChild("username")
+				.ref('Accounts')
+				.orderByChild('username')
 				.startAt(`${searchText.trim()}`)
-				.endAt(searchText.trim() + "\uf8ff")
+				.endAt(searchText.trim() + '\uf8ff')
 				.limitToFirst(searchLimit)
-				.once("value")
+				.once('value')
 				.then((snap) => {
-					setError({ error: "", msg: "" });
+					setError({ error: '', msg: '' });
 					let list = [];
 					for (let i in snap.val()) {
 						if (snap.val()[i].username === username) continue;
@@ -64,28 +64,28 @@ const ProfileSearch = (props) => {
 				})
 				.catch((err) => {
 					setError({
-						error: "Error while fetching users list",
-						msg: "Something went wrong. Please try again.",
+						error: 'Error while fetching users list',
+						msg: 'Something went wrong. Please try again.',
 					});
-					console.log("ERR", err);
+					// console.log("ERR", err);
 					setShowButton(false);
 				});
 		} else if (searchText.length <= 0) {
 			if (searchedUsers.length) return;
 			setError({
-				error: "Search For An User",
+				error: 'Search For An User',
 				msg:
-					"no user searched, username should contain at least 8 character.",
+					'no user searched, username should contain at least 8 character.',
 			});
 			setShowButton(false);
 		} else {
 			ToastAndroid.showWithGravity(
-				"User Not Found!",
+				'User Not Found!',
 				ToastAndroid.SHORT,
 				ToastAndroid.CENTER
 			);
 			setError({
-				error: "User Not Found",
+				error: 'User Not Found',
 				msg:
 					"User with the following username not found. User's account be deleted, banned or disabled permanently",
 			});
@@ -98,7 +98,7 @@ const ProfileSearch = (props) => {
 			<ListItem
 				key={item.uid + item.username}
 				onPress={() => {
-					props.navigation.navigate("ShowSearchedUserProfile", {
+					props.navigation.navigate('ShowSearchedUserProfile', {
 						uid: item.uid,
 						usernameText: item.username,
 					});
@@ -116,7 +116,8 @@ const ProfileSearch = (props) => {
 					),
 					borderBottomWidth: 1,
 					paddingVertical: 10,
-				}}>
+				}}
+			>
 				<Avatar.Image
 					size={48}
 					source={{
@@ -136,7 +137,8 @@ const ProfileSearch = (props) => {
 				/>
 				<ListItem.Content>
 					<ListItem.Title
-						style={whatIsTheme(styles.textDark, styles.textLight)}>
+						style={whatIsTheme(styles.textDark, styles.textLight)}
+					>
 						{item.fullname || item.username}
 					</ListItem.Title>
 					{item.fullname && item.username ? (
@@ -153,13 +155,14 @@ const ProfileSearch = (props) => {
 		<View>
 			<View
 				style={{
-					flexDirection: "row",
-					alignItems: "center",
+					flexDirection: 'row',
+					alignItems: 'center',
 					borderBottomWidth: 1,
 					borderBottomColor: COLORS.MID,
 					height: 50,
 					backgroundColor: COLORS.BLACK,
-				}}>
+				}}
+			>
 				<View style={styles.iconContainer}>
 					<Icon
 						onPress={() => {
@@ -183,7 +186,7 @@ const ProfileSearch = (props) => {
 					onSubmitEditing={() => searchUser(searchText)}
 					autoFocus
 					focusable
-					keyboardAppearance={whatIsTheme("dark", "light")}
+					keyboardAppearance={whatIsTheme('dark', 'light')}
 					returnKeyLabel='ss'
 					returnKeyType='search'
 					maxLength={100}
@@ -195,7 +198,7 @@ const ProfileSearch = (props) => {
 				<View style={styles.iconContainer}>
 					<Icon
 						onPress={() => {
-							setSearchText("");
+							setSearchText('');
 						}}
 						iconStyle={styles.listIcon}
 						name='cancel'
@@ -213,14 +216,16 @@ const ProfileSearch = (props) => {
 							style={whatIsTheme(
 								styles.errorTextDark,
 								styles.errorTextLight
-							)}>
+							)}
+						>
 							{error.error}
 						</Text>
 						<Text
 							style={whatIsTheme(
 								styles.errorMsgTextDark,
 								styles.errorMsgTextLight
-							)}>
+							)}
+						>
 							{error.msg}
 						</Text>
 					</View>
@@ -232,14 +237,16 @@ const ProfileSearch = (props) => {
 							style={whatIsTheme(
 								styles.errorTextDark,
 								styles.errorTextLight
-							)}>
+							)}
+						>
 							Search For An User
 						</Text>
 						<Text
 							style={whatIsTheme(
 								styles.errorMsgTextDark,
 								styles.errorMsgTextLight
-							)}>
+							)}
+						>
 							no user searched, username should contain at least 8
 							character.
 						</Text>
@@ -253,7 +260,8 @@ const ProfileSearch = (props) => {
 							onPress={() => {
 								setSearchLimit(searchLimit + 5);
 								searchUser();
-							}}>
+							}}
+						>
 							Load More...
 						</Button>
 					) : null}
@@ -267,9 +275,9 @@ const ProfileSearch = (props) => {
 
 const styles = StyleSheet.create({
 	iconContainer: {
-		justifyContent: "center",
-		alignItems: "center",
-		height: "100%",
+		justifyContent: 'center',
+		alignItems: 'center',
+		height: '100%',
 	},
 	listIcon: {
 		paddingHorizontal: 10,
@@ -278,32 +286,32 @@ const styles = StyleSheet.create({
 
 	errorArea: {
 		minHeight: 300,
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 	errorTextDark: {
 		fontSize: 20,
-		textAlign: "center",
+		textAlign: 'center',
 		padding: 10,
 		color: COLORS.WHITE,
 	},
 	errorTextLight: {
 		fontSize: 20,
-		textAlign: "center",
+		textAlign: 'center',
 		padding: 10,
 		color: COLORS.BLACK,
 	},
 	errorMsgTextDark: {
 		fontSize: 16,
 		color: COLORS.MID,
-		textAlign: "center",
+		textAlign: 'center',
 		padding: 6,
 		marginHorizontal: 5,
 	},
 	errorMsgTextLight: {
 		fontSize: 16,
 		color: COLORS.MID,
-		textAlign: "center",
+		textAlign: 'center',
 		padding: 6,
 		marginHorizontal: 5,
 	},
@@ -314,16 +322,16 @@ const styles = StyleSheet.create({
 
 	userImageContainer: {
 		borderRadius: 100,
-		overflow: "hidden",
-		alignItems: "center",
-		justifyContent: "center",
+		overflow: 'hidden',
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	userImage: {
 		width: 60,
 		height: 60,
 	},
 	loadMoreButtomContainer: {
-		alignItems: "center",
+		alignItems: 'center',
 		marginVertical: 50,
 		marginBottom: 90,
 	},

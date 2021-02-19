@@ -62,7 +62,7 @@ const GroupSearch = (props) => {
 						error: 'Error while fetching users list',
 						msg: 'Something went wrong. Please try again.',
 					});
-					console.log('ERR', err);
+					// console.log('ERR', err);
 					setShowButton(false);
 				});
 		} else if (searchText.length <= 0) {
@@ -167,7 +167,7 @@ const GroupSearch = (props) => {
 					</View>
 				) : searchedGroups.length >= 1 ? (
 					searchedGroups.map((item) => {
-						console.log(item.id);
+						// console.log(item.id);
 						return (
 							<ListItem
 								key={item.id + item.by}

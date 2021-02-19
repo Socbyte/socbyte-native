@@ -9,8 +9,8 @@ import Header from '../../../../components/customs/Header/Header';
 import COLORS from '../../../../val/colors/Colors';
 import { ToastAndroid } from 'react-native';
 
-export const FAQ = props => {
-	const { theme } = useSelector(state => state.settings.settings);
+export const FAQ = (props) => {
+	const { theme } = useSelector((state) => state.settings.settings);
 
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
@@ -32,9 +32,9 @@ export const FAQ = props => {
 	);
 };
 
-export const ContactUS = props => {
-	const { theme } = useSelector(state => state.settings.settings);
-	const { username, email } = useSelector(state => state.main.user);
+export const ContactUS = (props) => {
+	const { theme } = useSelector((state) => state.settings.settings);
+	const { username, email } = useSelector((state) => state.main.user);
 
 	const [text, setText] = useState('');
 	const [rating, setRating] = useState(6);
@@ -50,7 +50,7 @@ export const ContactUS = props => {
 		setLoading(true);
 		if (text.toString().length > 5) {
 			const timestamp = new Date().getTime().toLocaleString();
-			console.log('STARTED SJKHKJHKJLSHDJKHGJLKA');
+			// console.log('STARTED SJKHKJHKJLSHDJKHGJLKA');
 
 			Firebase.database()
 				.ref('Query')
@@ -60,13 +60,19 @@ export const ContactUS = props => {
 					rating: rating.toString(),
 					username: username,
 				})
-				.then(res => {
-					ToastAndroid.show('Thanks for sharing your experience.', ToastAndroid.SHORT);
+				.then((res) => {
+					ToastAndroid.show(
+						'Thanks for sharing your experience.',
+						ToastAndroid.SHORT
+					);
 					setLoading(false);
 					setText('');
 				})
-				.catch(err => {
-					ToastAndroid.show('Server are busy. Try again.', ToastAndroid.SHORT);
+				.catch((err) => {
+					ToastAndroid.show(
+						'Server are busy. Try again.',
+						ToastAndroid.SHORT
+					);
 					setLoading(false);
 				});
 			// setLoading(false);
@@ -87,13 +93,20 @@ export const ContactUS = props => {
 			/>
 
 			<ScrollView>
-				<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>Contact Me:</Text>
+				<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+					Contact Me:
+				</Text>
 
-				<View style={whatIsTheme(styles.inputContainerDark, styles.inputContainerLight)}>
+				<View
+					style={whatIsTheme(
+						styles.inputContainerDark,
+						styles.inputContainerLight
+					)}
+				>
 					<Input
 						placeholder='Write something'
 						value={text}
-						onChangeText={value => setText(value)}
+						onChangeText={(value) => setText(value)}
 						multiline
 						numberOfLines={6}
 						textAlignVertical='top'
@@ -102,7 +115,9 @@ export const ContactUS = props => {
 				</View>
 
 				<View style={{ flexDirection: 'row' }}>
-					<Text style={whatIsTheme(styles.titleDark, styles.titleLight)}>
+					<Text
+						style={whatIsTheme(styles.titleDark, styles.titleLight)}
+					>
 						Please Rate (optional):
 					</Text>
 					{rating ? (
@@ -110,8 +125,15 @@ export const ContactUS = props => {
 							onPress={() => {
 								setRating(6);
 								setRating(0);
-							}}>
-							<Text style={{ color: COLORS.MID, paddingVertical: 8, fontSize: 16 }}>
+							}}
+						>
+							<Text
+								style={{
+									color: COLORS.MID,
+									paddingVertical: 8,
+									fontSize: 16,
+								}}
+							>
 								Clear Response
 							</Text>
 						</TouchableOpacity>
@@ -123,10 +145,20 @@ export const ContactUS = props => {
 						size={22}
 						count={6}
 						defaultRating={rating}
-						reviews={['Terrible', 'Bad', 'OK', 'Good', 'Excellent', 'Amazing']}
-						onFinishRating={rating => setRating(rating)}
+						reviews={[
+							'Terrible',
+							'Bad',
+							'OK',
+							'Good',
+							'Excellent',
+							'Amazing',
+						]}
+						onFinishRating={(rating) => setRating(rating)}
 						starStyle={{
-							backgroundColor: whatIsTheme(COLORS.DARKSECONDARY, COLORS.BEFORELIGHT),
+							backgroundColor: whatIsTheme(
+								COLORS.DARKSECONDARY,
+								COLORS.BEFORELIGHT
+							),
 							borderRadius: 10,
 						}}
 					/>

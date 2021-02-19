@@ -34,7 +34,7 @@ const ProfileNotification = (props) => {
 				}
 			})
 			.catch((err) => {
-				console.log('ERROR NOTIU', err);
+				// console.log('ERROR NOTIU', err);
 			});
 	}, []);
 

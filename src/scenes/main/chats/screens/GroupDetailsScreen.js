@@ -1,22 +1,22 @@
-import md5 from "md5";
-import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, View, Animated, ScrollView, Image } from "react-native";
-import { Avatar, Paragraph, Text, Title } from "react-native-paper";
-import { useSelector } from "react-redux";
+import md5 from 'md5';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, View, Animated, ScrollView, Image } from 'react-native';
+import { Avatar, Paragraph, Text, Title } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import {
 	Avatar as ElementAvatar,
 	BottomSheet,
 	ListItem,
-} from "react-native-elements";
+} from 'react-native-elements';
 
-import Header from "../../../../components/customs/Header/Header";
-import COLORS from "../../../../val/colors/Colors";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import firebase from "../../../../firebase/Firebase";
-import { ToastAndroid } from "react-native";
-import { ActivityIndicator } from "react-native";
-import sendMessage from "../../../../val/functions/SendMessage";
-import { ChatTypes } from "../../../../val/constants/Constants";
+import Header from '../../../../components/customs/Header/Header';
+import COLORS from '../../../../val/colors/Colors';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import firebase from '../../../../firebase/Firebase';
+import { ToastAndroid } from 'react-native';
+import { ActivityIndicator } from 'react-native';
+import sendMessage from '../../../../val/functions/SendMessage';
+import { ChatTypes } from '../../../../val/constants/Constants';
 
 const IMAGE_HEIGHT = 350;
 
@@ -37,22 +37,22 @@ const GroupDetailsScreen = (props) => {
 
 	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
-		return !theme || theme === "d" ? f : s;
+		return !theme || theme === 'd' ? f : s;
 	};
 
 	const months = [
-		"January",
-		"February",
-		"March",
-		"April",
-		"May",
-		"June",
-		"July",
-		"August",
-		"September",
-		"October",
-		"November",
-		"December",
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December',
 	];
 
 	useEffect(() => {
@@ -87,9 +87,9 @@ const GroupDetailsScreen = (props) => {
 
 		if (coadminsList.length) {
 			for (var i in coadminsList) {
-				console.log("AA", coadminsList);
+				// console.log("AA", coadminsList);
 				if (coadminsList[i]?.uid === firebase.auth().currentUser.uid) {
-					console.log("BB", coadminsList);
+					// console.log("BB", coadminsList);
 					setUserIsAdmin(2);
 				}
 			}
@@ -136,29 +136,29 @@ const GroupDetailsScreen = (props) => {
 			if (id) {
 				if (userIsAdminOrCoAdmin() !== 0) {
 					ToastAndroid.show(
-						"User is already co-admin",
+						'User is already co-admin',
 						ToastAndroid.SHORT
 					);
 					return;
 				}
 				firebase
 					.database()
-					.ref("Groups")
+					.ref('Groups')
 					.child(id)
-					.child("coadmins")
+					.child('coadmins')
 					.child(onUserPressed.uid)
 					.update({
 						uid: onUserPressed.uid,
 					})
 					.then((res) => {
 						ToastAndroid.show(
-							"New Co-Admin Added.",
+							'New Co-Admin Added.',
 							ToastAndroid.SHORT
 						);
 
 						setOnUserPressed({});
 						sendMessage(
-							"app",
+							'app',
 							`${onUserPressed.username} was added to co-admins list`,
 							id,
 							ChatTypes.CMD2
@@ -166,20 +166,20 @@ const GroupDetailsScreen = (props) => {
 					})
 					.catch((err) => {
 						ToastAndroid.show(
-							"Error while adding new co-admin.",
+							'Error while adding new co-admin.',
 							ToastAndroid.SHORT
 						);
 						setOnUserPressed({});
 					});
 			} else {
 				ToastAndroid.show(
-					"Cannot make this operation currently. Group data not available",
+					'Cannot make this operation currently. Group data not available',
 					ToastAndroid.SHORT
 				);
 			}
 		} else {
 			ToastAndroid.show(
-				"You are not allowed to do this.",
+				'You are not allowed to do this.',
 				ToastAndroid.SHORT
 			);
 		}
@@ -191,7 +191,7 @@ const GroupDetailsScreen = (props) => {
 			if (id) {
 				if (userIsAdminOrCoAdmin() === 0) {
 					ToastAndroid.show(
-						"User is already co-admin",
+						'User is already co-admin',
 						ToastAndroid.SHORT
 					);
 					return;
@@ -199,19 +199,19 @@ const GroupDetailsScreen = (props) => {
 
 				firebase
 					.database()
-					.ref("Groups")
+					.ref('Groups')
 					.child(id)
-					.child("coadmins")
+					.child('coadmins')
 					.child(onUserPressed.uid)
 					.remove()
 					.then((res) => {
 						ToastAndroid.show(
-							"User removed from co-admins list",
+							'User removed from co-admins list',
 							ToastAndroid.SHORT
 						);
 						setOnUserPressed({});
 						sendMessage(
-							"app",
+							'app',
 							`${onUserPressed.username} was removed from co-admins list`,
 							id,
 							ChatTypes.CMD2
@@ -219,35 +219,35 @@ const GroupDetailsScreen = (props) => {
 					})
 					.catch((err) => {
 						ToastAndroid.show(
-							"Error while removing from co-admins list.",
+							'Error while removing from co-admins list.',
 							ToastAndroid.SHORT
 						);
 						setOnUserPressed({});
 					});
 			} else {
 				ToastAndroid.show(
-					"Cannot make this operation currently. Group data not available",
+					'Cannot make this operation currently. Group data not available',
 					ToastAndroid.SHORT
 				);
 			}
 		} else {
 			ToastAndroid.show(
-				"You are not allowed to do this.",
+				'You are not allowed to do this.',
 				ToastAndroid.SHORT
 			);
 		}
 	};
 
 	const MembersCard = ({ member }) => {
-		const [image, setImage] = useState("");
+		const [image, setImage] = useState('');
 
 		useEffect(() => {
 			const emailHash = md5(member.email);
 			fetch(`https://www.gravatar.com/${emailHash}.json`)
 				.then((res) => res.json())
 				.then((res) => {
-					if (JSON.stringify(res).includes("User not found")) {
-						setImage("");
+					if (JSON.stringify(res).includes('User not found')) {
+						setImage('');
 					} else {
 						setImage(
 							`https://www.gravatar.com/avatar/${emailHash}.jpg?s=200`
@@ -255,10 +255,10 @@ const GroupDetailsScreen = (props) => {
 					}
 				})
 				.catch((err) => {
-					console.log(
-						"THIS ERROR OCCURED WHILE LOADING GRAVATAR",
-						err
-					);
+					// console.log(
+					// 	"THIS ERROR OCCURED WHILE LOADING GRAVATAR",
+					// 	err
+					// );
 				});
 		}, []);
 
@@ -295,7 +295,7 @@ const GroupDetailsScreen = (props) => {
 						label={
 							member.username
 								? member.username[0].toUpperCase()
-								: ""
+								: ''
 						}
 					/>
 				)}
@@ -314,8 +314,8 @@ const GroupDetailsScreen = (props) => {
 	const CoAdminsList = () => {
 		return coadminsList.map((coadmin) => {
 			let thisMember = {
-				email: "",
-				username: "",
+				email: '',
+				username: '',
 			};
 			for (let i in membersList) {
 				if (membersList[i].uid === coadmin.uid) {
@@ -326,14 +326,14 @@ const GroupDetailsScreen = (props) => {
 			return (
 				<TouchableOpacity
 					onPress={() => {
-						props.navigation.navigate("ShowSearchedUserProfile", {
+						props.navigation.navigate('ShowSearchedUserProfile', {
 							uid: thisMember.uid,
 							usernameText: thisMember.username,
 						});
 					}}
 				>
 					<View
-						key={thisMember?.uid ? thisMember?.uid : ""}
+						key={thisMember?.uid ? thisMember?.uid : ''}
 						style={whatIsTheme(
 							styles.userCardDark,
 							styles.userCardLight
@@ -353,7 +353,7 @@ const GroupDetailsScreen = (props) => {
 				leftButton={() => {
 					props.navigation.toggleDrawer();
 				}}
-				headerTitle={currGroupData?.name ? currGroupData.name : ""}
+				headerTitle={currGroupData?.name ? currGroupData.name : ''}
 				absolute
 				back
 				realBackgroundColor={COLORS.TRANSPARENT}
@@ -420,7 +420,7 @@ const GroupDetailsScreen = (props) => {
 											}),
 										},
 									],
-									resizeMode: "cover",
+									resizeMode: 'cover',
 								},
 							]}
 							source={{
@@ -460,7 +460,7 @@ const GroupDetailsScreen = (props) => {
 							>
 								{currGroupData?.desc
 									? currGroupData.desc
-									: "No description Currently."}
+									: 'No description Currently.'}
 							</Paragraph>
 						</View>
 
@@ -469,13 +469,13 @@ const GroupDetailsScreen = (props) => {
 							onPress={() => {
 								if (!currGroupData.admin.uid) {
 									ToastAndroid.show(
-										"User not found!",
+										'User not found!',
 										ToastAndroid.SHORT
 									);
 									return;
 								}
 								props.navigation.navigate(
-									"ShowSearchedUserProfile",
+									'ShowSearchedUserProfile',
 									{
 										uid: currGroupData.admin.uid,
 										usernameText:
@@ -502,7 +502,7 @@ const GroupDetailsScreen = (props) => {
 									key={
 										currGroupData.admin?.uid
 											? currGroupData.admin?.uid
-											: "kekke-this is random"
+											: 'kekke-this is random'
 									}
 									style={whatIsTheme(
 										styles.userCardDark,
@@ -630,7 +630,7 @@ const GroupDetailsScreen = (props) => {
 								{`Created By: ${
 									currGroupData?.by
 										? currGroupData.by
-										: "Unkonwn"
+										: 'Unkonwn'
 								}`}
 							</Text>
 						</View>
@@ -658,7 +658,7 @@ const GroupDetailsScreen = (props) => {
 			>
 				<ListItem
 					onPress={() => {
-						props.navigation.navigate("ShowSearchedUserProfile", {
+						props.navigation.navigate('ShowSearchedUserProfile', {
 							uid: onUserPressed.uid,
 							usernameText: onUserPressed.username,
 						});
@@ -706,8 +706,8 @@ const GroupDetailsScreen = (props) => {
 								)}
 							>
 								{userIsAdminOrCoAdmin() !== 0
-									? "Remove from co-admin"
-									: "Make User Co-Admin"}
+									? 'Remove from co-admin'
+									: 'Make User Co-Admin'}
 							</ListItem.Title>
 						</ListItem.Content>
 					</ListItem>
@@ -716,7 +716,7 @@ const GroupDetailsScreen = (props) => {
 				<ListItem
 					onPress={() => {
 						ToastAndroid.show(
-							"Development on this feature implementation is going on.",
+							'Development on this feature implementation is going on.',
 							ToastAndroid.SHORT
 						);
 					}}
@@ -764,8 +764,8 @@ const GroupDetailsScreen = (props) => {
 const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 	lastElementOfTheProfileScrollView: {
 		paddingBottom: 100,
@@ -774,14 +774,14 @@ const styles = StyleSheet.create({
 	imageContainer: {
 		marginTop: -1000,
 		paddingTop: 1000,
-		alignItems: "center",
-		overflow: "hidden",
-		width: "100%",
+		alignItems: 'center',
+		overflow: 'hidden',
+		width: '100%',
 	},
 	image: {
-		width: "100%",
+		width: '100%',
 		height: IMAGE_HEIGHT,
-		resizeMode: "cover",
+		resizeMode: 'cover',
 	},
 	mainContentContainer: {
 		borderTopColor: COLORS.MID,
@@ -838,7 +838,7 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		paddingTop: 3,
 		paddingLeft: 3,
-		fontFamily: "roboto",
+		fontFamily: 'roboto',
 		color: COLORS.GREEN,
 		backgroundColor: COLORS.DARKPRIMARY,
 	},
@@ -846,54 +846,54 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		paddingTop: 3,
 		paddingLeft: 3,
-		fontFamily: "roboto",
+		fontFamily: 'roboto',
 		color: COLORS.PRIMARY,
 		backgroundColor: COLORS.LIGHTBACKGROUND,
 	},
 
 	paraDark: {
 		paddingHorizontal: 5,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 		color: COLORS.WHITE,
 	},
 	paraLight: {
 		paddingHorizontal: 5,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 		color: COLORS.BLACK,
 	},
 
 	createdOnDark: {
 		paddingVertical: 10,
 		color: COLORS.BEFORELIGHT,
-		textAlign: "center",
-		width: "100%",
+		textAlign: 'center',
+		width: '100%',
 		marginVertical: 10,
 		fontSize: 19,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 	},
 	createdOnLight: {
 		paddingVertical: 10,
 		color: COLORS.DARKGLOW,
-		textAlign: "center",
-		width: "100%",
+		textAlign: 'center',
+		width: '100%',
 		marginVertical: 10,
 		fontSize: 19,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 	},
 
 	userCardDark: {
 		paddingVertical: 7,
 		paddingHorizontal: 10,
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "flex-start",
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'flex-start',
 	},
 	userCardLight: {
 		paddingVertical: 7,
 		paddingHorizontal: 10,
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "flex-start",
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'flex-start',
 	},
 
 	userCardTextDark: {
@@ -912,39 +912,39 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		// borderWidth: 1,
 		// borderColor: COLORS.PRIMARY,
-		overflow: "hidden",
+		overflow: 'hidden',
 		maxWidth: 42,
 		maxHeight: 42,
 		width: 42,
 		height: 42,
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 		backgroundColor: COLORS.TRANSPARENT,
-		resizeMode: "cover",
+		resizeMode: 'cover',
 	},
 	avatarDark: {
-		resizeMode: "cover",
+		resizeMode: 'cover',
 		backgroundColor: COLORS.DARKSECONDARY,
 		borderRadius: 100,
 		// borderWidth: 1,
 		// borderColor: COLORS.GREEN,
-		overflow: "hidden",
+		overflow: 'hidden',
 		maxWidth: 42,
 		maxHeight: 42,
 		width: 42,
 		height: 42,
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 		backgroundColor: COLORS.TRANSPARENT,
 	},
 
 	avatarLabelDark: {
 		color: COLORS.GREEN,
-		fontFamily: "inter",
+		fontFamily: 'inter',
 	},
 	avatarLabelLight: {
 		color: COLORS.PRIMARY,
-		fontFamily: "inter",
+		fontFamily: 'inter',
 	},
 
 	textDark: {
@@ -954,10 +954,10 @@ const styles = StyleSheet.create({
 		color: COLORS.BLACK,
 	},
 	cancelButton: {
-		textAlign: "center",
-		width: "100%",
-		justifyContent: "center",
-		alignItems: "center",
+		textAlign: 'center',
+		width: '100%',
+		justifyContent: 'center',
+		alignItems: 'center',
 		color: COLORS.RED,
 	},
 });
