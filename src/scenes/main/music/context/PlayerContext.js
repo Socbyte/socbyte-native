@@ -164,6 +164,11 @@ export const PlayerContextProvider = (props) => {
 
 	const addToQueue = async (track = {}) => {
 		// Vibration.vibrate([50, 100, 250, 50]);
+		ToastAndroid.showWithGravity(
+			'Adding To Queue.',
+			ToastAndroid.SHORT,
+			ToastAndroid.CENTER
+		);
 
 		try {
 			await TrackPlayer.getTrack(track.id).then(async (res) => {
