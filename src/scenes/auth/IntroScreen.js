@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
 	ScrollView,
 	StyleSheet,
@@ -8,13 +8,13 @@ import {
 	Dimensions,
 	TouchableOpacity,
 	Image,
-} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDispatch, useSelector } from 'react-redux';
-import { Button, Icon } from 'react-native-elements';
-import COLORS from '../../val/colors/Colors';
-import { setDefaultsValuesLogOUt } from '../../store/MainStore';
+} from "react-native";
+import LinearGradient from "react-native-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Icon } from "react-native-elements";
+import COLORS from "../../val/colors/Colors";
+import { setDefaultsValuesLogOUt } from "../../store/MainStore";
 
 const image1 =
 	'https://raw.githubusercontent.com/Socbyte/src/main/images/introswb/screen_1.png';
@@ -32,7 +32,7 @@ const IntroScreen = (props) => {
 	const { width, height } = Dimensions.get('window');
 	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
-		return !theme || theme === 'd' || !theme ? f : s;
+		return !theme || theme === "d" || !theme ? f : s;
 	};
 
 	const scroller = useRef(null);
@@ -279,10 +279,10 @@ const IntroScreen = (props) => {
 
 const styles = StyleSheet.create({
 	paginationWrapper: {
-		flexDirection: 'row',
-		justifyContent: 'center',
-		alignItems: 'center',
-		position: 'absolute',
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		position: "absolute",
 		left: 0,
 		right: 0,
 		bottom: 42,
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
 		width: 8,
 	},
 	image: {
-		width: '100%',
+		width: "100%",
 		height: 400,
 		resizeMode: 'contain',
 	},
@@ -301,8 +301,8 @@ const styles = StyleSheet.create({
 	headingDark: {
 		color: COLORS.INTRO_HEADING,
 		fontSize: 26,
-		fontFamily: 'karlaBold',
-		textAlign: 'center',
+		fontFamily: "karlaBold",
+		textAlign: "center",
 		marginTop: 22,
 		padding: 4,
 		margin: 5,
@@ -310,8 +310,8 @@ const styles = StyleSheet.create({
 	headingLight: {
 		color: COLORS.INTRO_HEADING,
 		fontSize: 26,
-		fontFamily: 'karlaBold',
-		textAlign: 'center',
+		fontFamily: "karlaBold",
+		textAlign: "center",
 		marginTop: 22,
 		padding: 4,
 		margin: 5,
@@ -329,16 +329,16 @@ const styles = StyleSheet.create({
 		marginHorizontal: 16,
 	},
 	buttonHolder: {
-		width: '100%',
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
+		width: "100%",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
 		paddingBottom: 18,
 		paddingHorizontal: 18,
 	},
 	buttonContainerFirst: {
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 		width: 60,
 		height: 60,
 		padding: 6,
@@ -347,8 +347,8 @@ const styles = StyleSheet.create({
 		backgroundColor: COLORS.WHITE,
 	},
 	buttonContainerLast: {
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 		width: 60,
 		height: 60,
 		padding: 0,
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
 	getStartedText: {
 		color: COLORS.WHITE,
 		fontSize: 17,
-		fontFamily: 'karla',
+		fontFamily: "karla",
 	},
 });
 
