@@ -11,6 +11,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { updateSettings } from '../../store/Settings';
 import COLORS from '../../val/colors/Colors';
+import { StatusBar } from 'react-native';
 
 const termsURL = 'https://telebyte.vercel.app/terms';
 const privacyURL = 'https://telebyte.vercel.app/privacy';
@@ -48,6 +49,12 @@ const TermsAndConditionPrivacyPolicy = (props) => {
 				alignItems: 'center',
 			}}
 		>
+			<StatusBar
+				barStyle='light-content'
+				backgroundColor={COLORS.BLACK}
+				hidden
+			/>
+
 			<Text
 				onPress={toggleTheme}
 				style={{

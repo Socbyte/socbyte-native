@@ -21,6 +21,7 @@ import {
 } from '../../sql/SQLStarter';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSettings } from '../../store/Settings';
+import { StatusBar } from 'react-native';
 
 const Login = (props) => {
 	const emailValidator = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -170,7 +171,17 @@ const Login = (props) => {
 
 	return (
 		<View style={styles.screen}>
-			{loading ? <FullScreenLoading loadingType={true} /> : null}
+			<StatusBar
+				barStyle='light-content'
+				backgroundColor={COLORS.BLACK}
+			/>
+
+			{loading ? (
+				<FullScreenLoading
+					backgroundColor={COLORS.BLACK}
+					loadingType={true}
+				/>
+			) : null}
 
 			{error ? (
 				<ModalAlert

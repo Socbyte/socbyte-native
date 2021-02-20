@@ -17,6 +17,7 @@ import { deleteTable, updateDatabase } from '../../sql/SQLStarter';
 import { updateSettings } from '../../store/Settings';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { StatusBar } from 'react-native';
 
 const ForgotPassword = (props) => {
 	const emailValidator = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -124,6 +125,11 @@ const ForgotPassword = (props) => {
 
 	return (
 		<View style={styles.screen}>
+			<StatusBar
+				barStyle='light-content'
+				backgroundColor={COLORS.BLACK}
+			/>
+
 			{error ? ErrorModal : null}
 			<TouchableWithoutFeedback
 				onPress={() => {

@@ -29,7 +29,7 @@ class MainNavigation extends Component {
 
 	loadUser = () => {
 		this.setState({ showLoading: true });
-		firebase.auth().onAuthStateChanged(fuser => {
+		firebase.auth().onAuthStateChanged((fuser) => {
 			if (fuser) {
 				this.setState({
 					user: fuser,
@@ -125,12 +125,12 @@ class MainNavigation extends Component {
 		firebase
 			.auth()
 			.signOut()
-			.then(res => {
+			.then((res) => {
 				this.setState({
 					user: '',
 				});
 			})
-			.catch(err => {});
+			.catch((err) => {});
 	};
 
 	render() {
@@ -149,18 +149,18 @@ class MainNavigation extends Component {
 		// return <FullScreenLoading loadingType={this.state.loadingType} />;
 	}
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		user: state.main.user,
 		settings: state.settings.settings,
 	};
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
 	return {
-		loadUserData: userData => {
+		loadUserData: (userData) => {
 			dispatch(loadUserData(userData));
 		},
-		loadSettings: settings => {
+		loadSettings: (settings) => {
 			dispatch(loadSettings(settings));
 		},
 	};

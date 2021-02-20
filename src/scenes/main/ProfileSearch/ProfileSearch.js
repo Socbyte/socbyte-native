@@ -54,7 +54,8 @@ const ProfileSearch = (props) => {
 					setError({ error: '', msg: '' });
 					let list = [];
 					for (let i in snap.val()) {
-						if (snap.val()[i].username === username) continue;
+						//filter removed
+						// if (snap.val()[i].username === username) continue;
 						list.push(snap.val()[i]);
 					}
 					setSearchedUsers(list);
@@ -192,7 +193,7 @@ const ProfileSearch = (props) => {
 					maxLength={100}
 					value={searchText}
 					onChangeText={(value) => setSearchText(value.toLowerCase())}
-					placeholder='Search Song...'
+					placeholder='Search Users by username...'
 					placeholderTextColor={COLORS.MID}
 				/>
 				<View style={styles.iconContainer}>

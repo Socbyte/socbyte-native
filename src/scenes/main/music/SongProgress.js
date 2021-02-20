@@ -24,6 +24,8 @@ class SongProgressSlider extends ProgressComponent {
 	}
 
 	render() {
+		if (!this.context.currentTrack?.duration) return null;
+
 		return (
 			<View
 				style={{
@@ -31,12 +33,17 @@ class SongProgressSlider extends ProgressComponent {
 					flexDirection: 'row',
 					justifyContent: 'space-around',
 					alignItems: 'center',
-				}}>
+				}}
+			>
 				<View>
 					<Text
 						style={{
-							color: this.context.themeProvider(COLORS.WHITE, COLORS.BLACK),
-						}}>
+							color: this.context.themeProvider(
+								COLORS.WHITE,
+								COLORS.BLACK
+							),
+						}}
+					>
 						{this.currentPosition}
 					</Text>
 				</View>
@@ -53,7 +60,7 @@ class SongProgressSlider extends ProgressComponent {
 					maximumValue={this.context.currentTrack.duration / 1000}
 					value={this.state.position}
 					step={0.001}
-					onSlidingComplete={value => {
+					onSlidingComplete={(value) => {
 						// console.log(value);
 						this.context.seekLevel(value);
 					}}
@@ -62,7 +69,10 @@ class SongProgressSlider extends ProgressComponent {
 						backgroundColor: COLORS.DARKINLIGHTVIDIBLE,
 						borderRadius: 10,
 					}}
-					minimumTrackTintColor={this.context.themeProvider(COLORS.WHITE, COLORS.BLACK)}
+					minimumTrackTintColor={this.context.themeProvider(
+						COLORS.WHITE,
+						COLORS.BLACK
+					)}
 					maximumTrackTintColor={this.context.themeProvider(
 						COLORS.WHITEINDARKVIDIBLE,
 						COLORS.DARKINLIGHTVIDIBLE
@@ -71,14 +81,21 @@ class SongProgressSlider extends ProgressComponent {
 						borderRadius: 100,
 						height: 10,
 						width: 10,
-						backgroundColor: this.context.themeProvider(COLORS.WHITE, COLORS.BLACK),
+						backgroundColor: this.context.themeProvider(
+							COLORS.WHITE,
+							COLORS.BLACK
+						),
 					}}
 				/>
 				<View>
 					<Text
 						style={{
-							color: this.context.themeProvider(COLORS.WHITE, COLORS.BLACK),
-						}}>
+							color: this.context.themeProvider(
+								COLORS.WHITE,
+								COLORS.BLACK
+							),
+						}}
+					>
 						{this.context.currentTrack.durationEdited}
 					</Text>
 				</View>
@@ -92,7 +109,14 @@ export class MiniplayerSongProgressSlider extends ProgressComponent {
 
 	render() {
 		return (
-			<View style={{ padding: 0, margin: 0, alignItems: 'center', justifyContent: 'center' }}>
+			<View
+				style={{
+					padding: 0,
+					margin: 0,
+					alignItems: 'center',
+					justifyContent: 'center',
+				}}
+			>
 				<Slider
 					disabled
 					animateTransitions={true}
@@ -114,9 +138,15 @@ export class MiniplayerSongProgressSlider extends ProgressComponent {
 						height: 3,
 						width: 3,
 						borderRadius: 0,
-						backgroundColor: this.context.themeProvider(COLORS.WHITE, COLORS.BLACK),
+						backgroundColor: this.context.themeProvider(
+							COLORS.WHITE,
+							COLORS.BLACK
+						),
 					}}
-					minimumTrackTintColor={this.context.themeProvider(COLORS.WHITE, COLORS.BLACK)}
+					minimumTrackTintColor={this.context.themeProvider(
+						COLORS.WHITE,
+						COLORS.BLACK
+					)}
 					maximumTrackTintColor={this.context.themeProvider(
 						COLORS.DARKGLOW,
 						COLORS.DARKFORLIGHT

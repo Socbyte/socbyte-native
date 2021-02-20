@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from 'react';
 import {
 	StyleSheet,
 	View,
@@ -13,7 +13,7 @@ import {
 	ToastAndroid,
 	TouchableOpacity,
 	Image,
-} from "react-native";
+} from 'react-native';
 import {
 	TouchableRipple,
 	Avatar,
@@ -32,35 +32,48 @@ import {
 	Divider,
 	DarkTheme,
 	DefaultTheme,
-} from "react-native-paper";
+} from 'react-native-paper';
 import {
 	Icon,
 	SocialIcon,
 	Avatar as ElementAvatar,
-} from "react-native-elements";
-import Swipeable from "react-native-gesture-handler/Swipeable";
-import { useSelector, useDispatch } from "react-redux";
-import { Ionicons } from "@expo/vector-icons";
+} from 'react-native-elements';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { useSelector, useDispatch } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 
-import ImageColors from "react-native-image-colors";
+import ImageColors from 'react-native-image-colors';
 
-import Header from "../../components/customs/Header/Header";
+import Header from '../../components/customs/Header/Header';
 import {
 	databaseInit,
 	fetchDatabase,
 	insertDatabase,
 	updateDatabase,
-} from "../../sql/SQLStarter";
-import { updateSettings } from "../../store/Settings";
-import COLORS, { ISDARKCOLOR } from "../../val/colors/Colors";
-import { usePlayerContext } from "./music/context/PlayerContext";
-import Firebase from "../../firebase/Firebase";
+} from '../../sql/SQLStarter';
+import { updateSettings } from '../../store/Settings';
+import COLORS, { ISDARKCOLOR } from '../../val/colors/Colors';
+import { usePlayerContext } from './music/context/PlayerContext';
+import Firebase from '../../firebase/Firebase';
+import { StatusBar } from 'react-native';
 
-var Sound = require("react-native-sound");
-Sound.setCategory("Playback");
+var Sound = require('react-native-sound');
+Sound.setCategory('Playback');
 
-const imageCoverTemp =
-	"https://user-images.githubusercontent.com/50291544/104044423-4de27b80-5203-11eb-84e8-11fd627a7fc4.png";
+const imageCoverTemp = [
+	'https://user-images.githubusercontent.com/50291544/104044423-4de27b80-5203-11eb-84e8-11fd627a7fc4.png',
+	'http://wallpaperinfinity.net/wp-content/uploads/2020/05/cube-abstract-wallpaper-hd-800x600.jpg',
+	'https://wallpaperaccess.com/full/48071.jpg',
+	'https://cutewallpaper.org/21/dark-abstract-wallpapers/Abstract-Dark-Wallpaper-Center-1920x1080-Keysinspectorinc.com.jpg',
+	'https://wallpaperaccess.com/full/48074.jpg',
+	'https://c4.wallpaperflare.com/wallpaper/246/739/689/digital-digital-art-artwork-illustration-abstract-hd-wallpaper-preview.jpg',
+	'https://wallpapercave.com/wp/exhooYI.jpg',
+	'https://image.freepik.com/free-vector/colorful-abstract-wallpaper-design_23-2148467625.jpg',
+	'https://i.redd.it/52f61nfzmwl51.jpg',
+	'https://images.hdqwalls.com/wallpapers/twitz-color-abstract-se.jpg',
+];
+
+// const vibrantColors = ['#804088', '#D03850', '#B840A8', '#B85090', '#C010A8'];
 const textLengthLimit = 200; //number of characters
 
 const Arrows = (props) => {
@@ -73,27 +86,27 @@ const Arrows = (props) => {
 		<>
 			<Ionicons
 				size={24}
-				name={props.way === "r" ? "chevron-forward" : "chevron-back"}
+				name={props.way === 'r' ? 'chevron-forward' : 'chevron-back'}
 				color={props.delete ? COLORS.RED : props.color}
 			/>
 			<Ionicons
 				size={24}
-				name={props.way === "r" ? "chevron-forward" : "chevron-back"}
+				name={props.way === 'r' ? 'chevron-forward' : 'chevron-back'}
 				color={props.delete ? COLORS.RED : props.color}
 			/>
 			<Ionicons
 				size={24}
-				name={props.way === "r" ? "chevron-forward" : "chevron-back"}
+				name={props.way === 'r' ? 'chevron-forward' : 'chevron-back'}
 				color={props.delete ? COLORS.RED : props.color}
 			/>
 			<Ionicons
 				size={24}
-				name={props.way === "r" ? "chevron-forward" : "chevron-back"}
+				name={props.way === 'r' ? 'chevron-forward' : 'chevron-back'}
 				color={props.delete ? COLORS.RED : props.color}
 			/>
 			<Ionicons
 				size={24}
-				name={props.way === "r" ? "chevron-forward" : "chevron-back"}
+				name={props.way === 'r' ? 'chevron-forward' : 'chevron-back'}
 				color={props.delete ? COLORS.RED : props.color}
 			/>
 		</>
@@ -145,25 +158,25 @@ const Profile = (props) => {
 
 	// this is the final expertise list shown to the user
 	let finalExpertise = [];
-	if (expertise) finalExpertise = expertise.split(",");
+	if (expertise) finalExpertise = expertise.split(',');
 
 	// this is the final education list shown to the user
 	let finalEducation = [];
 	if (education) for (let i in education) finalEducation.push(education[i]);
 
 	let months = [
-		"January",
-		"February",
-		"March",
-		"April",
-		"May",
-		"June",
-		"July",
-		"August",
-		"September",
-		"October",
-		"November",
-		"December",
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December',
 	];
 
 	// user social links
@@ -218,71 +231,71 @@ const Profile = (props) => {
 	};
 
 	const openUserSearch = () => {
-		props.navigation.navigate("ProfileSearch");
+		props.navigation.navigate('ProfileSearch');
 	};
 
 	const openNorifications = () => {
-		props.navigation.navigate("ProfileNotification");
+		props.navigation.navigate('ProfileNotification');
 	};
 
 	const updateProfileStatus = () => {
-		props.navigation.navigate("EditProfilePart", {
-			part: "status",
+		props.navigation.navigate('EditProfilePart', {
+			part: 'status',
 			edit: true,
 		});
 	};
 	const updateProfileAbout = () => {
-		props.navigation.navigate("EditProfilePart", {
-			part: "about",
+		props.navigation.navigate('EditProfilePart', {
+			part: 'about',
 			edit: true,
 		});
 	};
 
 	const updateSocialLinks = () => {
-		props.navigation.navigate("EditProfilePart", {
-			part: "social",
+		props.navigation.navigate('EditProfilePart', {
+			part: 'social',
 			edit: true,
 		});
 	};
 
 	const updateExpertise = () => {
-		props.navigation.navigate("EditProfilePart", {
-			part: "expertise",
+		props.navigation.navigate('EditProfilePart', {
+			part: 'expertise',
 			edit: true,
 		});
 	};
 
 	const updateLocation = () => {
-		props.navigation.navigate("EditProfilePart", {
-			part: "location",
+		props.navigation.navigate('EditProfilePart', {
+			part: 'location',
 			edit: true,
 		});
 	};
 
 	const updateEducation = () => {
-		props.navigation.navigate("EditProfilePart", {
-			part: "edu",
+		props.navigation.navigate('EditProfilePart', {
+			part: 'edu',
 			edit: true,
 		});
 	};
 
 	const removeProfileStatus = () => {
-		props.navigation.navigate("EditProfilePart", {
-			part: "status",
+		props.navigation.navigate('EditProfilePart', {
+			part: 'status',
 			edit: false,
 		});
 	};
 
 	const removeProfileAbout = () => {
-		props.navigation.navigate("EditProfilePart", {
-			part: "about",
+		props.navigation.navigate('EditProfilePart', {
+			part: 'about',
 			edit: false,
 		});
 	};
 
 	const removeProfileLocation = () => {
-		props.navigation.navigate("EditProfilePart", {
-			part: "location",
+		props.navigation.navigate('EditProfilePart', {
+			part: 'location',
 			edit: false,
 		});
 	};
@@ -291,7 +304,7 @@ const Profile = (props) => {
 		const scale = dragX.interpolate({
 			inputRange: [0, 100],
 			outputRange: [0, 1],
-			extrapolate: "clamp",
+			extrapolate: 'clamp',
 		});
 
 		return (
@@ -303,7 +316,8 @@ const Profile = (props) => {
 							color: whatIsTheme(COLORS.GREEN, COLORS.PRIMARY),
 							transform: [{ scale }],
 						},
-					]}>
+					]}
+				>
 					Edit
 				</Animated.Text>
 				<Arrows
@@ -316,8 +330,8 @@ const Profile = (props) => {
 
 	const renderRightActionss = (which, progress, dragX) => {
 		if (
-			(which === "about" && (!about || about.length <= 0)) ||
-			(which === "status" && (!status || status.length <= 0))
+			(which === 'about' && (!about || about.length <= 0)) ||
+			(which === 'status' && (!status || status.length <= 0))
 		) {
 			return <View></View>;
 		}
@@ -325,7 +339,7 @@ const Profile = (props) => {
 		const scale = dragX.interpolate({
 			inputRange: [-100, 0],
 			outputRange: [1, 0],
-			extrapolate: "clamp",
+			extrapolate: 'clamp',
 		});
 
 		return (
@@ -343,7 +357,8 @@ const Profile = (props) => {
 							color: whatIsTheme(COLORS.RED, COLORS.RED),
 							transform: [{ scale }],
 						},
-					]}>
+					]}
+				>
 					Remove
 				</Animated.Text>
 			</View>
@@ -351,13 +366,13 @@ const Profile = (props) => {
 	};
 
 	const whatIsTheme = (f, s) => {
-		return !theme || theme === "d" || !theme ? f : s;
+		return !theme || theme === 'd' || !theme ? f : s;
 	};
 
 	function formatDuration(num) {
 		function numPadding(n, z) {
 			z = z || 2;
-			return ("00" + n).slice(-z);
+			return ('00' + n).slice(-z);
 		}
 
 		var ms = num % 1000;
@@ -368,8 +383,8 @@ const Profile = (props) => {
 		var hrs = (num - mins) / 60;
 
 		return hrs > 0
-			? numPadding(hrs) + ":"
-			: "" + numPadding(mins) + ":" + numPadding(secs);
+			? numPadding(hrs) + ':'
+			: '' + numPadding(mins) + ':' + numPadding(secs);
 	}
 
 	useEffect(() => {
@@ -377,26 +392,41 @@ const Profile = (props) => {
 			socialArePresent();
 		}
 	}, [social]);
-	const [vibrants, setVibrants] = useState({ vibrant: "#804088" });
+
+	const [ranImageAndColor] = useState(Math.floor(Math.random() * 10));
+	const [vibrants, setVibrants] = useState({
+		vibrant: COLORS.BLACK /*'#804088'*/,
+	});
 
 	useEffect(() => {
 		if (coverImg) {
 			if (coverImg.length > 20) {
-				ImageColors.getColors(coverImg ? coverImg : imageCoverTemp, {
-					fallback: "#000000",
-					quality: "low",
-					pixelSpacing: 5,
-				}).then((res) => {
+				ImageColors.getColors(
+					coverImg ? coverImg : imageCoverTemp[ranImageAndColor],
+					{
+						fallback: '#000000',
+						quality: 'low',
+						pixelSpacing: 5,
+					}
+				).then((res) => {
 					setVibrants(res);
 				});
 			}
 		} else {
-			setVibrants({ vibrant: "#804088" });
+			console.log(ranImageAndColor);
+			setVibrants({
+				vibrant: COLORS.BLACK /* vibrantColors[ranImageAndColor]*/,
+			});
 		}
 	}, []);
 
 	return (
 		<View>
+			<StatusBar
+				barStyle='light-content'
+				backgroundColor={vibrants.vibrant}
+			/>
+
 			<Header
 				{...props}
 				leftButton={() => {
@@ -411,15 +441,15 @@ const Profile = (props) => {
 				renderRightActions
 				extraButtons={[
 					{
-						name: "notifications-outline",
-						type: "ionicon",
+						name: 'notifications-outline',
+						type: 'ionicon',
 						size: 24,
 						color: COLORS.WHITE,
 						onPress: openNorifications,
 					},
 					{
-						name: "search",
-						type: "material-icon",
+						name: 'search',
+						type: 'material-icon',
 						size: 24,
 						color: COLORS.WHITE,
 						onPress: openUserSearch,
@@ -432,7 +462,12 @@ const Profile = (props) => {
 				{/* coverImg, profileImgGravatar */}
 				<ImageBackground
 					style={styles.coverImg}
-					source={{ uri: coverImg ? coverImg : imageCoverTemp }}>
+					source={{
+						uri: coverImg
+							? coverImg
+							: imageCoverTemp[ranImageAndColor],
+					}}
+				>
 					{profileImg ? (
 						<Avatar.Image
 							style={whatIsTheme(
@@ -452,7 +487,7 @@ const Profile = (props) => {
 								styles.avatarLabelDark,
 								styles.avatarLabelLight
 							)}
-							label={username ? username[0].toUpperCase() : ""}
+							label={username ? username[0].toUpperCase() : ''}
 						/>
 					)}
 				</ImageBackground>
@@ -463,14 +498,15 @@ const Profile = (props) => {
 						style={whatIsTheme(
 							styles.fullnameDark,
 							styles.fullnameLight
-						)}>
+						)}
+					>
 						{fullname}
 					</Text>
 
 					<TouchableRipple
 						onPress={() => {
 							// props.navigation.navigate('ProfileMusic', {
-							// 	coverImg: coverImg ? coverImg : imageCoverTemp,
+							// 	coverImg: coverImg ? coverImg : imageCoverTemp[ranImageAndColor],
 							// 	sound: sound.url,
 							// 	username: username,
 							// });
@@ -483,12 +519,12 @@ const Profile = (props) => {
 								playerContext.play({
 									id: sound.id,
 									title: `${username}'s Profile Music.`,
-									artist: "Profile Music",
+									artist: 'Profile Music',
 									duration: sound.duration,
 									url: sound.url,
 									artwork: coverImg
 										? coverImg
-										: imageCoverTemp,
+										: imageCoverTemp[ranImageAndColor],
 									durationEdited: formatedDuration,
 								});
 							} else {
@@ -498,21 +534,21 @@ const Profile = (props) => {
 									ToastAndroid.CENTER
 								);
 							}
-						}}>
+						}}
+					>
 						<Caption
 							style={whatIsTheme(
 								styles.usernameDark,
 								styles.usernameLight
-							)}>
+							)}
+						>
 							@{username}
 						</Caption>
 					</TouchableRipple>
 
 					<Caption
-						style={whatIsTheme(
-							styles.emailDark,
-							styles.emailLight
-						)}>
+						style={whatIsTheme(styles.emailDark, styles.emailLight)}
+					>
 						{email}
 					</Caption>
 				</View>
@@ -523,12 +559,13 @@ const Profile = (props) => {
 
 					<TouchableOpacity
 						onPress={() => {
-							props.navigation.navigate("FollowTab", {
-								usernameText: "Your",
+							props.navigation.navigate('FollowTab', {
+								usernameText: 'Your',
 								userUid: Firebase.auth().currentUser.uid,
 							});
 						}}
-						style={styles.followTextContainer}>
+						style={styles.followTextContainer}
+					>
 						<View>
 							<Text
 								style={[
@@ -537,7 +574,8 @@ const Profile = (props) => {
 										styles.paraLight
 									),
 									styles.followTextCaption,
-								]}>
+								]}
+							>
 								Followers
 							</Text>
 							<Text
@@ -547,7 +585,8 @@ const Profile = (props) => {
 										styles.paraLight
 									),
 									styles.followText,
-								]}>
+								]}
+							>
 								{followers}
 							</Text>
 						</View>
@@ -557,20 +596,22 @@ const Profile = (props) => {
 						style={{
 							borderRightColor: COLORS.MID,
 							borderRightWidth: 0.25,
-							height: "100%",
+							height: '100%',
 							width: 0.3,
 							backgroundColor: COLORS.RED,
-						}}></View>
+						}}
+					></View>
 
 					{/* followings */}
 					<TouchableOpacity
 						onPress={() => {
-							props.navigation.navigate("FollowingTab", {
-								usernameText: "You",
+							props.navigation.navigate('FollowingTab', {
+								usernameText: 'You',
 								userUid: Firebase.auth().currentUser.uid,
 							});
 						}}
-						style={styles.followTextContainer}>
+						style={styles.followTextContainer}
+					>
 						<View>
 							<Text
 								style={[
@@ -579,7 +620,8 @@ const Profile = (props) => {
 										styles.paraLight
 									),
 									styles.followTextCaption,
-								]}>
+								]}
+							>
 								Following
 							</Text>
 							<Text
@@ -589,7 +631,8 @@ const Profile = (props) => {
 										styles.paraLight
 									),
 									styles.followText,
-								]}>
+								]}
+							>
 								{following}
 							</Text>
 						</View>
@@ -601,19 +644,22 @@ const Profile = (props) => {
 					renderLeftActions={renderLeftActions}
 					onSwipeableLeftOpen={updateProfileStatus}
 					renderRightActions={(progress, dragX) =>
-						renderRightActionss("status", progress, dragX)
+						renderRightActionss('status', progress, dragX)
 					}
-					onSwipeableRightOpen={status ? removeProfileStatus : null}>
+					onSwipeableRightOpen={status ? removeProfileStatus : null}
+				>
 					<View
 						style={whatIsTheme(
 							styles.sectionDark,
 							styles.sectionLight
-						)}>
+						)}
+					>
 						<Title
 							style={whatIsTheme(
 								styles.titleDark,
 								styles.titleLight
-							)}>
+							)}
+						>
 							Status
 						</Title>
 
@@ -623,7 +669,8 @@ const Profile = (props) => {
 							style={whatIsTheme(
 								styles.paraDark,
 								styles.paraLight
-							)}>
+							)}
+						>
 							{status ? (
 								status
 							) : (
@@ -631,13 +678,15 @@ const Profile = (props) => {
 									style={whatIsTheme(
 										styles.paraDark,
 										styles.paraLight
-									)}>
-									No status provided by{" "}
+									)}
+								>
+									No status provided by{' '}
 									<Caption
 										style={whatIsTheme(
 											styles.usernameDark,
 											styles.usernameLight
-										)}>
+										)}
+									>
 										@{username}
 									</Caption>
 								</Paragraph>
@@ -648,24 +697,22 @@ const Profile = (props) => {
 
 				{/* about */}
 				<View
-					style={whatIsTheme(
-						styles.sectionDark,
-						styles.sectionLight
-					)}>
+					style={whatIsTheme(styles.sectionDark, styles.sectionLight)}
+				>
 					<Swipeable
 						renderLeftActions={renderLeftActions}
 						onSwipeableLeftOpen={updateProfileAbout}
 						renderRightActions={(progress, dragX) =>
-							renderRightActionss("about", progress, dragX)
+							renderRightActionss('about', progress, dragX)
 						}
-						onSwipeableRightOpen={
-							about ? removeProfileAbout : null
-						}>
+						onSwipeableRightOpen={about ? removeProfileAbout : null}
+					>
 						<Title
 							style={whatIsTheme(
 								styles.titleDark,
 								styles.titleLight
-							)}>
+							)}
+						>
 							About
 						</Title>
 					</Swipeable>
@@ -678,17 +725,18 @@ const Profile = (props) => {
 								style={whatIsTheme(
 									styles.paraDark,
 									styles.paraLight
-								)}>
+								)}
+							>
 								{lengthOfAbout === textLengthLimit
 									? about.substring(0, textLengthLimit - 3) +
-									  "..."
+									  '...'
 									: about}
-								{"  "}
+								{'  '}
 								{about.length > textLengthLimit - 3 ? (
 									<Caption style={styles.extraText}>
 										{lengthOfAbout === textLengthLimit
-											? "Read More..."
-											: "\nRead Less..."}
+											? 'Read More...'
+											: '\nRead Less...'}
 									</Caption>
 								) : null}
 							</Paragraph>
@@ -697,13 +745,15 @@ const Profile = (props) => {
 								style={whatIsTheme(
 									styles.paraDark,
 									styles.paraLight
-								)}>
-								About not provided by{" "}
+								)}
+							>
+								About not provided by{' '}
 								<Caption
 									style={whatIsTheme(
 										styles.usernameDark,
 										styles.usernameLight
-									)}>
+									)}
+								>
 									@{username}
 								</Caption>
 							</Paragraph>
@@ -717,26 +767,30 @@ const Profile = (props) => {
 						renderLeftActions={renderLeftActions}
 						onSwipeableLeftOpen={updateLocation}
 						renderRightActions={(progress, dragX) =>
-							renderRightActionss("", progress, dragX)
+							renderRightActionss('', progress, dragX)
 						}
-						onSwipeableRightOpen={removeProfileLocation}>
+						onSwipeableRightOpen={removeProfileLocation}
+					>
 						<View
 							style={whatIsTheme(
 								styles.sectionDark,
 								styles.sectionLight
-							)}>
+							)}
+						>
 							<Title
 								style={whatIsTheme(
 									styles.titleDark,
 									styles.titleLight
-								)}>
+								)}
+							>
 								Lives In
 							</Title>
 							<Text
 								style={whatIsTheme(
 									styles.paraDark,
 									styles.paraLight
-								)}>
+								)}
+							>
 								{location}
 							</Text>
 						</View>
@@ -749,15 +803,18 @@ const Profile = (props) => {
 						style={whatIsTheme(
 							styles.sectionDark,
 							styles.sectionLight
-						)}>
+						)}
+					>
 						<Swipeable
 							renderLeftActions={renderLeftActions}
-							onSwipeableLeftOpen={updateExpertise}>
+							onSwipeableLeftOpen={updateExpertise}
+						>
 							<Title
 								style={whatIsTheme(
 									styles.titleDark,
 									styles.titleLight
-								)}>
+								)}
+							>
 								Expertise
 							</Title>
 						</Swipeable>
@@ -770,7 +827,8 @@ const Profile = (props) => {
 										style={whatIsTheme(
 											styles.expertiseDark,
 											styles.expertiseLight
-										)}>
+										)}
+									>
 										{exp}
 									</Text>
 								);
@@ -785,15 +843,18 @@ const Profile = (props) => {
 						style={whatIsTheme(
 							styles.sectionDark,
 							styles.sectionLight
-						)}>
+						)}
+					>
 						<Swipeable
 							renderLeftActions={renderLeftActions}
-							onSwipeableLeftOpen={updateEducation}>
+							onSwipeableLeftOpen={updateEducation}
+						>
 							<Title
 								style={whatIsTheme(
 									styles.titleDark,
 									styles.titleLight
-								)}>
+								)}
+							>
 								Education
 							</Title>
 						</Swipeable>
@@ -806,7 +867,8 @@ const Profile = (props) => {
 										style={whatIsTheme(
 											styles.educationSectionCardDark,
 											styles.educationSectionCardLight
-										)}>
+										)}
+									>
 										<Text
 											style={[
 												whatIsTheme(
@@ -817,21 +879,24 @@ const Profile = (props) => {
 													styles.font16Dark,
 													styles.font16Light
 												),
-											]}>
+											]}
+										>
 											{item.degree}
 										</Text>
 										<Text
 											style={whatIsTheme(
 												styles.educationBoldTextDark,
 												styles.educationBoldTextLight
-											)}>
+											)}
+										>
 											{item.school}
 										</Text>
 										<Caption
 											style={whatIsTheme(
 												styles.educationRegularTextDark,
 												styles.educationRegularTextLight
-											)}>
+											)}
+										>
 											{`${item.yearFrom} - ${item.yearTo}`}
 										</Caption>
 									</View>
@@ -845,17 +910,20 @@ const Profile = (props) => {
 				{socialAvailable ? (
 					<Swipeable
 						renderLeftActions={renderLeftActions}
-						onSwipeableLeftOpen={updateSocialLinks}>
+						onSwipeableLeftOpen={updateSocialLinks}
+					>
 						<View
 							style={whatIsTheme(
 								styles.sectionDark,
 								styles.sectionLight
-							)}>
+							)}
+						>
 							<Title
 								style={whatIsTheme(
 									styles.titleDark,
 									styles.titleLight
-								)}>
+								)}
+							>
 								{/* {`${fullname}'s Social Media`} */}
 								Your Social Media Profile
 							</Title>
@@ -925,15 +993,14 @@ const Profile = (props) => {
 				) : null}
 
 				<View
-					style={whatIsTheme(
-						styles.sectionDark,
-						styles.sectionLight
-					)}>
+					style={whatIsTheme(styles.sectionDark, styles.sectionLight)}
+				>
 					<Text
 						style={whatIsTheme(
 							styles.joinedOnDark,
 							styles.joinedOnLight
-						)}>
+						)}
+					>
 						{`Joined On: ${months[joinedOn.month]} ${
 							joinedOn.year
 						}`}
@@ -951,36 +1018,36 @@ const styles = StyleSheet.create({
 	},
 	screen: {
 		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 	coverImg: {
 		height: 235,
-		width: "100%",
-		resizeMode: "cover",
-		justifyContent: "flex-end",
+		width: '100%',
+		resizeMode: 'cover',
+		justifyContent: 'flex-end',
 		elevation: 5,
-		alignItems: "center",
-		overflow: "visible",
+		alignItems: 'center',
+		overflow: 'visible',
 	},
 	particularHeader: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
 		height: 50,
 	},
 
 	defaultHeaderWay: {
 		paddingHorizontal: 10,
-		flexDirection: "row",
-		justifyContent: "flex-start",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		alignItems: 'center',
 	},
 	otherHeaderButtons: {
 		paddingRight: 10,
-		flexDirection: "row",
-		justifyContent: "flex-start",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		alignItems: 'center',
 	},
 
 	darkTheme: {
@@ -995,15 +1062,15 @@ const styles = StyleSheet.create({
 	usersectionDark: {
 		// padding: 6,
 		height: 200,
-		alignItems: "center",
-		justifyContent: "center",
+		alignItems: 'center',
+		justifyContent: 'center',
 		// flexDirection: 'row',
 	},
 	usersectionLight: {
 		// padding: 6,
 		height: 200,
-		alignItems: "center",
-		justifyContent: "center",
+		alignItems: 'center',
+		justifyContent: 'center',
 		backgroundColor: COLORS.GREEN,
 		// flexDirection: 'row',
 	},
@@ -1013,14 +1080,14 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		borderWidth: 1,
 		borderColor: COLORS.PRIMARY,
-		overflow: "visible",
+		overflow: 'visible',
 		maxWidth: 111,
 		maxHeight: 111,
 		width: 111,
 		height: 111,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "#00000030",
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: '#00000030',
 		top: 55,
 		elevation: 3,
 	},
@@ -1029,45 +1096,45 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		borderWidth: 1,
 		borderColor: COLORS.GREEN,
-		overflow: "visible",
+		overflow: 'visible',
 		maxWidth: 111,
 		maxHeight: 111,
 		width: 111,
 		height: 111,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "#ffffff30",
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: '#ffffff30',
 		top: 55,
 		elevation: 3,
 	},
 
 	avatarLabelDark: {
 		color: COLORS.GREEN,
-		fontFamily: "inter",
+		fontFamily: 'inter',
 		fontSize: 45,
 	},
 	avatarLabelLight: {
 		color: COLORS.PRIMARY,
-		fontFamily: "inter",
+		fontFamily: 'inter',
 		fontSize: 45,
 	},
 
 	detailsStart: {
 		marginTop: 60,
-		alignItems: "center",
+		alignItems: 'center',
 	},
 
 	fullnameDark: {
 		fontSize: 19,
 		color: COLORS.WHITE,
 		padding: 3,
-		textTransform: "capitalize",
+		textTransform: 'capitalize',
 	},
 	fullnameLight: {
 		fontSize: 19,
 		color: COLORS.BLACK,
 		padding: 3,
-		textTransform: "capitalize",
+		textTransform: 'capitalize',
 	},
 
 	usernameDark: {
@@ -1106,9 +1173,9 @@ const styles = StyleSheet.create({
 	},
 	expertiseHolder: {
 		// alignItems: 'center',
-		justifyContent: "center",
-		flexWrap: "wrap",
-		flexDirection: "row",
+		justifyContent: 'center',
+		flexWrap: 'wrap',
+		flexDirection: 'row',
 		marginTop: 10,
 		paddingHorizontal: 3,
 	},
@@ -1144,7 +1211,7 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		paddingTop: 3,
 		paddingLeft: 3,
-		fontFamily: "roboto",
+		fontFamily: 'roboto',
 		color: COLORS.GREEN,
 		backgroundColor: COLORS.DARKPRIMARY,
 	},
@@ -1152,30 +1219,30 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		paddingTop: 3,
 		paddingLeft: 3,
-		fontFamily: "roboto",
+		fontFamily: 'roboto',
 		color: COLORS.PRIMARY,
 		backgroundColor: COLORS.LIGHTBACKGROUND,
 	},
 
 	paraDark: {
 		paddingHorizontal: 5,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 		color: COLORS.WHITE,
 	},
 	paraLight: {
 		paddingHorizontal: 5,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 		color: COLORS.BLACK,
 	},
 
 	noBackRow: {
 		backgroundColor: COLORS.TRANSPARENT,
-		justifyContent: "flex-start",
-		alignItems: "center",
-		flexDirection: "row",
+		justifyContent: 'flex-start',
+		alignItems: 'center',
+		flexDirection: 'row',
 	},
 	hiddenText: {
-		fontWeight: "600",
+		fontWeight: '600',
 		fontSize: 20,
 		paddingHorizontal: 20,
 	},
@@ -1235,41 +1302,41 @@ const styles = StyleSheet.create({
 	},
 
 	iconContainer: {
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
 		paddingVertical: 6,
 		paddingHorizontal: 3,
-		flexWrap: "wrap",
+		flexWrap: 'wrap',
 	},
 	iconHolder: {
-		alignItems: "center",
-		justifyContent: "center",
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 
 	joinedOnDark: {
 		paddingVertical: 10,
 		color: COLORS.BEFORELIGHT,
-		textAlign: "center",
-		width: "100%",
+		textAlign: 'center',
+		width: '100%',
 		marginVertical: 10,
 		fontSize: 19,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 	},
 	joinedOnLight: {
 		paddingVertical: 10,
 		color: COLORS.DARKGLOW,
-		textAlign: "center",
-		width: "100%",
+		textAlign: 'center',
+		width: '100%',
 		marginVertical: 10,
 		fontSize: 19,
-		fontFamily: "Inter",
+		fontFamily: 'Inter',
 	},
 
 	followSection: {
-		flexDirection: "row",
-		justifyContent: "space-around",
-		alignItems: "center",
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		alignItems: 'center',
 		// borderTopColor: COLORS.MID,
 		// borderTopWidth: 0.25,
 
@@ -1279,21 +1346,21 @@ const styles = StyleSheet.create({
 	},
 	followTextContainer: {
 		flex: 1,
-		flexDirection: "column",
-		justifyContent: "space-around",
-		alignItems: "center",
+		flexDirection: 'column',
+		justifyContent: 'space-around',
+		alignItems: 'center',
 		// backgroundColor: COLORS.BLUE,
 		paddingVertical: 12,
 	},
 	followTextCaption: {
-		fontFamily: "roboto",
-		textAlign: "center",
+		fontFamily: 'roboto',
+		textAlign: 'center',
 	},
 	followText: {
 		fontSize: 19,
-		fontFamily: "roboto",
-		fontWeight: "bold",
-		textAlign: "center",
+		fontFamily: 'roboto',
+		fontWeight: 'bold',
+		textAlign: 'center',
 	},
 });
 
