@@ -39,6 +39,8 @@ import {
 } from '../../val/constants/Constants';
 import { Icon } from 'react-native-elements';
 import { Dimensions } from 'react-native';
+import CustomSlider from './profileMusic/Slider';
+import SongProgressSlider from './music/SongProgress';
 
 const CurrentFeaturesArea = ({ liked }) => {
 	const { theme } = useSelector((state) => state.settings.settings);
@@ -161,6 +163,7 @@ const CurrentFeaturesArea = ({ liked }) => {
 										alignItems: 'center',
 										overflow: 'hidden',
 										borderRadius: 10,
+										elevation: 8,
 									}}
 								>
 									<View
@@ -421,6 +424,7 @@ const FutureFeaturesArea = ({ liked }) => {
 									alignItems: 'center',
 									overflow: 'hidden',
 									borderRadius: 10,
+									elevation: 8,
 								}}
 							>
 								<View
@@ -591,11 +595,13 @@ const Home = (props) => {
 										COLORS.WHITE,
 										COLORS.BLACK
 									),
+									textAlign: 'center',
+									textAlignVertical: 'center',
 								},
 							]}
 						>
 							{playerContext.currentTrack
-								? `Currently Playing - ${playerContext.currentTrack.title}`
+								? `Playing...\n${playerContext.currentTrack.title}`
 								: 'Play Something...'}
 						</Text>
 					</View>
@@ -735,7 +741,10 @@ const Home = (props) => {
 									)}
 								/>
 							</View>
+							<View></View>
 						</View>
+
+						<SongProgressSlider />
 					</View>
 				</View>
 
@@ -806,7 +815,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		borderWidth: 0.4,
 		padding: 3,
-		elevation: 5,
+		elevation: 8,
 	},
 	musicFirstRow: {
 		flexDirection: 'row',

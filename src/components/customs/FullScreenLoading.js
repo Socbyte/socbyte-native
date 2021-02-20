@@ -4,24 +4,39 @@ import LottieView from 'lottie-react-native';
 
 import COLORS from '../../val/colors/Colors';
 import { useSelector } from 'react-redux';
+import { StatusBar } from 'react-native';
 
-const LoadingAnimationLight = require('../../assets/animations/loadingLight.json');
-const LoadingAnimationDark = require('../../assets/animations/loadingDark.json');
+const LoadingAnimationLight = require('../../assets/animations/loadingWhite.json');
+// const LoadingAnimationDark = require('../../assets/animations/loadingDark.json');
 const CorrectAnimation = require('../../assets/animations/correct.json');
 
-const FullScreenLoading = props => {
-	const { theme } = useSelector(state => state.settings.settings);
+const FullScreenLoading = ({ backgroundColor, visible, loadingType }) => {
+	// const { theme } = useSelector((state) => state.settings.settings);
 
 	return (
-		<Modal>
-			<View style={!theme || theme === 'd' ? styles.containerDark : styles.containerLight}>
+		<Modal visible={visible !== null ? visible : true}>
+			<StatusBar backgroundColor={backgroundColor || '#0f60b6'} />
+			<View
+				style={[
+					styles.containerLight,
+					// !theme || theme === 'd'
+					// 	? styles.containerDark
+					// 	: styles.containerLight
+					{
+						backgroundColor: backgroundColor
+							? backgroundColor
+							: '#0f60b6',
+					},
+				]}
+			>
 				<LottieView
 					source={
-						props.loadingType
-							? theme === 'l'
-								? LoadingAnimationLight
-								: LoadingAnimationDark
-							: CorrectAnimation
+						loadingType
+							? LoadingAnimationLight
+							: // theme === 'l'
+							  // ? LoadingAnimationLight
+							  // : LoadingAnimationDark
+							  CorrectAnimation
 					}
 					autoPlay
 					loop
@@ -46,7 +61,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		padding: 10,
-		backgroundColor: COLORS.WHITE,
+		// backgroundColor: COLORS.WHITE,
+		backgroundColor: '#0F60B6',
 		alignItems: 'center',
 	},
 	loaderDark: {

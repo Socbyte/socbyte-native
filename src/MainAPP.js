@@ -22,14 +22,20 @@ import MainReducer from './store/MainStore';
 import SettingsReducer, { loadSettings } from './store/Settings';
 
 import MainAuthNavigation from './navigations/Navigation';
-import { databaseInit, fetchDatabase, insertDatabase, updateDatabase } from './sql/SQLStarter';
+import {
+	databaseInit,
+	fetchDatabase,
+	insertDatabase,
+	updateDatabase,
+} from './sql/SQLStarter';
 import COLORS from './val/colors/Colors';
 import GroupsReducer from './store/GroupsStore';
 import MessagesReducer from './store/ChatsStore';
+import { StatusBar } from 'react-native';
 
-const CheckAfterEffects = store => {
-	return next => {
-		return action => {
+const CheckAfterEffects = (store) => {
+	return (next) => {
+		return (action) => {
 			const dispatch = next(action);
 			return dispatch;
 		};
@@ -43,9 +49,12 @@ const rootReducer = combineReducers({
 	messages: MessagesReducer,
 });
 
-const store = createStore(rootReducer, applyMiddleware(CheckAfterEffects, ReduxThunk));
+const store = createStore(
+	rootReducer,
+	applyMiddleware(CheckAfterEffects, ReduxThunk)
+);
 
-const MainApp = props => {
+const MainApp = (props) => {
 	return (
 		<Provider store={store}>
 			<MainAppStartEntryPoint />
@@ -68,10 +77,12 @@ const MainAppStartEntryPoint = () => {
 			roboto: require('./assets/fonts/Roboto.ttf'),
 			robotoBold: require('./assets/fonts/RobotoBold.ttf'),
 			inter: require('./assets/fonts/Inter.ttf'),
-		}).then(res => {
+		}).then((res) => {
 			fetchDatabase()
-				.then(result => {
-					const settings = JSON.parse(JSON.stringify(result.rows._array));
+				.then((result) => {
+					const settings = JSON.parse(
+						JSON.stringify(result.rows._array)
+					);
 					dispatch(loadSettings(settings));
 					// .then(() => {
 					// })
@@ -80,11 +91,11 @@ const MainAppStartEntryPoint = () => {
 					// });
 					AppLoading.hideAsync();
 				})
-				.catch(err => {
+				.catch((err) => {
 					// updateDatabase('email', email);
 					// updateDatabase('username', '');
 					databaseInit()
-						.then(res => {
+						.then((res) => {
 							insertDatabase('theme', 'd');
 							insertDatabase('fontSize', 'm');
 							insertDatabase('primaryColor', COLORS.GREEN);
@@ -95,16 +106,18 @@ const MainAppStartEntryPoint = () => {
 							updateDatabase('primaryColor', COLORS.GREEN);
 							updateDatabase('invertPrimaryColor', COLORS.BLACK);
 							fetchDatabase()
-								.then(result => {
+								.then((result) => {
 									AppLoading.hideAsync();
-									const settings = JSON.parse(JSON.stringify(result.rows._array));
+									const settings = JSON.parse(
+										JSON.stringify(result.rows._array)
+									);
 									dispatch(loadSettings(settings));
 								})
-								.catch(err => {
+								.catch((err) => {
 									AppLoading.hideAsync();
 								});
 						})
-						.catch(err => {
+						.catch((err) => {
 							databaseInit();
 							AppLoading.hideAsync();
 							alert('cannot load themes');
@@ -146,12 +159,22 @@ const MainAppStartEntryPoint = () => {
 			],
 		});
 
-		TrackPlayer.registerPlaybackService(() => require('./scenes/main/profileMusic/Services'));
+		TrackPlayer.registerPlaybackService(() =>
+			require('./scenes/main/profileMusic/Services')
+		);
 
-		TrackPlayer.setupPlayer().then(async res => {});
+		TrackPlayer.setupPlayer().then(async (res) => {});
 	}, []);
 
-	return <MainAuthNavigation />;
+	return (
+		<>
+			<StatusBar
+				barStyle='light-content'
+				backgroundColor={COLORS.BLACK}
+			/>
+			<MainAuthNavigation />
+		</>
+	);
 };
 
 export default MainApp;

@@ -16,16 +16,21 @@ import { Button, Icon } from 'react-native-elements';
 import COLORS from '../../val/colors/Colors';
 import { setDefaultsValuesLogOUt } from '../../store/MainStore';
 
-const image1 = 'https://raw.githubusercontent.com/Socbyte/src/main/images/intros/screen_1.png';
-const image2 = 'https://raw.githubusercontent.com/Socbyte/src/main/images/intros/screen_2.png';
-const image3 = 'https://raw.githubusercontent.com/Socbyte/src/main/images/intros/screen_3.png';
-const image4 = 'https://raw.githubusercontent.com/Socbyte/src/main/images/intros/screen_4.png';
-const image5 = 'https://raw.githubusercontent.com/Socbyte/src/main/images/intros/screen_5.png';
+const image1 =
+	'https://raw.githubusercontent.com/Socbyte/src/main/images/introswb/screen_1.png';
+const image2 =
+	'https://raw.githubusercontent.com/Socbyte/src/main/images/introswb/screen_2.png';
+const image3 =
+	'https://raw.githubusercontent.com/Socbyte/src/main/images/introswb/screen_3.png';
+const image4 =
+	'https://raw.githubusercontent.com/Socbyte/src/main/images/introswb/screen_4.png';
+const image5 =
+	'https://raw.githubusercontent.com/Socbyte/src/main/images/introswb/screen_5.png';
 
-const IntroScreen = props => {
+const IntroScreen = (props) => {
 	const [sliderState, setSliderState] = useState({ currentPage: 0 });
 	const { width, height } = Dimensions.get('window');
-	const { theme } = useSelector(state => state.settings.settings);
+	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' || !theme ? f : s;
 	};
@@ -37,7 +42,7 @@ const IntroScreen = props => {
 		dispatch(setDefaultsValuesLogOUt());
 	}, []);
 
-	const setSliderPage = event => {
+	const setSliderPage = (event) => {
 		const { currentPage } = sliderState;
 		const { x } = event.nativeEvent.contentOffset;
 		const indexOfNextScreen = Math.floor(x / width);
@@ -53,69 +58,146 @@ const IntroScreen = props => {
 
 	return (
 		<>
-			<StatusBar barStyle='dark-content' />
-			<SafeAreaView style={{ flex: 1, backgroundColor: '#fc8941' || '#fedd00' || '#e7e7e7' }}>
+			<StatusBar barStyle='dark-content' backgroundColor={'#00B0CB'} />
+			<SafeAreaView
+				style={{
+					flex: 1,
+					// backgroundColor: '#fc8941' || '#fedd00' || '#e7e7e7',
+				}}
+			>
 				<LinearGradient
-					colors={['#fc9539', '#fd9d33', '#fb8344', '#f94f52']}
-					style={{ flex: 1 }}>
+					colors={['#00B0CB', '#008BD2', '#0F60B6']}
+					style={{ flex: 1 }}
+				>
 					<ScrollView
 						ref={scroller}
-						onScroll={event => {
+						onScroll={(event) => {
 							setSliderPage(event);
 						}}
 						style={{ flex: 1 }}
 						horizontal
 						scrollEventThrottle={16}
 						showsHorizontalScrollIndicator={false}
-						pagingEnabled>
+						pagingEnabled
+					>
 						<View style={{ width, height }}>
-							<Image source={{ uri: image1 }} style={styles.image} />
-							<Text style={whatIsTheme(styles.headingDark, styles.headingLight)}>
+							<Image
+								source={{ uri: image1 }}
+								style={styles.image}
+							/>
+							<Text
+								style={whatIsTheme(
+									styles.headingDark,
+									styles.headingLight
+								)}
+							>
 								Enjoy Music
 							</Text>
-							<Text style={whatIsTheme(styles.contentDark, styles.contentLight)}>
-								Enjoy listening to music anytime, anywhere. Whatever the time is get
-								ready to listen music of any mood.
+							<Text
+								style={whatIsTheme(
+									styles.contentDark,
+									styles.contentLight
+								)}
+							>
+								Enjoy listening to music anytime, anywhere.
+								Whatever the time is get ready to listen music
+								of any mood.
 							</Text>
 						</View>
 						<View style={{ width, height }}>
-							<Image source={{ uri: image2 }} style={styles.image} />
-							<Text style={whatIsTheme(styles.headingDark, styles.headingLight)}>
+							<Image
+								source={{ uri: image2 }}
+								style={styles.image}
+							/>
+							<Text
+								style={whatIsTheme(
+									styles.headingDark,
+									styles.headingLight
+								)}
+							>
 								Distraction-Free Interface!
 							</Text>
-							<Text style={whatIsTheme(styles.contentDark, styles.contentLight)}>
-								The UI is pretty clean and easy to use. UI also contains many hidden
-								features. You should explore them all.
+							<Text
+								style={whatIsTheme(
+									styles.contentDark,
+									styles.contentLight
+								)}
+							>
+								The UI is pretty clean and easy to use. UI also
+								contains many hidden features. You should
+								explore them all.
 							</Text>
 						</View>
 						<View style={{ width, height }}>
-							<Image source={{ uri: image3 }} style={styles.image} />
-							<Text style={whatIsTheme(styles.headingDark, styles.headingLight)}>
+							<Image
+								source={{ uri: image3 }}
+								style={styles.image}
+							/>
+							<Text
+								style={whatIsTheme(
+									styles.headingDark,
+									styles.headingLight
+								)}
+							>
 								Listening to every song you want.
 							</Text>
-							<Text style={whatIsTheme(styles.contentDark, styles.contentLight)}>
-								Listen to whatever song you want to. It is available, Don't ask how!
+							<Text
+								style={whatIsTheme(
+									styles.contentDark,
+									styles.contentLight
+								)}
+							>
+								Listen to whatever song you want to. It is
+								available, Don't ask how!
 							</Text>
 						</View>
 						<View style={{ width, height }}>
-							<Image source={{ uri: image4 }} style={styles.image} />
-							<Text style={whatIsTheme(styles.headingDark, styles.headingLight)}>
+							<Image
+								source={{ uri: image4 }}
+								style={styles.image}
+							/>
+							<Text
+								style={whatIsTheme(
+									styles.headingDark,
+									styles.headingLight
+								)}
+							>
 								Group Chats
 							</Text>
-							<Text style={whatIsTheme(styles.contentDark, styles.contentLight)}>
-								Create Groups, Join existing groups, chat with anybody, anywhere,
-								and about anything. Future updates will contains more exciting
-								features related to group chats.
+							<Text
+								style={whatIsTheme(
+									styles.contentDark,
+									styles.contentLight
+								)}
+							>
+								Create Groups, Join existing groups, chat with
+								anybody, anywhere, and about anything. Future
+								updates will contains more exciting features
+								related to group chats.
 							</Text>
 						</View>
 						<View style={{ width, height }}>
-							<Image source={{ uri: image5 }} style={styles.image} />
-							<Text style={whatIsTheme(styles.headingDark, styles.headingLight)}>
+							<Image
+								source={{ uri: image5 }}
+								style={styles.image}
+							/>
+							<Text
+								style={whatIsTheme(
+									styles.headingDark,
+									styles.headingLight
+								)}
+							>
 								Themes
 							</Text>
-							<Text style={whatIsTheme(styles.contentDark, styles.contentLight)}>
-								If Light Mode cause strain to your eye don't worry I created Dark
-								mode to. Future updates may contain more modes like (colorish mode).
+							<Text
+								style={whatIsTheme(
+									styles.contentDark,
+									styles.contentLight
+								)}
+							>
+								If Light Mode cause strain to your eye don't
+								worry I created Dark mode to. Future updates may
+								contain more modes like (colorish mode).
 							</Text>
 						</View>
 					</ScrollView>
@@ -127,7 +209,7 @@ const IntroScreen = props => {
 									{ opacity: pageIndex === index ? 1 : 0.3 },
 									{
 										borderRadius: 10,
-										backgroundColor: COLORS.BLACK,
+										backgroundColor: COLORS.WHITE,
 									},
 								]}
 								key={index}
@@ -138,15 +220,20 @@ const IntroScreen = props => {
 						{pageIndex > 0 ? (
 							<TouchableOpacity
 								onPress={() =>
-									scroller.current.scrollTo({ x: (pageIndex - 1) * width })
-								}>
+									scroller.current.scrollTo({
+										x: (pageIndex - 1) * width,
+									})
+								}
+							>
 								<View style={styles.buttonContainerFirst}>
 									<Icon
 										name='controller-play'
 										type='entypo'
 										size={21}
 										color={COLORS.BLACK}
-										iconStyle={{ transform: [{ rotateZ: '180deg' }] }}
+										iconStyle={{
+											transform: [{ rotateZ: '180deg' }],
+										}}
 									/>
 								</View>
 							</TouchableOpacity>
@@ -156,8 +243,11 @@ const IntroScreen = props => {
 						{pageIndex >= 0 && pageIndex < 4 ? (
 							<TouchableOpacity
 								onPress={() =>
-									scroller.current.scrollTo({ x: (pageIndex + 1) * width })
-								}>
+									scroller.current.scrollTo({
+										x: (pageIndex + 1) * width,
+									})
+								}
+							>
 								<View style={styles.buttonContainerLast}>
 									<Icon
 										name='controller-play'
@@ -169,9 +259,14 @@ const IntroScreen = props => {
 							</TouchableOpacity>
 						) : (
 							<TouchableOpacity
-								onPress={() => props.navigation.replace('TandCandPP')}>
+								onPress={() =>
+									props.navigation.replace('TandCandPP')
+								}
+							>
 								<View style={styles.getStartedButton}>
-									<Text style={styles.getStartedText}>Get Started</Text>
+									<Text style={styles.getStartedText}>
+										Get Started
+									</Text>
 								</View>
 							</TouchableOpacity>
 						)}
@@ -200,11 +295,11 @@ const styles = StyleSheet.create({
 	image: {
 		width: '100%',
 		height: 400,
-		resizeMode: 'cover',
+		resizeMode: 'contain',
 	},
 
 	headingDark: {
-		color: COLORS.BLACK,
+		color: COLORS.INTRO_HEADING,
 		fontSize: 26,
 		fontFamily: 'karlaBold',
 		textAlign: 'center',
@@ -213,7 +308,7 @@ const styles = StyleSheet.create({
 		margin: 5,
 	},
 	headingLight: {
-		color: COLORS.BLACK,
+		color: COLORS.INTRO_HEADING,
 		fontSize: 26,
 		fontFamily: 'karlaBold',
 		textAlign: 'center',
@@ -222,13 +317,13 @@ const styles = StyleSheet.create({
 		margin: 5,
 	},
 	contentDark: {
-		color: COLORS.DARKTEXT,
+		color: COLORS.INTRO_TEXT,
 		textAlign: 'center',
 		padding: 10,
 		marginHorizontal: 16,
 	},
 	contentLight: {
-		color: COLORS.DARKTEXT,
+		color: COLORS.INTRO_TEXT,
 		textAlign: 'center',
 		padding: 10,
 		marginHorizontal: 16,

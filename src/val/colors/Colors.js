@@ -55,6 +55,9 @@ const COLORS = {
 	BLUEINLIGHT: '#dbedff',
 	TEXTIN_BLUEINDARK: '#79c0ff',
 	TEXTIN_BLUEINLIGHT: '#0366d6',
+
+	INTRO_TEXT: '#FFEECA',
+	INTRO_HEADING: '#E5F0FF',
 };
 
 class DarkLight {
