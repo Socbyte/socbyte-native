@@ -5,6 +5,8 @@
 		"name": "Socbyte",
 		"slug": "Socbyte",
 		"version": "1.0.0",
+		"description": "Social media app along with a theme-full music player.",
+		"orientation": "portrait",
 		"assetBundlePatterns": ["**/*"],
 		"splash": {
 			"image": "./src/assets/icons/splashscreen_image.png",
