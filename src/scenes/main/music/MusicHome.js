@@ -314,12 +314,14 @@ const MusicHome = (props) => {
 	}
 
 	async function addSongToQueueDirect(item) {
+		const youtubeURL = `http://www.youtube.com/watch?v=${item.videoId}`;
+		const urls = await ytdl(youtubeURL, { quality: 'highestaudio' });
 		playerContext.addToQueue({
 			id: item.videoId,
 			title: item.name,
 			artist: item.artist,
 			duration: item.duration,
-			url: item.url,
+			url: urls[0].url,
 			artwork: item.thumbnails,
 			durationEdited: item.formatedDuration,
 		});
