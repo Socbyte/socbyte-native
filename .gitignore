@@ -1,6 +1,8 @@
 # firebase configs...
 src/firebase/Firebase.js
 socbyte-backend
+android/app/debug
+android/app/release
 
 # OSX
 #
