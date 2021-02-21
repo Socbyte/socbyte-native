@@ -58,7 +58,7 @@ const IntroScreen = (props) => {
 
 	return (
 		<>
-			<StatusBar barStyle='dark-content' backgroundColor={'#00B0CB'} />
+			<StatusBar barStyle='dark-content' backgroundColor={'#0F60B6'} />
 			<SafeAreaView
 				style={{
 					flex: 1,
@@ -66,7 +66,13 @@ const IntroScreen = (props) => {
 				}}
 			>
 				<LinearGradient
-					colors={['#00B0CB', '#008BD2', '#0F60B6']}
+					colors={[
+						'#0F60B6',
+						'#0F60B6',
+						'#0F60B6',
+						'#008BD2',
+						'#008BD2',
+					]}
 					style={{ flex: 1 }}
 				>
 					<ScrollView

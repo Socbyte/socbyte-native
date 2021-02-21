@@ -283,6 +283,22 @@ const RecommendedSongsList = [
 	},
 ];
 
+export const nonameList = [
+	'username',
+	'sobhan',
+	'sobhanbera',
+	'telebyte',
+	'telebyteweb',
+	'telebyte-web',
+	'telebyte-native',
+	'telebytenative',
+	'socbyte',
+	'socbytenative',
+	'socbyte-native',
+	'socbyteweb',
+	'socbyte-web',
+];
+
 export const homeImageLink =
 	'https://raw.githubusercontent.com/Socbyte/src/main/images/MusicHomeImages/00';
 

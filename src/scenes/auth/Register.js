@@ -26,6 +26,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSettings } from '../../store/Settings';
 import { StatusBar } from 'react-native';
+import { nonameList } from '../../val/constants/Constants';
 
 const Register = (props) => {
 	const emailValidator = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -113,6 +114,18 @@ const Register = (props) => {
 			});
 
 			return;
+		} else if (username.match(emailValidator)) {
+			setDisabled(false);
+			setLoading(false);
+
+			setError({
+				header: 'Invalid Username!',
+				desc:
+					"Please enter a valid uesrname.\n\nTap on the 'i' button for more info.",
+				primary: 'Okay!',
+				primaryFunction: () => setError(false),
+			});
+			return;
 		}
 
 		for (let i = 0; i < fakeemails.length; ++i) {
@@ -130,6 +143,22 @@ const Register = (props) => {
 				return;
 			}
 		}
+
+		for (let i in nonameList) {
+			if (username === nonameList[i]) {
+				setDisabled(false);
+				setLoading(false);
+
+				setError({
+					header: 'Username Not Available!',
+					desc: `username is not available. please choose a different username other than (${username})`,
+					primary: 'Okay!',
+					primaryFunction: () => setError(false),
+				});
+				return;
+			}
+		}
+
 		let time = new Date();
 
 		Firebase.database()

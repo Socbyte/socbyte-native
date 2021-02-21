@@ -135,8 +135,8 @@ android {
         applicationId "com.socbyte"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.0"
+        versionCode 3
+        versionName "1.33.6774"
         multiDexEnabled true
     }
     splits {

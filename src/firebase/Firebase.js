@@ -21,6 +21,7 @@ const FirebaseConfig = {
 	messagingSenderId: '277156405205',
 	appId: '1:277156405205:web:569ed7ef3dc7653d4ba75c',
 	measurementId: 'G-BNLW3FJXFK',
+	databaseURL: 'https://socbyte-production-default-rtdb.firebaseio.com/',
 };
 
 Firebase.initializeApp(FirebaseConfig);
