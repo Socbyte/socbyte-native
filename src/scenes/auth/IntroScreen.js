@@ -56,6 +56,11 @@ const IntroScreen = (props) => {
 
 	const { currentPage: pageIndex } = sliderState;
 
+	const openPolicies = () => {
+		console.log('YUP GOING');
+		// props.navigation.replace('TandCandPP');
+	};
+
 	return (
 		<>
 			<StatusBar barStyle='dark-content' backgroundColor={'#0F60B6'} />
@@ -75,6 +80,22 @@ const IntroScreen = (props) => {
 					]}
 					style={{ flex: 1 }}
 				>
+					<View style={styles.paginationWrapper}>
+						{Array.from(Array(5).keys()).map((key, index) => (
+							<View
+								style={[
+									styles.paginationDots,
+									{ opacity: pageIndex === index ? 1 : 0.3 },
+									{
+										borderRadius: 10,
+										backgroundColor: COLORS.WHITE,
+									},
+								]}
+								key={index}
+							/>
+						))}
+					</View>
+
 					<ScrollView
 						ref={scroller}
 						onScroll={(event) => {
@@ -207,75 +228,83 @@ const IntroScreen = (props) => {
 							</Text>
 						</View>
 					</ScrollView>
-					<View style={styles.paginationWrapper}>
-						{Array.from(Array(5).keys()).map((key, index) => (
-							<View
-								style={[
-									styles.paginationDots,
-									{ opacity: pageIndex === index ? 1 : 0.3 },
-									{
-										borderRadius: 10,
-										backgroundColor: COLORS.WHITE,
-									},
-								]}
-								key={index}
-							/>
-						))}
-					</View>
+
 					<View style={styles.buttonHolder}>
-						{pageIndex > 0 ? (
-							<TouchableOpacity
-								onPress={() =>
-									scroller.current.scrollTo({
-										x: (pageIndex - 1) * width,
-									})
-								}
-							>
-								<View style={styles.buttonContainerFirst}>
-									<Icon
-										name='controller-play'
-										type='entypo'
-										size={21}
-										color={COLORS.BLACK}
-										iconStyle={{
-											transform: [{ rotateZ: '180deg' }],
-										}}
-									/>
-								</View>
-							</TouchableOpacity>
-						) : (
-							<View></View>
-						)}
-						{pageIndex >= 0 && pageIndex < 4 ? (
-							<TouchableOpacity
-								onPress={() =>
-									scroller.current.scrollTo({
-										x: (pageIndex + 1) * width,
-									})
-								}
-							>
-								<View style={styles.buttonContainerLast}>
-									<Icon
-										name='controller-play'
-										type='entypo'
-										size={21}
-										color={COLORS.WHITE}
-									/>
-								</View>
-							</TouchableOpacity>
-						) : (
-							<TouchableOpacity
-								onPress={() =>
-									props.navigation.replace('TandCandPP')
-								}
-							>
-								<View style={styles.getStartedButton}>
-									<Text style={styles.getStartedText}>
-										Get Started
-									</Text>
-								</View>
-							</TouchableOpacity>
-						)}
+						<TouchableOpacity onPress={openPolicies}>
+							<View style={styles.buttonContainerFirst}>
+								<Icon
+									name='cross'
+									type='entypo'
+									size={21}
+									color={COLORS.BLACK}
+								/>
+							</View>
+						</TouchableOpacity>
+
+						<View style={{ flexDirection: 'row' }}>
+							<>
+								{pageIndex > 0 ? (
+									<TouchableOpacity
+										onPress={() =>
+											scroller.current.scrollTo({
+												x: (pageIndex - 1) * width,
+											})
+										}
+									>
+										<View
+											style={[
+												styles.buttonContainerLast,
+												{ marginRight: 0 },
+											]}
+										>
+											<Icon
+												name='controller-play'
+												type='entypo'
+												size={21}
+												color={COLORS.WHITE}
+												iconStyle={{
+													transform: [
+														{ rotateZ: '180deg' },
+													],
+												}}
+											/>
+										</View>
+									</TouchableOpacity>
+								) : (
+									<View></View>
+								)}
+								{pageIndex >= 0 && pageIndex < 4 ? (
+									<TouchableOpacity
+										onPress={() =>
+											scroller.current.scrollTo({
+												x: (pageIndex + 1) * width,
+											})
+										}
+									>
+										<View
+											style={styles.buttonContainerLast}
+										>
+											<Icon
+												name='controller-play'
+												type='entypo'
+												size={21}
+												color={COLORS.WHITE}
+											/>
+										</View>
+									</TouchableOpacity>
+								) : (
+									<TouchableOpacity
+										onPress={() => openPolicies()}
+									>
+										<View style={styles.getStartedButton}>
+											<Text style={styles.getStartedText}>
+												Get Started
+											</Text>
+										</View>
+									</TouchableOpacity>
+								)}
+							</>
+						</View>
 					</View>
 				</LinearGradient>
 			</SafeAreaView>
@@ -291,7 +320,8 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		left: 0,
 		right: 0,
-		bottom: 42,
+		top: 13,
+		// bottom: ,
 	},
 	paginationDots: {
 		marginLeft: 6,
@@ -302,6 +332,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: 400,
 		resizeMode: 'contain',
+		marginTop: 10,
 	},
 
 	headingDark: {
@@ -309,7 +340,7 @@ const styles = StyleSheet.create({
 		fontSize: 26,
 		fontFamily: 'karlaBold',
 		textAlign: 'center',
-		marginTop: 22,
+		marginTop: 15,
 		padding: 4,
 		margin: 5,
 	},
@@ -318,7 +349,7 @@ const styles = StyleSheet.create({
 		fontSize: 26,
 		fontFamily: 'karlaBold',
 		textAlign: 'center',
-		marginTop: 22,
+		marginTop: 15,
 		padding: 4,
 		margin: 5,
 	},
@@ -340,37 +371,58 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingBottom: 18,
-		paddingHorizontal: 18,
+		paddingHorizontal: 0,
 	},
 	buttonContainerFirst: {
 		justifyContent: 'center',
 		alignItems: 'center',
-		width: 60,
-		height: 60,
+		width: 55,
+		height: 55,
 		padding: 6,
 		borderRadius: 50,
 		elevation: 3,
 		backgroundColor: COLORS.WHITE,
+		marginHorizontal: 10,
 	},
 	buttonContainerLast: {
 		justifyContent: 'center',
 		alignItems: 'center',
-		width: 60,
-		height: 60,
+		width: 55,
+		height: 55,
 		padding: 0,
 		borderRadius: 50,
 		elevation: 3,
 		backgroundColor: COLORS.BLACK,
+		marginHorizontal: 8,
 	},
 	getStartedButton: {
 		backgroundColor: COLORS.BLACK,
 		borderRadius: 50,
 		padding: 16,
+		marginHorizontal: 8,
 	},
 	getStartedText: {
 		color: COLORS.WHITE,
 		fontSize: 17,
 		fontFamily: 'karla',
+	},
+
+	skipButton: {
+		backgroundColor: COLORS.WHITEINDARKVIDIBLE,
+		color: COLORS.WHITE,
+		borderRadius: 3,
+		right: 10,
+		top: 10,
+		paddingVertical: 6,
+		paddingHorizontal: 12,
+	},
+	skipButtonText: {
+		color: COLORS.WHITE,
+		fontSize: 16,
+		fontFamily: 'karla',
+		textAlign: 'center',
+		textAlignVertical: 'center',
+		padding: 3,
 	},
 });
 
