@@ -135,7 +135,7 @@ android {
         applicationId "com.socbyte"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
+        versionCode 5
         versionName "1.33.6774"
         multiDexEnabled true
     }

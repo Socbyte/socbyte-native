@@ -52,13 +52,13 @@ const IntroScreen = (props) => {
 				currentPage: indexOfNextScreen,
 			});
 		}
+		// console.log(event.nativeEvent.contentOffset.x, );
 	};
 
 	const { currentPage: pageIndex } = sliderState;
 
 	const openPolicies = () => {
-		console.log('YUP GOING');
-		// props.navigation.replace('TandCandPP');
+		props.navigation.replace('TandCandPP');
 	};
 
 	return (
@@ -82,17 +82,30 @@ const IntroScreen = (props) => {
 				>
 					<View style={styles.paginationWrapper}>
 						{Array.from(Array(5).keys()).map((key, index) => (
-							<View
-								style={[
-									styles.paginationDots,
-									{ opacity: pageIndex === index ? 1 : 0.3 },
-									{
-										borderRadius: 10,
-										backgroundColor: COLORS.WHITE,
-									},
-								]}
-								key={index}
-							/>
+							<TouchableOpacity
+								onPress={() => {
+									scroller.current.scrollTo({
+										x: index * width,
+									});
+								}}
+							>
+								<View
+									style={[
+										{
+											opacity:
+												pageIndex === index ? 1 : 0.3,
+										},
+										{
+											marginLeft: 6,
+											height: 9,
+											width: 9,
+											borderRadius: 10,
+											backgroundColor: COLORS.WHITE,
+										},
+									]}
+									key={index}
+								/>
+							</TouchableOpacity>
 						))}
 					</View>
 
@@ -317,22 +330,18 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		position: 'absolute',
-		left: 0,
-		right: 0,
-		top: 13,
-		// bottom: ,
-	},
-	paginationDots: {
-		marginLeft: 6,
-		height: 8,
-		width: 8,
+		marginTop: 13,
+		// position: 'absolute',
+		// left: 0,
+		// right: 0,
+		// top: 13,
+		// bottom: 10,
 	},
 	image: {
 		width: '100%',
 		height: 400,
 		resizeMode: 'contain',
-		marginTop: 10,
+		marginTop: 0,
 	},
 
 	headingDark: {
