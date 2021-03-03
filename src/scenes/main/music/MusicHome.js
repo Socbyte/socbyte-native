@@ -53,11 +53,6 @@ export const MusicItem = ({
 			}}
 			delayLongPress={1500}
 			onLongPress={() => {
-				ToastAndroid.showWithGravity(
-					'Adding to queue...',
-					ToastAndroid.SHORT,
-					ToastAndroid.CENTER
-				);
 				addSongToQueue(
 					item,
 					artistList,
@@ -288,57 +283,62 @@ const MusicHome = (props) => {
 		});
 	}
 
-	async function playSongDirect(item, list) {
+	async function playSongDirect(item) {
+		const youtubeURL = `http://www.youtube.com/watch?v=${item.videoId}`;
+		const urls = await ytdl(youtubeURL, { quality: 'highestaudio' });
+
 		playerContext.play({
 			id: item.videoId,
 			title: item.name,
 			artist: item.artist,
 			duration: item.duration,
-			url: item.url,
+			url: urls[0].url,
 			artwork: item.thumbnails,
 			durationEdited: item.formatedDuration,
 		});
 
-		for (let i = 0; i < 2; ++i) {
-			let ranListItem = list[Math.floor(Math.random() * list.length)];
-			playerContext.addRecommendedSong({
-				id: ranListItem.videoId,
-				title: ranListItem.name,
-				artist: formatArtistsList(ranListItem.artist),
-				duration: ranListItem.duration,
-				artwork: findThumbnail(
-					ranListItem.thumbnails[ranListItem.thumbnails.length - 1]
-						?.url
-				),
-				durationEdited: formatDuration(ranListItem.duration),
-			});
-		}
+		// for (let i = 0; i < 2; ++i) {
+		// 	let ranListItem = list[Math.floor(Math.random() * list.length)];
+		// 	playerContext.addRecommendedSong({
+		// 		id: ranListItem.videoId,
+		// 		title: ranListItem.name,
+		// 		artist: formatArtistsList(ranListItem.artist),
+		// 		duration: ranListItem.duration,
+		// 		artwork: findThumbnail(
+		// 			ranListItem.thumbnails[ranListItem.thumbnails.length - 1]
+		// 				?.url
+		// 		),
+		// 		durationEdited: formatDuration(ranListItem.duration),
+		// 	});
+		// }
 	}
 
-	async function addSongToQueueDirect(item, list) {
+	async function addSongToQueueDirect(item) {
+		const youtubeURL = `http://www.youtube.com/watch?v=${item.videoId}`;
+		const urls = await ytdl(youtubeURL, { quality: 'highestaudio' });
 		playerContext.addToQueue({
 			id: item.videoId,
 			title: item.name,
 			artist: item.artist,
 			duration: item.duration,
-			url: item.url,
+			url: urls[0].url,
 			artwork: item.thumbnails,
 			durationEdited: item.formatedDuration,
 		});
-		for (let i = 0; i < 2; ++i) {
-			let ranListItem = list[Math.floor(Math.random() * list.length)];
-			playerContext.addRecommendedSong({
-				id: ranListItem.videoId,
-				title: ranListItem.name,
-				artist: formatArtistsList(ranListItem.artist),
-				duration: ranListItem.duration,
-				artwork: findThumbnail(
-					ranListItem.thumbnails[ranListItem.thumbnails.length - 1]
-						?.url
-				),
-				durationEdited: formatDuration(ranListItem.duration),
-			});
-		}
+		// for (let i = 0; i < 2; ++i) {
+		// 	let ranListItem = list[Math.floor(Math.random() * list.length)];
+		// 	playerContext.addRecommendedSong({
+		// 		id: ranListItem.videoId,
+		// 		title: ranListItem.name,
+		// 		artist: formatArtistsList(ranListItem.artist),
+		// 		duration: ranListItem.duration,
+		// 		artwork: findThumbnail(
+		// 			ranListItem.thumbnails[ranListItem.thumbnails.length - 1]
+		// 				?.url
+		// 		),
+		// 		durationEdited: formatDuration(ranListItem.duration),
+		// 	});
+		// }
 	}
 
 	function openSongSearch() {
@@ -496,19 +496,9 @@ const MusicHome = (props) => {
 										}}
 										delayLongPress={1500}
 										onLongPress={() => {
-											ToastAndroid.showWithGravity(
-												'Adding to queue...',
-												ToastAndroid.SHORT,
-												ToastAndroid.CENTER
-											);
-											addSongToQueueDirect(
-												item,
-												HindiHits
-											);
+											addSongToQueueDirect(item);
 										}}
-										onPress={() =>
-											playSongDirect(item, HindiHits)
-										}
+										onPress={() => playSongDirect(item)}
 										key={item.videoId}
 									>
 										<View
@@ -615,19 +605,9 @@ const MusicHome = (props) => {
 										}}
 										delayLongPress={1500}
 										onLongPress={() => {
-											ToastAndroid.showWithGravity(
-												'Adding to queue...',
-												ToastAndroid.SHORT,
-												ToastAndroid.CENTER
-											);
-											addSongToQueueDirect(
-												item,
-												EnglishSongs
-											);
+											addSongToQueueDirect(item);
 										}}
-										onPress={() =>
-											playSongDirect(item, EnglishSongs)
-										}
+										onPress={() => playSongDirect(item)}
 										key={item.videoId}
 									>
 										<View

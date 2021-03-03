@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Header from '../../../components/customs/Header/Header';
 import COLORS from '../../../val/colors/Colors';
 import { ToastAndroid } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export const PureListItem = ({
 	onPress,
@@ -31,11 +32,14 @@ export const PureListItem = ({
 			}}
 			descriptionStyle={styles.listItemDescription}
 			style={{
-				borderBottomColor: whatIsTheme(COLORS.DARKSECONDARY, COLORS.DARKFORLIGHT),
+				borderBottomColor: whatIsTheme(
+					COLORS.DARKSECONDARY,
+					COLORS.DARKFORLIGHT
+				),
 				borderBottomWidth: 1,
 				fontFamily: 'Inter',
 			}}
-			left={props => (
+			left={(props) => (
 				<Icon
 					style={[styles.listIcon, extraStyle ? extraStyle : null]}
 					name={iconName}
@@ -48,8 +52,8 @@ export const PureListItem = ({
 	);
 };
 
-const Settings = props => {
-	const { theme } = useSelector(state => state.settings.settings);
+const Settings = (props) => {
+	const { theme } = useSelector((state) => state.settings.settings);
 
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
@@ -64,116 +68,130 @@ const Settings = props => {
 				}}
 				headerTitle='Settings'
 			/>
+			<ScrollView>
+				<PureListItem
+					title='Account Settings'
+					description='fullname, cover image, status, about'
+					whatIsTheme={whatIsTheme}
+					onPress={() => {
+						props.navigation.navigate('EditProfileAbout');
+					}}
+					iconName='account-edit-outline'
+					iconType='material-community'
+					iconSize={26}
+				/>
 
-			<PureListItem
-				title='Account Settings'
-				description='fullname, cover image, status, about'
-				whatIsTheme={whatIsTheme}
-				onPress={() => {
-					props.navigation.navigate('EditProfileAbout');
-				}}
-				iconName='account-edit-outline'
-				iconType='material-community'
-				iconSize={26}
-			/>
+				<PureListItem
+					title='Other Details'
+					description='expertise, education, socials'
+					whatIsTheme={whatIsTheme}
+					onPress={() => {
+						props.navigation.navigate('EditProfileOther');
+					}}
+					iconName='card-account-details-outline'
+					iconType='material-community'
+					iconSize={24}
+				/>
 
-			<PureListItem
-				title='Other Details'
-				description='expertise, education, socials'
-				whatIsTheme={whatIsTheme}
-				onPress={() => {
-					props.navigation.navigate('EditProfileOther');
-				}}
-				iconName='card-account-details-outline'
-				iconType='material-community'
-				iconSize={24}
-			/>
+				<PureListItem
+					title='Notification'
+					description='Sound, Others'
+					whatIsTheme={whatIsTheme}
+					onPress={() => {
+						ToastAndroid.show(
+							'This feature is in development.',
+							ToastAndroid.LONG
+						);
+					}}
+					iconName='notifications'
+					iconType='ionicon'
+					iconSize={26}
+				/>
 
-			<PureListItem
-				title='Notification'
-				description='Sound, Others'
-				whatIsTheme={whatIsTheme}
-				onPress={() => {
-					ToastAndroid.show('This feature is in development.', ToastAndroid.LONG);
-				}}
-				iconName='notifications'
-				iconType='ionicon'
-				iconSize={26}
-			/>
+				<PureListItem
+					title='Appearance'
+					description='theme, font'
+					whatIsTheme={whatIsTheme}
+					onPress={() => {
+						props.navigation.navigate('AppearanceSetting');
+					}}
+					iconName='setting'
+					iconType='antdesign'
+					iconSize={26}
+				/>
 
-			<PureListItem
-				title='Appearance'
-				description='theme, font'
-				whatIsTheme={whatIsTheme}
-				onPress={() => {
-					props.navigation.navigate('AppearanceSetting');
-				}}
-				iconName='setting'
-				iconType='antdesign'
-				iconSize={26}
-			/>
+				<PureListItem
+					title='Privacy'
+					description='SocByte PIN'
+					whatIsTheme={whatIsTheme}
+					onPress={() => {
+						ToastAndroid.show(
+							'This feature is in development.',
+							ToastAndroid.LONG
+						);
+					}}
+					iconName='lock'
+					iconType='entypo'
+					iconSize={26}
+				/>
 
-			<PureListItem
-				title='Privacy'
-				description='SocByte PIN'
-				whatIsTheme={whatIsTheme}
-				onPress={() => {
-					ToastAndroid.show('This feature is in development.', ToastAndroid.LONG);
-				}}
-				iconName='lock'
-				iconType='entypo'
-				iconSize={26}
-			/>
+				<PureListItem
+					title='Help'
+					description='contact us, FAQ'
+					whatIsTheme={whatIsTheme}
+					onPress={() => {
+						props.navigation.navigate('HelpSetting');
+					}}
+					iconName='ios-help-circle-outline'
+					iconType='ionicon'
+					iconSize={28}
+				/>
 
-			<PureListItem
-				title='Help'
-				description='contact us, FAQ'
-				whatIsTheme={whatIsTheme}
-				onPress={() => {
-					props.navigation.navigate('HelpSetting');
-				}}
-				iconName='ios-help-circle-outline'
-				iconType='ionicon'
-				iconSize={28}
-			/>
+				<PureListItem
+					title='Danger'
+					description='user data will be removed'
+					whatIsTheme={whatIsTheme}
+					onPress={() => {
+						props.navigation.navigate('DangerSection');
+					}}
+					iconName='circle-with-cross'
+					iconType='entypo'
+					iconSize={24}
+				/>
 
-			<PureListItem
-				title='Danger'
-				description='user data will be removed'
-				whatIsTheme={whatIsTheme}
-				onPress={() => {
-					props.navigation.navigate('DangerSection');
-				}}
-				iconName='circle-with-cross'
-				iconType='entypo'
-				iconSize={24}
-			/>
-
-			<View
-				style={{
-					justifyContent: 'center',
-					alignItems: 'center',
-					padding: 10,
-					marginVertical: 10,
-				}}>
-				<Text
+				<View
 					style={{
-						color: `${whatIsTheme(COLORS.GREEN, COLORS.PRIMARY)}cf`,
-						fontSize: 35,
-						textTransform: 'uppercase',
-						fontFamily: 'karla',
-					}}>
-					SocByte
-				</Text>
-				<Text
-					style={{
-						color: COLORS.MID,
-						fontFamily: 'karla',
-						fontSize: 15,
-					}}>
-					by - sobhanbera
-				</Text>
-			</View>
+						justifyContent: 'center',
+						alignItems: 'center',
+						padding: 10,
+						marginVertical: 10,
+					}}
+				>
+					<Text
+						style={{
+							color: `${whatIsTheme(
+								COLORS.GREEN,
+								COLORS.PRIMARY
+							)}cf`,
+							fontSize: 35,
+							textTransform: 'uppercase',
+							fontFamily: 'karla',
+						}}
+					>
+						SocByte
+					</Text>
+					<Text
+						style={{
+							color: COLORS.MID,
+							fontFamily: 'karla',
+							fontSize: 15,
+						}}
+					>
+						by - sobhanbera
+					</Text>
+				</View>
+				<View style={{ paddingBottom: 90 }} />
+			</ScrollView>
 		</View>
 	);
 };

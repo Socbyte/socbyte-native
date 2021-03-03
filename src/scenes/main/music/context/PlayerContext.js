@@ -53,7 +53,12 @@ export const PlayerContextProvider = (props) => {
 	};
 
 	const [playerState, setPlayerState] = useState();
-	const [currentTrack, setCurrentTrack] = useState();
+	const [currentTrack, setCurrentTrack] = useState({
+		id: '',
+		title: '',
+		artwork: '',
+		thumbnail: '',
+	});
 	// const [isLoading, setLoading] = useState(false);here
 	const [volume, setVolume] = useState(1);
 	const [rate, setRate] = useState(1);
@@ -124,7 +129,7 @@ export const PlayerContextProvider = (props) => {
 
 		TrackPlayer.addEventListener('remote-stop', () => {
 			TrackPlayer.reset();
-			setCurrentTrack(null);
+			setCurrentTrack({ id: '', title: '', artwork: '', thumbnail: '' });
 		});
 
 		(async () => {
@@ -164,6 +169,11 @@ export const PlayerContextProvider = (props) => {
 
 	const addToQueue = async (track = {}) => {
 		// Vibration.vibrate([50, 100, 250, 50]);
+		ToastAndroid.showWithGravity(
+			'Adding To Queue.',
+			ToastAndroid.SHORT,
+			ToastAndroid.CENTER
+		);
 
 		try {
 			await TrackPlayer.getTrack(track.id).then(async (res) => {
@@ -213,7 +223,7 @@ export const PlayerContextProvider = (props) => {
 
 	const resetPlayer = async () => {
 		await TrackPlayer.reset().then((res) => {
-			setCurrentTrack(null);
+			setCurrentTrack({ id: '', title: '', artwork: '', thumbnail: '' });
 		});
 	};
 

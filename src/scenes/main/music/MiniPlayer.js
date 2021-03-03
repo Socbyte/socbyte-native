@@ -16,10 +16,10 @@ import { usePlayerContext } from './context/PlayerContext';
 import COLORS from '../../../val/colors/Colors';
 import { MiniplayerSongProgressSlider } from './SongProgress';
 
-const MiniPlayer = props => {
+const MiniPlayer = (props) => {
 	const playerContext = usePlayerContext();
 
-	const { theme } = useSelector(state => state.settings.settings);
+	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
 	};
@@ -32,29 +32,40 @@ const MiniPlayer = props => {
 	// songProgressMiniplayer component since the music player is
 	// not currently loaded upto this point
 
-	if (playerContext.isEmpty || !playerContext.currentTrack) {
+	if (playerContext.isEmpty || !playerContext.currentTrack.id) {
 		return null;
 	}
 
 	return (
-		<TouchableOpacity onPress={() => props.navigation.navigate('MainPlayMusicScreen')}>
+		<TouchableOpacity
+			onPress={() => props.navigation.navigate('MainPlayMusicScreen')}
+		>
 			<View style={styles.mainContainer}>
 				<View
 					style={[
 						styles.miniplayer,
 						{
-							borderTopColor: whatIsTheme(COLORS.DARKPRIMARY, COLORS.DARKFORLIGHT),
+							borderTopColor: whatIsTheme(
+								COLORS.DARKPRIMARY,
+								COLORS.DARKFORLIGHT
+							),
 						},
-					]}>
+					]}
+				>
 					<View style={styles.imageContainer}>
 						<Image
 							style={styles.image}
-							source={{ uri: playerContext?.currentTrack?.artwork }}
+							source={{
+								uri: playerContext?.currentTrack?.artwork,
+							}}
 						/>
 					</View>
 					<View style={styles.textContainer}>
 						<Marquee
-							style={whatIsTheme(styles.songTitleDark, styles.songTitleLight)}
+							style={whatIsTheme(
+								styles.songTitleDark,
+								styles.songTitleLight
+							)}
 							duration={6500}
 							marqueeDelay={4500}
 							useNativeDriver={true}
@@ -62,7 +73,8 @@ const MiniPlayer = props => {
 							isRTL={false}
 							isInteraction={false}
 							bounce
-							easing={Easing.ease}>
+							easing={Easing.ease}
+						>
 							{playerContext.currentTrack?.title
 								? playerContext.currentTrack?.title
 								: 'Loading....'}
