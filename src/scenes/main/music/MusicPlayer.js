@@ -13,7 +13,14 @@ import {
 	TouchableOpacity,
 	Animated,
 } from 'react-native';
-import { Text, Icon, Slider, BottomSheet, ListItem, Divider } from 'react-native-elements';
+import {
+	Text,
+	Icon,
+	Slider,
+	BottomSheet,
+	ListItem,
+	Divider,
+} from 'react-native-elements';
 import Marquee from 'react-native-text-ticker';
 import LottieView from 'lottie-react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
@@ -27,7 +34,7 @@ import firebase from '../../../firebase/Firebase';
 import { SufflerList } from '../../../val/constants/Constants';
 import ytdl from 'react-native-ytdl';
 
-const MusicPlayer = props => {
+const MusicPlayer = (props) => {
 	const playerContext = usePlayerContext();
 	const {
 		play,
@@ -48,8 +55,8 @@ const MusicPlayer = props => {
 		volume,
 		setVolume,
 	} = playerContext;
-	const { sound } = useSelector(state => state.main.user);
-	const { theme } = useSelector(state => state.settings.settings);
+	const { sound } = useSelector((state) => state.main.user);
+	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' ? f : s;
 	};
@@ -62,18 +69,18 @@ const MusicPlayer = props => {
 
 	useEffect(() => {
 		if (firstTimeAnim.current) {
-			if (currentTrack.id === sound.id) {
+			if (currentTrack?.id === sound.id) {
 				likeAnimation.current.play(50, 50);
 			} else {
 				likeAnimation.current.play(9, 9);
 			}
 			firstTimeAnim.current = false;
-		} else if (currentTrack.id === sound.id) {
+		} else if (currentTrack?.id === sound.id) {
 			likeAnimation.current.play(9, 50);
 		} else {
 			likeAnimation.current.play(0, 9);
 		}
-	}, [currentTrack.id, sound.id]);
+	}, [currentTrack?.id, sound.id]);
 
 	const getQueue = useCallback(async () => {
 		const track = await TrackPlayer.getQueue();
@@ -95,12 +102,14 @@ const MusicPlayer = props => {
 		var mins = num % 60;
 		var hrs = (num - mins) / 60;
 
-		return hrs > 0 ? numPadding(hrs) + ':' : '' + numPadding(mins) + ':' + numPadding(secs);
+		return hrs > 0
+			? numPadding(hrs) + ':'
+			: '' + numPadding(mins) + ':' + numPadding(secs);
 	}
 
 	const updateProfileSong = () => {
 		let removeSong = false;
-		if (sound.id === currentTrack.id) {
+		if (sound.id === currentTrack?.id) {
 			removeSong = true;
 		}
 		firebase
@@ -109,19 +118,19 @@ const MusicPlayer = props => {
 			.child(firebase.auth().currentUser.uid)
 			.update({
 				sound: {
-					id: removeSong ? 'app' : currentTrack.id,
+					id: removeSong ? 'app' : currentTrack?.id,
 					url: removeSong ? '' : currentTrack.url,
 					duration: removeSong ? 0 : currentTrack.duration,
 				},
 			})
-			.then(res => {
+			.then((res) => {
 				ToastAndroid.showWithGravity(
 					'Profile Updated!',
 					ToastAndroid.SHORT,
 					ToastAndroid.CENTER
 				);
 			})
-			.catch(err => {
+			.catch((err) => {
 				ToastAndroid.showWithGravity(
 					'Cannot Update Profile Currently! Error in server. Please try again.',
 					ToastAndroid.SHORT,
@@ -159,7 +168,7 @@ const MusicPlayer = props => {
 		{ useNativeDriver: false }
 	);
 
-	const onHandlerStateChange = event => {
+	const onHandlerStateChange = (event) => {
 		if (event.nativeEvent.oldState == State.ACTIVE) {
 			const value = translateX._value;
 			// Animated.parallel([
@@ -185,14 +194,18 @@ const MusicPlayer = props => {
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			{/* MAIN CONTENT FOR MUSIC PLAYER */}
-			<ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+			<ScrollView
+				showsHorizontalScrollIndicator={false}
+				showsVerticalScrollIndicator={false}
+			>
 				<View style={[styles.imageContainer, { overflow: 'hidden' }]}>
 					{/* SONG IMAGE WITH BACKGROUND IMAGE */}
 					<ImageBackground
 						source={{ uri: currentTrack.artwork }}
 						blurRadius={15}
 						resizeMode='cover'
-						style={styles.backgroundImage}>
+						style={styles.backgroundImage}
+					>
 						{/*  */}
 						<View style={styles.navigator}>
 							<TouchableOpacity
@@ -201,7 +214,8 @@ const MusicPlayer = props => {
 									// backgroundColor: `${COLORS.WHITE}25`,
 									borderRadius: 20,
 									padding: 2,
-								}}>
+								}}
+							>
 								<Icon
 									name='chevron-thin-down'
 									type='entypo'
@@ -217,7 +231,8 @@ const MusicPlayer = props => {
 									justifyContent: 'flex-end',
 									alignItems: 'center',
 									flex: 1,
-								}}>
+								}}
+							>
 								<Slider
 									allowTouchTrack={true}
 									animateTransitions={true}
@@ -243,7 +258,7 @@ const MusicPlayer = props => {
 										width: 6,
 										backgroundColor: COLORS.WHITE,
 									}}
-									onSlidingComplete={level => {
+									onSlidingComplete={(level) => {
 										setVolume(level);
 									}}
 								/>
@@ -258,9 +273,11 @@ const MusicPlayer = props => {
 											borderRadius: 50,
 											overflow: 'hidden',
 											marginHorizontal: 12,
-											backgroundColor: COLORS.DARKINLIGHTVIDIBLE,
+											backgroundColor:
+												COLORS.DARKINLIGHTVIDIBLE,
 											// padding: 15,
-										}}>
+										}}
+									>
 										<LottieView
 											source={require('../../../assets/animations/likeWhite.json')}
 											style={styles.likeAnimation}
@@ -274,7 +291,8 @@ const MusicPlayer = props => {
 
 								<Text
 									onPress={() => setShowRateChanger(true)}
-									style={styles.rateText}>
+									style={styles.rateText}
+								>
 									{getRateText()}
 								</Text>
 							</View>
@@ -284,7 +302,8 @@ const MusicPlayer = props => {
 						<View style={styles.mainImage}>
 							<PanGestureHandler
 								onGestureEvent={gesturHandler}
-								onHandlerStateChange={onHandlerStateChange}>
+								onHandlerStateChange={onHandlerStateChange}
+							>
 								<Animated.View
 									style={[
 										styles.mainImage,
@@ -297,7 +316,8 @@ const MusicPlayer = props => {
 												// { translateY: translateY },
 											],
 										},
-									]}>
+									]}
+								>
 									<Image
 										source={{ uri: currentTrack.artwork }}
 										style={[
@@ -325,10 +345,14 @@ const MusicPlayer = props => {
 									),
 									paddingBottom: 30,
 								},
-							]}>
+							]}
+						>
 							{/* SONG TITLE MARQUEE */}
 							<Marquee
-								style={whatIsTheme(styles.songTitleDark, styles.songTitleLight)}
+								style={whatIsTheme(
+									styles.songTitleDark,
+									styles.songTitleLight
+								)}
 								duration={6500}
 								marqueeDelay={4500}
 								useNativeDriver={true}
@@ -336,8 +360,11 @@ const MusicPlayer = props => {
 								isRTL={false}
 								isInteraction={false}
 								bounce
-								easing={Easing.ease}>
-								{currentTrack?.title ? currentTrack?.title : 'Loading...'}
+								easing={Easing.ease}
+							>
+								{currentTrack?.title
+									? currentTrack?.title
+									: 'Loading...'}
 							</Marquee>
 
 							{/* ARTIST LIST */}
@@ -349,7 +376,8 @@ const MusicPlayer = props => {
 											COLORS.DARKSECONDARY
 										),
 									}}
-									numberOfLines={1}>
+									numberOfLines={1}
+								>
 									{currentTrack.artist}
 								</Text>
 							</View>
@@ -361,7 +389,8 @@ const MusicPlayer = props => {
 									flexDirection: 'row',
 									justifyContent: 'space-around',
 									alignItems: 'center',
-								}}>
+								}}
+							>
 								{/* PROGRESS BAR */}
 								{/* <SongProgressBar whatIsTheme={whatIsTheme} /> */}
 								{/* the view inside this progress slider also contains the same styles as above view */}
@@ -376,7 +405,10 @@ const MusicPlayer = props => {
 										name='rotate-left'
 										type='font-awesome'
 										size={28}
-										color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+										color={whatIsTheme(
+											COLORS.WHITE,
+											COLORS.BLACK
+										)}
 									/>
 								</View>
 								<View style={styles.iconContainerSimple}>
@@ -385,21 +417,28 @@ const MusicPlayer = props => {
 										name='skip-previous'
 										type='ionicons'
 										size={42}
-										color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+										color={whatIsTheme(
+											COLORS.WHITE,
+											COLORS.BLACK
+										)}
 									/>
 								</View>
 								<View
 									style={whatIsTheme(
 										styles.iconContainerDark,
 										styles.iconContainerLight
-									)}>
+									)}
+								>
 									{playerContext.isPaused ? (
 										<Icon
 											onPress={() => play()}
 											name='play-arrow'
 											type='ionicons'
 											size={48}
-											color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+											color={whatIsTheme(
+												COLORS.WHITE,
+												COLORS.BLACK
+											)}
 										/>
 									) : playerContext.isPlaying ? (
 										<Icon
@@ -407,7 +446,10 @@ const MusicPlayer = props => {
 											name='pause'
 											type='ant-design'
 											size={48}
-											color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+											color={whatIsTheme(
+												COLORS.WHITE,
+												COLORS.BLACK
+											)}
 										/>
 									) : (
 										<Icon
@@ -415,7 +457,10 @@ const MusicPlayer = props => {
 											name='play-arrow'
 											type='ionicons'
 											size={48}
-											color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+											color={whatIsTheme(
+												COLORS.WHITE,
+												COLORS.BLACK
+											)}
 										/>
 									)}
 								</View>
@@ -425,7 +470,10 @@ const MusicPlayer = props => {
 										name='skip-next'
 										type='ionicons'
 										size={42}
-										color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+										color={whatIsTheme(
+											COLORS.WHITE,
+											COLORS.BLACK
+										)}
 									/>
 								</View>
 								<View style={[styles.iconContainerSimple]}>
@@ -434,7 +482,10 @@ const MusicPlayer = props => {
 										name='rotate-right'
 										type='font-awesome'
 										size={28}
-										color={whatIsTheme(COLORS.WHITE, COLORS.BLACK)}
+										color={whatIsTheme(
+											COLORS.WHITE,
+											COLORS.BLACK
+										)}
 									/>
 								</View>
 							</View>
@@ -447,16 +498,18 @@ const MusicPlayer = props => {
 						style={whatIsTheme(
 							styles.queueTextContianerDark,
 							styles.queueTextContianerLight
-						)}>
+						)}
+					>
 						<Text
 							style={[
 								whatIsTheme(styles.textDark, styles.textLight),
 								styles.queueText,
-							]}>
+							]}
+						>
 							Queue
 						</Text>
 					</View>
-					{queue.map(song => {
+					{queue.map((song) => {
 						return (
 							<ListItem
 								// bottomDivider
@@ -464,7 +517,10 @@ const MusicPlayer = props => {
 									await playerContext.play(song);
 								}}
 								key={song.id}
-								underlayColor={whatIsTheme(COLORS.DARKPRIMARY, COLORS.BEFORELIGHT)}
+								underlayColor={whatIsTheme(
+									COLORS.DARKPRIMARY,
+									COLORS.BEFORELIGHT
+								)}
 								// bottomDivider
 								containerStyle={[
 									// index === searchResults.length - 1 ? styles.lastElement : null,
@@ -472,14 +528,15 @@ const MusicPlayer = props => {
 										paddingVertical: 5,
 										alignItems: 'flex-start',
 										backgroundColor:
-											currentTrack.id === song.id
+											currentTrack?.id === song.id
 												? whatIsTheme(
 														COLORS.DARKPRIMARY,
 														COLORS.SIMILARTRANSPARENTDARK
 												  )
 												: COLORS.TRANSPARENT,
 									},
-								]}>
+								]}
+							>
 								{/* {currentTrack.id === song.id ? (
 									<View
 										style={{
@@ -508,8 +565,9 @@ const MusicPlayer = props => {
 								<View style={styles.queueImageContainer}>
 									<ImageBackground
 										source={{ uri: song.artwork }}
-										style={styles.queueImage}>
-										{currentTrack.id === song.id ? (
+										style={styles.queueImage}
+									>
+										{currentTrack?.id === song.id ? (
 											<LottieView
 												source={require('../../../assets/animations/waves.json')}
 												style={{
@@ -531,25 +589,32 @@ const MusicPlayer = props => {
 									style={{
 										flexDirection: 'row',
 										justifyContent: 'flex-start',
-									}}>
+									}}
+								>
 									<View style={{ flex: 1 }}>
 										<ListItem.Title
 											numberOfLines={1}
 											style={[
-												whatIsTheme(styles.textDark, styles.textLight),
+												whatIsTheme(
+													styles.textDark,
+													styles.textLight
+												),
 												{ fontSize: 16 },
-											]}>
+											]}
+										>
 											{song.title}
 										</ListItem.Title>
 										<ListItem.Subtitle
 											style={{ color: COLORS.MID }}
-											numberOfLines={1}>
+											numberOfLines={1}
+										>
 											{song.artist}
 										</ListItem.Subtitle>
 									</View>
 									<ListItem.Subtitle
 										style={{ color: COLORS.MID }}
-										numberOfLines={1}>
+										numberOfLines={1}
+									>
 										{song.durationEdited}
 									</ListItem.Subtitle>
 								</ListItem.Content>
@@ -570,16 +635,21 @@ const MusicPlayer = props => {
 								{
 									// marginTop: 100,
 								},
-							]}>
+							]}
+						>
 							<Text
 								style={[
-									whatIsTheme(styles.textDark, styles.textLight),
+									whatIsTheme(
+										styles.textDark,
+										styles.textLight
+									),
 									styles.queueText,
-								]}>
+								]}
+							>
 								Recommended - Add To Queue
 							</Text>
 						</View>
-						{playerContext.recommendedSongsList.map(song => {
+						{playerContext.recommendedSongsList.map((song) => {
 							return (
 								<ListItem
 									// bottomDivider
@@ -609,23 +679,28 @@ const MusicPlayer = props => {
 											paddingVertical: 5,
 											alignItems: 'flex-start',
 											backgroundColor:
-												currentTrack.id === song.id
+												currentTrack?.id === song.id
 													? whatIsTheme(
 															COLORS.DARKPRIMARY,
 															COLORS.SIMILARTRANSPARENTDARK
 													  )
 													: COLORS.TRANSPARENT,
 										},
-									]}>
-									{currentTrack.id === song.id ? (
+									]}
+								>
+									{currentTrack?.id === song.id ? (
 										<View
 											style={{
 												alignItems: 'center',
 												justifyContent: 'center',
-											}}>
+											}}
+										>
 											<Text
 												style={{
-													color: whatIsTheme(COLORS.WHITE, COLORS.BLACK),
+													color: whatIsTheme(
+														COLORS.WHITE,
+														COLORS.BLACK
+													),
 													textAlignVertical: 'center',
 													textAlign: 'center',
 													flex: 1,
@@ -634,7 +709,8 @@ const MusicPlayer = props => {
 													padding: 0,
 													margin: 0,
 													fontWeight: 'bold',
-												}}>
+												}}
+											>
 												{'\u2022'}
 											</Text>
 										</View>
@@ -649,25 +725,32 @@ const MusicPlayer = props => {
 										style={{
 											flexDirection: 'row',
 											justifyContent: 'flex-start',
-										}}>
+										}}
+									>
 										<View style={{ flex: 1 }}>
 											<ListItem.Title
 												numberOfLines={1}
 												style={[
-													whatIsTheme(styles.textDark, styles.textLight),
+													whatIsTheme(
+														styles.textDark,
+														styles.textLight
+													),
 													{ fontSize: 16 },
-												]}>
+												]}
+											>
 												{song.title}
 											</ListItem.Title>
 											<ListItem.Subtitle
 												style={{ color: COLORS.MID }}
-												numberOfLines={1}>
+												numberOfLines={1}
+											>
 												{song.artist}
 											</ListItem.Subtitle>
 										</View>
 										<ListItem.Subtitle
 											style={{ color: COLORS.MID }}
-											numberOfLines={1}>
+											numberOfLines={1}
+										>
 											{song.durationEdited}
 										</ListItem.Subtitle>
 									</ListItem.Content>
@@ -694,7 +777,8 @@ const MusicPlayer = props => {
 						`${COLORS.DARKPRIMARY}9f`,
 						`${COLORS.DARKFORLIGHT}9f`
 					),
-				}}>
+				}}
+			>
 				<ListItem
 					onPress={() => {
 						setRate(0.25);
@@ -705,9 +789,15 @@ const MusicPlayer = props => {
 							rate === 0.25
 								? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
 								: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-					}}>
+					}}
+				>
 					<ListItem.Content>
-						<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+						<ListItem.Title
+							style={whatIsTheme(
+								styles.textDark,
+								styles.textLight
+							)}
+						>
 							0.25x
 						</ListItem.Title>
 					</ListItem.Content>
@@ -722,9 +812,15 @@ const MusicPlayer = props => {
 							rate === 0.5
 								? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
 								: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-					}}>
+					}}
+				>
 					<ListItem.Content>
-						<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+						<ListItem.Title
+							style={whatIsTheme(
+								styles.textDark,
+								styles.textLight
+							)}
+						>
 							0.50x
 						</ListItem.Title>
 					</ListItem.Content>
@@ -739,9 +835,15 @@ const MusicPlayer = props => {
 							rate === 0.75
 								? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
 								: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-					}}>
+					}}
+				>
 					<ListItem.Content>
-						<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+						<ListItem.Title
+							style={whatIsTheme(
+								styles.textDark,
+								styles.textLight
+							)}
+						>
 							0.75x
 						</ListItem.Title>
 					</ListItem.Content>
@@ -756,9 +858,15 @@ const MusicPlayer = props => {
 							rate === 1
 								? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
 								: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-					}}>
+					}}
+				>
 					<ListItem.Content>
-						<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+						<ListItem.Title
+							style={whatIsTheme(
+								styles.textDark,
+								styles.textLight
+							)}
+						>
 							Normal
 						</ListItem.Title>
 					</ListItem.Content>
@@ -774,9 +882,15 @@ const MusicPlayer = props => {
 							rate === 1.25
 								? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
 								: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-					}}>
+					}}
+				>
 					<ListItem.Content>
-						<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+						<ListItem.Title
+							style={whatIsTheme(
+								styles.textDark,
+								styles.textLight
+							)}
+						>
 							1.25x
 						</ListItem.Title>
 					</ListItem.Content>
@@ -792,9 +906,15 @@ const MusicPlayer = props => {
 							rate === 1.5
 								? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
 								: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-					}}>
+					}}
+				>
 					<ListItem.Content>
-						<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+						<ListItem.Title
+							style={whatIsTheme(
+								styles.textDark,
+								styles.textLight
+							)}
+						>
 							1.50x
 						</ListItem.Title>
 					</ListItem.Content>
@@ -810,9 +930,15 @@ const MusicPlayer = props => {
 							rate === 1.75
 								? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
 								: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-					}}>
+					}}
+				>
 					<ListItem.Content>
-						<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+						<ListItem.Title
+							style={whatIsTheme(
+								styles.textDark,
+								styles.textLight
+							)}
+						>
 							1.75x
 						</ListItem.Title>
 					</ListItem.Content>
@@ -828,9 +954,15 @@ const MusicPlayer = props => {
 							rate === 2
 								? whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT)
 								: whatIsTheme(COLORS.DARKPRIMARY, COLORS.WHITE),
-					}}>
+					}}
+				>
 					<ListItem.Content>
-						<ListItem.Title style={whatIsTheme(styles.textDark, styles.textLight)}>
+						<ListItem.Title
+							style={whatIsTheme(
+								styles.textDark,
+								styles.textLight
+							)}
+						>
 							2.0x
 						</ListItem.Title>
 					</ListItem.Content>
@@ -841,10 +973,16 @@ const MusicPlayer = props => {
 						setShowRateChanger(false);
 					}}
 					containerStyle={{
-						backgroundColor: whatIsTheme(COLORS.BLACK, COLORS.BEFORELIGHT),
-					}}>
+						backgroundColor: whatIsTheme(
+							COLORS.BLACK,
+							COLORS.BEFORELIGHT
+						),
+					}}
+				>
 					<ListItem.Content>
-						<ListItem.Title style={styles.cancelButton}>Cancel</ListItem.Title>
+						<ListItem.Title style={styles.cancelButton}>
+							Cancel
+						</ListItem.Title>
 					</ListItem.Content>
 				</ListItem>
 			</BottomSheet>
