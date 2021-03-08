@@ -28,34 +28,35 @@ const image5 =
 	'https://raw.githubusercontent.com/Socbyte/src/main/images/introswb/screen_5.png';
 
 const IntroScreen = (props) => {
-	const [sliderState, setSliderState] = useState({ currentPage: 0 });
+	// const [sliderState, setSliderState] = useState({ currentPage: 0 });
 	const { width, height } = Dimensions.get('window');
 	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
 		return !theme || theme === 'd' || !theme ? f : s;
 	};
 
-	const scroller = useRef(null);
+	// const scroller = useRef(null);
 
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(setDefaultsValuesLogOUt());
 	}, []);
 
-	const setSliderPage = (event) => {
-		const { currentPage } = sliderState;
-		const { x } = event.nativeEvent.contentOffset;
-		const indexOfNextScreen = Math.floor(x / width);
-		if (indexOfNextScreen !== currentPage) {
-			setSliderState({
-				...sliderState,
-				currentPage: indexOfNextScreen,
-			});
-		}
-		// console.log(event.nativeEvent.contentOffset.x, );
-	};
+	// const setSliderPage = (event) => {
+	// 	const { currentPage } = sliderState;
+	// 	const { x, y } = event.nativeEvent.contentOffset;
+	// 	const indexOfNextScreen = Math.floor(x / width);
+	// 	const indexOfNextScreenHeight = Math.floor(y / height);
+	// 	if (indexOfNextScreenHeight !== currentPage) {
+	// 		setSliderState({
+	// 			...sliderState,
+	// 			currentPage: indexOfNextScreenHeight,
+	// 		});
+	// 	}
+	// 	// console.log(event.nativeEvent.contentOffset.x, );
+	// };
 
-	const { currentPage: pageIndex } = sliderState;
+	// const { currentPage: pageIndex } = sliderState;
 
 	const openPolicies = () => {
 		props.navigation.replace('TandCandPP');
@@ -80,12 +81,13 @@ const IntroScreen = (props) => {
 					]}
 					style={{ flex: 1 }}
 				>
-					<View style={styles.paginationWrapper}>
-						{Array.from(Array(5).keys()).map((key, index) => (
+					{/* <View style={styles.paginationWrapper}>
+						{Array.from(Array(6).keys()).map((key, index) => (
 							<TouchableOpacity
 								onPress={() => {
 									scroller.current.scrollTo({
 										x: index * width,
+										y: index * height,
 									});
 								}}
 							>
@@ -97,6 +99,7 @@ const IntroScreen = (props) => {
 										},
 										{
 											marginLeft: 6,
+											marginTop: 5,
 											height: 9,
 											width: 9,
 											borderRadius: 10,
@@ -107,20 +110,47 @@ const IntroScreen = (props) => {
 								/>
 							</TouchableOpacity>
 						))}
+					</View> */}
+
+					<View
+						style={{
+							position: 'absolute',
+							backgroundColor: COLORS.DARKINLIGHTVIDIBLE,
+							borderRadius: 5,
+							right: 4,
+							top: 4,
+						}}
+					>
+						<Text
+							style={{
+								color: COLORS.BLACK,
+								paddingVertical: 4,
+								paddingHorizontal: 5,
+								fontFamily: 'karlaBold ',
+							}}
+						>
+							Scroll Down
+						</Text>
 					</View>
 
 					<ScrollView
-						ref={scroller}
-						onScroll={(event) => {
-							setSliderPage(event);
-						}}
+						// ref={scroller}
+						// onScroll={(event) => {
+						// 	setSliderPage(event);
+						// }}
 						style={{ flex: 1 }}
-						horizontal
+						// horizontal
 						scrollEventThrottle={16}
 						showsHorizontalScrollIndicator={false}
+						showsVerticalScrollIndicator={false}
 						pagingEnabled
 					>
-						<View style={{ width, height }}>
+						<View
+							style={{
+								width,
+								height: height - 90,
+							}}
+						>
 							<Image
 								source={{ uri: image1 }}
 								style={styles.image}
@@ -133,18 +163,20 @@ const IntroScreen = (props) => {
 							>
 								Enjoy Music
 							</Text>
-							<Text
-								style={whatIsTheme(
-									styles.contentDark,
-									styles.contentLight
-								)}
-							>
-								Enjoy listening to music anytime, anywhere.
-								Whatever the time is get ready to listen music
-								of any mood.
-							</Text>
+							{height > 640 ? (
+								<Text
+									style={whatIsTheme(
+										styles.contentDark,
+										styles.contentLight
+									)}
+								>
+									Enjoy listening to music anytime, anywhere.
+									Whatever the time is get ready to listen
+									music of any mood.
+								</Text>
+							) : null}
 						</View>
-						<View style={{ width, height }}>
+						<View style={{ width, height: height - 90 }}>
 							<Image
 								source={{ uri: image2 }}
 								style={styles.image}
@@ -157,18 +189,25 @@ const IntroScreen = (props) => {
 							>
 								Distraction-Free Interface!
 							</Text>
-							<Text
-								style={whatIsTheme(
-									styles.contentDark,
-									styles.contentLight
-								)}
-							>
-								The UI is pretty clean and easy to use. UI also
-								contains many hidden features. You should
-								explore them all.
-							</Text>
+							{height > 640 ? (
+								<Text
+									style={whatIsTheme(
+										styles.contentDark,
+										styles.contentLight
+									)}
+								>
+									The UI is pretty clean and easy to use. UI
+									also contains many hidden features. You
+									should explore them all.
+								</Text>
+							) : null}
 						</View>
-						<View style={{ width, height }}>
+						<View
+							style={{
+								width,
+								height: height - 90,
+							}}
+						>
 							<Image
 								source={{ uri: image3 }}
 								style={styles.image}
@@ -181,17 +220,19 @@ const IntroScreen = (props) => {
 							>
 								Listening to every song you want.
 							</Text>
-							<Text
-								style={whatIsTheme(
-									styles.contentDark,
-									styles.contentLight
-								)}
-							>
-								Listen to whatever song you want to. It is
-								available, Don't ask how!
-							</Text>
+							{height > 640 ? (
+								<Text
+									style={whatIsTheme(
+										styles.contentDark,
+										styles.contentLight
+									)}
+								>
+									Listen to whatever song you want to. It is
+									available, Don't ask how!
+								</Text>
+							) : null}
 						</View>
-						<View style={{ width, height }}>
+						<View style={{ width, height: height - 90 }}>
 							<Image
 								source={{ uri: image4 }}
 								style={styles.image}
@@ -204,19 +245,21 @@ const IntroScreen = (props) => {
 							>
 								Group Chats
 							</Text>
-							<Text
-								style={whatIsTheme(
-									styles.contentDark,
-									styles.contentLight
-								)}
-							>
-								Create Groups, Join existing groups, chat with
-								anybody, anywhere, and about anything. Future
-								updates will contains more exciting features
-								related to group chats.
-							</Text>
+							{height > 640 ? (
+								<Text
+									style={whatIsTheme(
+										styles.contentDark,
+										styles.contentLight
+									)}
+								>
+									Create Groups, Join existing groups, chat
+									with anybody, anywhere, and about anything.
+									Future updates will contains more exciting
+									features related to group chats.
+								</Text>
+							) : null}
 						</View>
-						<View style={{ width, height }}>
+						<View style={{ width, height: height - 90 }}>
 							<Image
 								source={{ uri: image5 }}
 								style={styles.image}
@@ -229,21 +272,23 @@ const IntroScreen = (props) => {
 							>
 								Themes
 							</Text>
-							<Text
-								style={whatIsTheme(
-									styles.contentDark,
-									styles.contentLight
-								)}
-							>
-								If Light Mode cause strain to your eye don't
-								worry I created Dark mode to. Future updates may
-								contain more modes like (colorish mode).
-							</Text>
+							{height > 640 ? (
+								<Text
+									style={whatIsTheme(
+										styles.contentDark,
+										styles.contentLight
+									)}
+								>
+									If Light Mode cause strain to your eye don't
+									worry I created Dark mode to. Future updates
+									may contain more modes like (colorish mode).
+								</Text>
+							) : null}
 						</View>
 					</ScrollView>
 
 					<View style={styles.buttonHolder}>
-						<TouchableOpacity onPress={openPolicies}>
+						{/* <TouchableOpacity onPress={openPolicies}>
 							<View style={styles.buttonContainerFirst}>
 								<Icon
 									name='cross'
@@ -252,15 +297,23 @@ const IntroScreen = (props) => {
 									color={COLORS.BLACK}
 								/>
 							</View>
-						</TouchableOpacity>
+						</TouchableOpacity> */}
 
-						<View style={{ flexDirection: 'row' }}>
-							<>
+						<View
+							style={{
+								flexDirection: 'row',
+								width: '100%',
+								justifyContent: 'flex-end',
+								alignItems: 'flex-end',
+							}}
+						>
+							{/* <>
 								{pageIndex > 0 ? (
 									<TouchableOpacity
 										onPress={() =>
 											scroller.current.scrollTo({
 												x: (pageIndex - 1) * width,
+												y: (pageIndex - 1) * height,
 											})
 										}
 									>
@@ -291,6 +344,7 @@ const IntroScreen = (props) => {
 										onPress={() =>
 											scroller.current.scrollTo({
 												x: (pageIndex + 1) * width,
+												y: (pageIndex + 1) * height,
 											})
 										}
 									>
@@ -316,7 +370,14 @@ const IntroScreen = (props) => {
 										</View>
 									</TouchableOpacity>
 								)}
-							</>
+							</> */}
+							<TouchableOpacity onPress={() => openPolicies()}>
+								<View style={styles.getStartedButton}>
+									<Text style={styles.getStartedText}>
+										Get Started
+									</Text>
+								</View>
+							</TouchableOpacity>
 						</View>
 					</View>
 				</LinearGradient>
@@ -331,11 +392,13 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginTop: 13,
-		// position: 'absolute',
+		position: 'absolute',
 		// left: 0,
-		// right: 0,
+		right: 10,
 		// top: 13,
 		// bottom: 10,
+		flexDirection: 'column',
+		height: '90%',
 	},
 	image: {
 		width: '100%',
@@ -379,8 +442,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingBottom: 18,
+		paddingBottom: 8,
+		paddingVertical: 3,
 		paddingHorizontal: 0,
+		backgroundColor: COLORS.TRANSPARENT,
 	},
 	buttonContainerFirst: {
 		justifyContent: 'center',

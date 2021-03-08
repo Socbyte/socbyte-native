@@ -182,7 +182,16 @@ const MainDrawerNavigation = (props) => {
 	}, [userData.email]);
 
 	return (
-		<View style={styles.flex}>
+		<View
+			style={[
+				styles.flex,
+				{
+					backgroundColor: whatIsTheme('#151515', COLORS.WHITE),
+					// borderRightWidth: 0.4,
+					// borderRightColor: COLORS.WHITE,
+				},
+			]}
+		>
 			<DrawerContentScrollView>
 				<View style={styles.flex}>
 					<View style={styles.padding10}>
