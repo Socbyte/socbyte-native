@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
 	ScrollView,
 	StyleSheet,
@@ -8,13 +8,13 @@ import {
 	Dimensions,
 	TouchableOpacity,
 	Image,
-} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDispatch, useSelector } from 'react-redux';
-import { Button, Icon } from 'react-native-elements';
-import COLORS from '../../val/colors/Colors';
-import { setDefaultsValuesLogOUt } from '../../store/MainStore';
+} from "react-native";
+import LinearGradient from "react-native-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Icon } from "react-native-elements";
+import COLORS from "../../val/colors/Colors";
+import { setDefaultsValuesLogOUt } from "../../store/MainStore";
 
 const image1 =
 	'https://raw.githubusercontent.com/Socbyte/src/main/images/introswb/screen_1.png';
@@ -32,7 +32,7 @@ const IntroScreen = (props) => {
 	const { width, height } = Dimensions.get('window');
 	const { theme } = useSelector((state) => state.settings.settings);
 	const whatIsTheme = (f, s) => {
-		return !theme || theme === 'd' || !theme ? f : s;
+		return !theme || theme === "d" || !theme ? f : s;
 	};
 
 	// const scroller = useRef(null);
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
 		height: '90%',
 	},
 	image: {
-		width: '100%',
+		width: "100%",
 		height: 400,
 		resizeMode: 'contain',
 		marginTop: 0,
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
 	getStartedText: {
 		color: COLORS.WHITE,
 		fontSize: 17,
-		fontFamily: 'karla',
+		fontFamily: "karla",
 	},
 
 	skipButton: {

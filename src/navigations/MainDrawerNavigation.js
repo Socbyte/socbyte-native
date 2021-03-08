@@ -1,12 +1,12 @@
-import React, { useEffect, useCallback, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useCallback, useState } from "react";
+import { View, Text, StyleSheet, StatusBar } from "react-native";
+import { connect, useDispatch, useSelector } from "react-redux";
 
 import {
 	NavigationContainer,
 	DarkTheme,
 	DefaultTheme,
-} from '@react-navigation/native';
+} from "@react-navigation/native";
 import {
 	Avatar,
 	Text as PaperText,
@@ -20,39 +20,39 @@ import {
 	Paragraph,
 	useTheme,
 	IconButton,
-} from 'react-native-paper';
+} from "react-native-paper";
 
 import {
 	createDrawerNavigator,
 	DrawerContentScrollView,
 	DrawerItem,
-} from '@react-navigation/drawer';
+} from "@react-navigation/drawer";
 
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Avatar as ElementAvatar } from 'react-native-elements';
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Avatar as ElementAvatar } from "react-native-elements";
 
-import md5 from 'md5';
+import md5 from "md5";
 
 import {
 	setProfileImageURL,
 	setDefaultsValuesLogOUt,
-} from '../store/MainStore';
-import firebase from '../firebase/Firebase';
+} from "../store/MainStore";
+import firebase from "../firebase/Firebase";
 
-import COLORS from '../val/colors/Colors';
-import { updateDatabase } from '../sql/SQLStarter';
-import { updateSettings } from '../store/Settings';
+import COLORS from "../val/colors/Colors";
+import { updateDatabase } from "../sql/SQLStarter";
+import { updateSettings } from "../store/Settings";
 
-import Home from '../scenes/main/Home';
-import Profile from '../scenes/main/Profile';
-import TestMain from '../scenes/main/Test';
-import Header from '../components/customs/Header/Header';
+import Home from "../scenes/main/Home";
+import Profile from "../scenes/main/Profile";
+import TestMain from "../scenes/main/Test";
+import Header from "../components/customs/Header/Header";
 
-import ProfileNavigator from './content/ProfileNavigator';
-import SettingStack from './content/SettingsNavigator';
-import ChatNavigation from '../scenes/main/chats/ChatNavigation';
-import MusicNavigation from './content/MusicNavigator';
-import { PlayerContextProvider } from '../scenes/main/music/context/PlayerContext';
+import ProfileNavigator from "./content/ProfileNavigator";
+import SettingStack from "./content/SettingsNavigator";
+import ChatNavigation from "../scenes/main/chats/ChatNavigation";
+import MusicNavigation from "./content/MusicNavigator";
+import { PlayerContextProvider } from "../scenes/main/music/context/PlayerContext";
 
 function PureDrawerItem({
 	onPress,
@@ -77,7 +77,7 @@ function PureDrawerItem({
 								size={size || 24}
 								color={
 									selected === identity[0]
-										? theme === 'd'
+										? theme === "d"
 											? COLORS.GREEN
 											: COLORS.PRIMARY
 										: COLORS.DARKFORLIGHT
@@ -90,20 +90,20 @@ function PureDrawerItem({
 			label={identity[1]}
 			labelStyle={
 				selected === identity[0]
-					? theme === 'd'
+					? theme === "d"
 						? styles.labelDark
 						: styles.labelLight
-					: theme === 'd'
+					: theme === "d"
 					? styles.labelDisabledDark
 					: styles.labelDisabledLight
 			}
 			focused={selected === identity[0]}
-			activeTintColor={theme === 'd' ? COLORS.WHITE : COLORS.DARKGLOW}
+			activeTintColor={theme === "d" ? COLORS.WHITE : COLORS.DARKGLOW}
 			activeBackgroundColor={
-				theme === 'd' ? COLORS.DARKGLOW : COLORS.BEFORELIGHT
+				theme === "d" ? COLORS.DARKGLOW : COLORS.BEFORELIGHT
 			}
 			style={[
-				theme === 'd'
+				theme === "d"
 					? styles.drawerOptionsDark
 					: styles.drawerOptionsLight,
 				extraStyles ? extraStyles : styles.NONE,
@@ -120,21 +120,21 @@ const MainDrawerNavigation = (props) => {
 	const paperTheme = useTheme();
 	const dispatch = useDispatch();
 
-	const [selectedTab, setSelectedTab] = useState('home');
+	const [selectedTab, setSelectedTab] = useState("home");
 	const [userProfileImageFound, setUserProfileImageFound] = useState(false);
 
 	const whatIsTheme = (f, s) => {
-		return !theme || theme === 'd' ? f : s;
+		return !theme || theme === "d" ? f : s;
 	};
 
 	const toggleTheme = () => {
 		// console.log('TOGGLE THE CURRENT THEME...');
-		const toggledTheme = theme === 'd' ? 'l' : 'd';
-		updateDatabase('theme', toggledTheme)
+		const toggledTheme = theme === "d" ? "l" : "d";
+		updateDatabase("theme", toggledTheme)
 			.then((result) => {
 				// console.log('DATABASE UPDATED');
 				// console.log(result);
-				dispatch(updateSettings('theme', toggledTheme));
+				dispatch(updateSettings("theme", toggledTheme));
 			})
 			.catch((err) => {
 				// console.log(
@@ -162,7 +162,7 @@ const MainDrawerNavigation = (props) => {
 			fetch(`https://www.gravatar.com/${emailHash}.json`)
 				.then((res) => res.json())
 				.then((res) => {
-					if (JSON.stringify(res).includes('User not found')) {
+					if (JSON.stringify(res).includes("User not found")) {
 						setUserProfileImageFound(false);
 						props.setProfileImg(false);
 					} else {
@@ -197,18 +197,16 @@ const MainDrawerNavigation = (props) => {
 					<View style={styles.padding10}>
 						<TouchableRipple
 							onPress={() => {
-								setSelectedTabText('profile');
-								props.navigation.navigate('Profile');
-							}}
-						>
+								setSelectedTabText("profile");
+								props.navigation.navigate("Profile");
+							}}>
 							<>
 								<View
 									style={
-										theme === 'd'
+										theme === "d"
 											? styles.usersectionDark
 											: styles.usersectionLight
-									}
-								>
+									}>
 									{userProfileImageFound ? (
 										// <Avatar.Image
 										// 	style={
@@ -248,41 +246,38 @@ const MainDrawerNavigation = (props) => {
 												),
 											]}
 											labelStyle={
-												theme === 'd'
+												theme === "d"
 													? styles.avatarLabelDark
 													: styles.avatarLabelLight
 											}
 											label={
 												userData.username
 													? userData.username[0].toUpperCase()
-													: ''
+													: ""
 											}
 										/>
 									)}
 									<View
 										style={
-											theme === 'd'
+											theme === "d"
 												? styles.usersectiontextDark
 												: styles.usersectiontextLight
-										}
-									>
+										}>
 										<PaperText
 											style={
-												theme === 'd'
+												theme === "d"
 													? styles.textDark
 													: styles.textLight
-											}
-										>
+											}>
 											{userData.fullname}
 										</PaperText>
 										<Caption
 											style={
-												theme === 'd'
+												theme === "d"
 													? styles.mainTextDark
 													: styles.mainTextLight
 											}
-											numberOfLines={1}
-										>
+											numberOfLines={1}>
 											@{userData.username}
 										</Caption>
 									</View>
@@ -293,12 +288,10 @@ const MainDrawerNavigation = (props) => {
 								userData.following > 0 ? (
 									<Drawer.Section
 										theme={paperTheme.dark}
-										style={styles.followSection}
-									>
+										style={styles.followSection}>
 										{/* followers */}
 										<View
-											style={styles.followTextContainer}
-										>
+											style={styles.followTextContainer}>
 											<Text
 												style={[
 													whatIsTheme(
@@ -306,8 +299,7 @@ const MainDrawerNavigation = (props) => {
 														styles.paraLight
 													),
 													styles.followTextCaption,
-												]}
-											>
+												]}>
 												Followers
 											</Text>
 											<Text
@@ -317,8 +309,7 @@ const MainDrawerNavigation = (props) => {
 														styles.paraLight
 													),
 													styles.followText,
-												]}
-											>
+												]}>
 												{userData.followers}
 											</Text>
 										</View>
@@ -327,16 +318,14 @@ const MainDrawerNavigation = (props) => {
 											style={{
 												borderRightColor: COLORS.MID,
 												borderRightWidth: 0.25,
-												height: '100%',
+												height: "100%",
 												width: 0.3,
 												backgroundColor: COLORS.RED,
-											}}
-										></View>
+											}}></View>
 
 										{/* followings */}
 										<View
-											style={styles.followTextContainer}
-										>
+											style={styles.followTextContainer}>
 											<Text
 												style={[
 													whatIsTheme(
@@ -344,8 +333,7 @@ const MainDrawerNavigation = (props) => {
 														styles.paraLight
 													),
 													styles.followTextCaption,
-												]}
-											>
+												]}>
 												Following
 											</Text>
 											<Text
@@ -355,8 +343,7 @@ const MainDrawerNavigation = (props) => {
 														styles.paraLight
 													),
 													styles.followText,
-												]}
-											>
+												]}>
 												{userData.following}
 											</Text>
 										</View>
@@ -370,77 +357,76 @@ const MainDrawerNavigation = (props) => {
 					<Drawer.Section
 						theme={paperTheme.dark}
 						style={
-							theme === 'd'
+							theme === "d"
 								? styles.mainDrawerDark
 								: styles.mainDrawerLight
-						}
-					>
+						}>
 						<PureDrawerItem
 							onPress={() => {
-								setSelectedTabText('home');
-								props.navigation.navigate('Home');
+								setSelectedTabText("home");
+								props.navigation.navigate("Home");
 							}}
 							theme={theme}
 							extraStyles={
-								theme === 'd'
+								theme === "d"
 									? styles.firstDrawerOptionsDark
 									: styles.firstDrawerOptionsLight
 							}
-							identity={['home', 'Home']}
+							identity={["home", "Home"]}
 							selected={selectedTab}
 							iconName='home'
 						/>
 						<PureDrawerItem
 							onPress={() => {
-								setSelectedTabText('profile');
-								props.navigation.navigate('Profile');
+								setSelectedTabText("profile");
+								props.navigation.navigate("Profile");
 							}}
 							theme={theme}
-							identity={['profile', 'Profile']}
+							identity={["profile", "Profile"]}
 							selected={selectedTab}
 							iconName='account-box'
 						/>
 						<PureDrawerItem
 							onPress={() => {
-								setSelectedTabText('chats');
-								props.navigation.navigate('Chats');
+								setSelectedTabText("chats");
+								props.navigation.navigate("Chats");
 							}}
 							theme={theme}
-							identity={['chats', 'Chats']}
+							identity={["chats", "Chats"]}
 							selected={selectedTab}
 							iconName='message'
 							size={22}
 						/>
 						<PureDrawerItem
 							onPress={() => {
-								setSelectedTabText('music');
-								props.navigation.navigate('Music');
+								setSelectedTabText("music");
+								props.navigation.navigate("Music");
 							}}
 							theme={theme}
-							identity={['music', 'Music']}
+							identity={["music", "Music"]}
 							selected={selectedTab}
 							iconName='music-note'
 						/>
 						<PureDrawerItem
 							onPress={() => {
-								setSelectedTabText('settings');
-								props.navigation.navigate('Settings');
+								setSelectedTabText("settings");
+								props.navigation.navigate("Settings");
 							}}
 							theme={theme}
 							extraStyles={
-								theme === 'd'
+								theme === "d"
 									? styles.lastDrawerOptionsDark
 									: styles.lastDrawerOptionsLight
 							}
-							identity={['settings', 'Settings']}
+							identity={["settings", "Settings"]}
 							selected={selectedTab}
 							customIcon={
 								<Ionicons
 									name='settings'
 									size={24}
 									color={
-										selectedTab === 'settings'
-											? theme === 'd'
+										selectedTab === "settings"
+											? theme === "d"
 												? COLORS.GREEN
 												: COLORS.PRIMARY
 											: COLORS.DARKFORLIGHT
@@ -459,12 +445,11 @@ const MainDrawerNavigation = (props) => {
 							styles.appName,
 							{
 								color:
-									!theme || theme === 'd'
+									!theme || theme === "d"
 										? COLORS.WHITE
 										: COLORS.BLACK,
 							},
-						]}
-					>
+						]}>
 						Socbyte
 					</Text>
 				</View>
@@ -551,77 +536,77 @@ const DrawerNavigation = (props) => {
 
 	return (
 		// <PlayerContextProvider>
-		<NavigationContainer
-			theme={settings.theme === 'd' ? DarkTheme : DefaultTheme}
-		>
-			<DrawerNavigator.Navigator
-				backBehavior='initialRoute'
-				screenOptions={(props) => {
-					return {
-						headerShown: false,
-						headerLeft: () => {
-							return (
-								<TouchableRipple
-									onPress={() =>
-										props.navigation.toggleDrawer()
-									}
-								>
-									<Ionicons
-										name='menu'
-										color={
-											settings.theme === 'd'
-												? COLORS.GREEN
-												: COLORS.PRIMARY
-										}
-										size={25}
-										style={{ margin: 10 }}
+		<StatusBar backgroundColor='#0F60B6'>
+			<NavigationContainer
+				theme={settings.theme === "d" ? DarkTheme : DefaultTheme}>
+				<DrawerNavigator.Navigator
+					backBehavior='initialRoute'
+					screenOptions={(props) => {
+						return {
+							headerShown: false,
+							headerLeft: () => {
+								return (
+									<TouchableRipple
+										onPress={() =>
+											props.navigation.toggleDrawer()
+										}>
+										<Ionicons
+											name='menu'
+											color={
+												settings.theme === "d"
+													? COLORS.GREEN
+													: COLORS.PRIMARY
+											}
+											size={25}
+											style={{ margin: 10 }}
+										/>
+									</TouchableRipple>
+								);
+							},
+							header: () => {
+								return (
+									<Header
+										leftButton={() => {
+											props.navigation.toggleDrawer();
+										}}
+										rightButton='ellipsis-vertical'
+										// headerTitle={username}
 									/>
-								</TouchableRipple>
-							);
-						},
-						header: () => {
-							return (
-								<Header
-									leftButton={() => {
-										props.navigation.toggleDrawer();
-									}}
-									rightButton='ellipsis-vertical'
-									// headerTitle={username}
-								/>
-							);
-						},
-					};
-				}}
-				drawerContent={(props) => (
-					<MainDrawerNavigation
-						setProfileImg={setProfileImg}
-						{...props}
+								);
+							},
+						};
+					}}
+					drawerContent={(props) => (
+						<MainDrawerNavigation
+							setProfileImg={setProfileImg}
+							{...props}
+						/>
+					)}>
+					<DrawerNavigator.Screen name='Home' component={Home} />
+
+					<DrawerNavigator.Screen
+						name='Profile'
+						component={ProfileNavigator}
 					/>
-				)}
-			>
-				<DrawerNavigator.Screen name='Home' component={Home} />
 
-				<DrawerNavigator.Screen
-					name='Profile'
-					component={ProfileNavigator}
-				/>
+					<DrawerNavigator.Screen
+						name='Chats'
+						component={ChatNavigation}
+					/>
 
-				<DrawerNavigator.Screen
-					name='Chats'
-					component={ChatNavigation}
-				/>
+					<DrawerNavigator.Screen
+						name='Settings'
+						component={SettingStack}
+					/>
 
-				<DrawerNavigator.Screen
-					name='Settings'
-					component={SettingStack}
-				/>
+					<DrawerNavigator.Screen
+						name='Music'
+						component={MusicNavigation}
+					/>
+				</DrawerNavigator.Navigator>
+			</NavigationContainer>
+		</StatusBar>
 
-				<DrawerNavigator.Screen
-					name='Music'
-					component={MusicNavigation}
-				/>
-			</DrawerNavigator.Navigator>
-		</NavigationContainer>
 		// </PlayerContextProvider>
 	);
 };
@@ -635,26 +620,26 @@ const styles = StyleSheet.create({
 
 	usersectionDark: {
 		marginTop: 10,
-		flexDirection: 'row',
+		flexDirection: "row",
 		padding: 6,
 	},
 	usersectionLight: {
 		marginTop: 10,
-		flexDirection: 'row',
+		flexDirection: "row",
 		padding: 6,
 	},
 
 	usersectiontextDark: {
-		flexDirection: 'column',
-		justifyContent: 'center',
-		alignItems: 'flex-start',
+		flexDirection: "column",
+		justifyContent: "center",
+		alignItems: "flex-start",
 		paddingLeft: 10,
 		flex: 1,
 	},
 	usersectiontextLight: {
-		flexDirection: 'column',
-		justifyContent: 'center',
-		alignItems: 'flex-start',
+		flexDirection: "column",
+		justifyContent: "center",
+		alignItems: "flex-start",
 		paddingLeft: 10,
 		flex: 1,
 	},
@@ -671,13 +656,13 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		borderWidth: 1,
 		borderColor: COLORS.PRIMARY,
-		overflow: 'hidden',
+		overflow: "hidden",
 		maxWidth: 56,
 		maxHeight: 56,
 		width: 56,
 		height: 56,
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 		backgroundColor: COLORS.TRANSPARENT,
 	},
 	avatarDark: {
@@ -685,23 +670,23 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		borderWidth: 1,
 		borderColor: COLORS.GREEN,
-		overflow: 'hidden',
+		overflow: "hidden",
 		maxWidth: 56,
 		maxHeight: 56,
 		width: 56,
 		height: 56,
-		justifyContent: 'center',
-		alignItems: 'center',
+		justifyContent: "center",
+		alignItems: "center",
 		backgroundColor: COLORS.TRANSPARENT,
 	},
 
 	avatarLabelDark: {
 		color: COLORS.GREEN,
-		fontFamily: 'inter',
+		fontFamily: "inter",
 	},
 	avatarLabelLight: {
 		color: COLORS.PRIMARY,
-		fontFamily: 'inter',
+		fontFamily: "inter",
 	},
 
 	mainTextDark: {
@@ -773,10 +758,10 @@ const styles = StyleSheet.create({
 	},
 
 	row: {
-		width: '100%',
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
+		width: "100%",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
 		padding: 10,
 		borderTopColor: COLORS.MID,
 		borderTopWidth: 1,
@@ -788,8 +773,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	rightToToggleButton: {
-		alignItems: 'center',
-		justifyContent: 'center',
+		alignItems: "center",
+		justifyContent: "center",
 		borderRadius: 60,
 	},
 
@@ -820,9 +805,9 @@ const styles = StyleSheet.create({
 	},
 
 	followSection: {
-		flexDirection: 'row',
-		justifyContent: 'space-around',
-		alignItems: 'center',
+		flexDirection: "row",
+		justifyContent: "space-around",
+		alignItems: "center",
 		// borderTopColor: COLORS.MID,
 		// borderTopWidth: 0.25,
 
@@ -832,31 +817,31 @@ const styles = StyleSheet.create({
 	},
 	followTextContainer: {
 		flex: 1,
-		flexDirection: 'column',
-		justifyContent: 'space-around',
-		alignItems: 'center',
+		flexDirection: "column",
+		justifyContent: "space-around",
+		alignItems: "center",
 		// backgroundColor: COLORS.BLUE,
 		paddingVertical: 12,
 	},
 	followTextCaption: {
-		fontFamily: 'roboto',
-		textAlign: 'center',
+		fontFamily: "roboto",
+		textAlign: "center",
 	},
 	followText: {
 		fontSize: 19,
-		fontFamily: 'roboto',
-		fontWeight: 'bold',
-		textAlign: 'center',
+		fontFamily: "roboto",
+		fontWeight: "bold",
+		textAlign: "center",
 	},
 
 	paraDark: {
 		paddingHorizontal: 5,
-		fontFamily: 'Inter',
+		fontFamily: "Inter",
 		color: COLORS.WHITE,
 	},
 	paraLight: {
 		paddingHorizontal: 5,
-		fontFamily: 'Inter',
+		fontFamily: "Inter",
 		color: COLORS.BLACK,
 	},
 
@@ -878,7 +863,7 @@ const styles = StyleSheet.create({
 	},
 	appName: {
 		fontSize: 22,
-		fontFamily: 'robotoBold',
+		fontFamily: "robotoBold",
 		padding: 6,
 	},
 });
