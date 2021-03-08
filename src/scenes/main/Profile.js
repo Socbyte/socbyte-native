@@ -424,7 +424,7 @@ const Profile = (props) => {
 		<View>
 			<StatusBar
 				barStyle='light-content'
-				backgroundColor={vibrants.vibrant}
+				backgroundColor={whatIsTheme(COLORS.BLACK, COLORS.BLUE_FAV)}
 			/>
 
 			<Header
