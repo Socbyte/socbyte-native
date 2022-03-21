@@ -33,7 +33,3 @@
   <img src="https://github.com/Socbyte/src/blob/main/images/introswb/screen_4.png?raw=true" alt="Screenshot 4" height="500" />
   <img src="https://github.com/Socbyte/src/blob/main/images/introswb/screen_5.png?raw=true" alt="Screenshot 5" height="500" />
 </p>
-
-**Many update are needed in this readme which will be done in future. Since the reason is "It takes time".**
-
-**This Readme will be completed soon. Currently in development.**
